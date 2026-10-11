@@ -1,0 +1,72 @@
+@import "tailwindcss";
+
+:root {
+  font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  color: #1c1917;
+  background: #f7f8f9;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+}
+
+* { box-sizing: border-box; }
+html { min-width: 320px; background: #f7f8f9; }
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  background: #f7f8f9;
+  color: #1c1917;
+  font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+/* Kiểu chữ Montserrat cho tất cả tiêu đề */
+h1, h2, h3, h4, h5, h6, .font-heading, .page-heading {
+  font-family: "Montserrat", sans-serif;
+}
+
+button, a { -webkit-tap-highlight-color: transparent; }
+
+.app-shell {
+  min-height: 100vh;
+  position: relative;
+  background: #f7f8f9;
+}
+
+/* Thanh tiêu đề Đắk Song: Tông xanh đại ngàn & nâu đất Tây Nguyên */
+.site-header {
+  background: linear-gradient(135deg, #064e3b 0%, #14532d 55%, #451a03 100%) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15) !important;
+  box-shadow: 0 2px 10px rgba(6, 78, 59, 0.25);
+}
+
+/* Thanh điều hướng chân trang: Tông xanh đại ngàn đậm đà, sang trọng */
+.bottom-nav {
+  background: #064e3b !important;
+  border-top: 1px solid #047857 !important;
+  box-shadow: 0 -3px 12px rgba(0, 0, 0, 0.18);
+}
+
+/* Thẻ chuẩn Zalo Mini App: Nền trắng, viền mảnh nhẹ, bóng tinh tế */
+.z-card {
+  border: 1px solid #e7e5e4;
+  border-radius: 16px;
+  background: #ffffff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.page-heading {
+  color: #1c1917;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+
+
+.safe-bottom { padding-bottom: calc(72px + env(safe-area-inset-bottom)); }
+.safe-top { padding-top: env(safe-area-inset-top); }
+
+@media (max-width: 640px) {
+  .safe-bottom { padding-bottom: calc(68px + env(safe-area-inset-bottom)); }
+}
+
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 999px; }

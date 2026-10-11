@@ -1,0 +1,1538 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard - Đắk Song Quest CMS</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    body { font-family: 'Plus Jakarta Sans', system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
+  </style>
+</head>
+<body class="bg-slate-100 text-slate-950 min-h-screen">
+  <!-- TOP HEADER ĐẬM NÉT, TƯƠNG PHẢN CAO -->
+  <header class="bg-slate-950 text-white shadow-xl sticky top-0 z-50 border-b border-slate-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3.5 flex flex-wrap items-center justify-between gap-4">
+      <div class="flex items-center gap-3">
+        <div class="h-11 w-11 rounded-2xl bg-amber-400 text-slate-950 flex items-center justify-center text-xl shadow-md font-black">
+          <i data-lucide="shield-check" class="w-6 h-6"></i>
+        </div>
+        <div>
+          <h1 class="text-base sm:text-lg font-black tracking-tight text-white flex items-center gap-2">
+            ĐẮK SONG QUEST <span class="bg-amber-400 text-slate-950 text-[11px] font-black px-2.5 py-0.5 rounded-full uppercase shadow-xs">Admin CMS</span>
+          </h1>
+          <p class="text-xs text-slate-300 font-medium">Hệ thống Quản lý Voucher & Điều phối Nông sản OCOP Đắk Song</p>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-3">
+        <span class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-black bg-emerald-950 text-emerald-300 border border-emerald-500/50 shadow-xs">
+          <span class="h-2.5 w-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
+          SQL Server: Đang kết nối
+        </span>
+        <button onclick="loadAllData()" class="bg-slate-800 hover:bg-slate-700 text-white px-3.5 py-1.5 rounded-xl text-xs font-black transition flex items-center gap-1.5 border border-slate-700 cursor-pointer shadow-xs">
+          <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i> Làm mới dữ liệu
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- NAVIGATION TABS -->
+  <div class="bg-white border-b border-slate-300 shadow-sm sticky top-[68px] z-40">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 flex gap-2 overflow-x-auto py-2.5">
+      <button onclick="switchTab('dashboard')" id="tab-dashboard" class="tab-btn px-4 py-2.5 rounded-xl text-xs font-black transition flex items-center gap-2 bg-slate-950 text-white shadow-xs">
+        <i data-lucide="layout-dashboard" class="w-4 h-4"></i> Tổng quan
+      </button>
+      <button onclick="switchTab('venues')" id="tab-venues" class="tab-btn px-4 py-2.5 rounded-xl text-xs font-bold transition flex items-center gap-2 text-slate-700 hover:bg-slate-100 hover:text-slate-950">
+        <i data-lucide="ticket" class="w-4 h-4"></i> Quán & Hạn mức Voucher
+      </button>
+      <button onclick="switchTab('orders')" id="tab-orders" class="tab-btn px-4 py-2.5 rounded-xl text-xs font-bold transition flex items-center gap-2 text-slate-700 hover:bg-slate-100 hover:text-slate-950">
+        <i data-lucide="shopping-cart" class="w-4 h-4"></i> Đơn hàng Nông sản OCOP
+        <span id="pending-badge" class="hidden bg-amber-500 text-slate-950 px-2 py-0.5 rounded-full text-[10px] font-black shadow-xs">0</span>
+      </button>
+      <button onclick="switchTab('products')" id="tab-products" class="tab-btn px-4 py-2.5 rounded-xl text-xs font-bold transition flex items-center gap-2 text-slate-700 hover:bg-slate-100 hover:text-slate-950">
+        <i data-lucide="package" class="w-4 h-4"></i> Sản phẩm Đặc sản OCOP
+      </button>
+      <button onclick="switchTab('leaderboard')" id="tab-leaderboard" class="tab-btn px-4 py-2.5 rounded-xl text-xs font-bold transition flex items-center gap-2 text-slate-700 hover:bg-slate-100 hover:text-slate-950">
+        <i data-lucide="trophy" class="w-4 h-4 text-amber-500"></i> BXH Người chơi Quiz
+        <span id="quiz-count-badge" class="bg-amber-100 text-amber-950 border border-amber-300 px-2 py-0.5 rounded-full text-[10px] font-black">0</span>
+      </button>
+      <button onclick="switchTab('audit-logs')" id="tab-audit-logs" class="tab-btn px-4 py-2.5 rounded-xl text-xs font-bold transition flex items-center gap-2 text-slate-700 hover:bg-slate-100 hover:text-slate-950">
+        <i data-lucide="history" class="w-4 h-4"></i> Lịch sử chỉnh sửa
+      </button>
+    </div>
+  </div>
+
+  <!-- MAIN CONTAINER -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 py-6 space-y-6">
+
+    <!-- ==================== TAB 1: TỔNG QUAN (DASHBOARD) ==================== -->
+    <div id="content-dashboard" class="space-y-6">
+      <!-- 5 THẺ THỐNG KÊ TƯƠNG PHẢN CAO -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+        <!-- Card 1: Tổng quán -->
+        <div class="bg-white p-5 rounded-2xl border-2 border-slate-200 shadow-sm">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-black uppercase tracking-wider text-slate-600">Cơ sở hợp tác</span>
+            <div class="p-2.5 rounded-xl bg-blue-100 text-blue-950 font-black"><i data-lucide="store" class="w-5 h-5"></i></div>
+          </div>
+          <div class="mt-2 text-3xl font-black text-slate-950" id="stat-total-venues">0</div>
+          <p class="mt-1 text-xs text-slate-600 font-semibold">Tổng hạn mức: <b class="text-slate-950 font-black" id="stat-total-limit">0</b> voucher</p>
+        </div>
+
+        <!-- Card 2: Voucher đã dùng -->
+        <div class="bg-white p-5 rounded-2xl border-2 border-slate-200 shadow-sm">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-black uppercase tracking-wider text-slate-600">Voucher dùng tại quán</span>
+            <div class="p-2.5 rounded-xl bg-emerald-100 text-emerald-950 font-black"><i data-lucide="check-circle" class="w-5 h-5"></i></div>
+          </div>
+          <div class="mt-2 text-3xl font-black text-emerald-800" id="stat-used-vouchers">0</div>
+          <p class="mt-1 text-xs text-slate-600 font-semibold">Đã phát cho khách: <b class="text-slate-950 font-black" id="stat-issued-vouchers">0</b></p>
+        </div>
+
+        <!-- Card 3: Doanh thu ZaloPay -->
+        <div class="bg-white p-5 rounded-2xl border-2 border-slate-200 shadow-sm">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-black uppercase tracking-wider text-slate-600">Doanh thu ZaloPay</span>
+            <div class="p-2.5 rounded-xl bg-amber-100 text-amber-950 font-black"><i data-lucide="wallet" class="w-5 h-5"></i></div>
+          </div>
+          <div class="mt-2 text-3xl font-black text-slate-950" id="stat-total-revenue">0 đ</div>
+          <p class="mt-1 text-xs text-slate-600 font-semibold">Đơn đã trả tiền: <b class="text-slate-950 font-black" id="stat-paid-orders">0</b></p>
+        </div>
+
+        <!-- Card 4: Thí sinh thi Quiz -->
+        <div class="bg-white p-5 rounded-2xl border-2 border-slate-200 shadow-sm cursor-pointer hover:border-slate-400 transition" onclick="switchTab('leaderboard')">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-black uppercase tracking-wider text-slate-600">Thí sinh thi Quiz</span>
+            <div class="p-2.5 rounded-xl bg-amber-100 text-amber-950 font-black"><i data-lucide="trophy" class="w-5 h-5 text-amber-600"></i></div>
+          </div>
+          <div class="mt-2 text-3xl font-black text-amber-900" id="stat-quiz-participants">0</div>
+          <p class="mt-1 text-xs text-slate-600 font-semibold">Nhấn xem chi tiết BXH tuần</p>
+        </div>
+
+        <!-- Card 5: Lịch sử chỉnh sửa voucher & hàng hóa -->
+        <div class="bg-white p-5 rounded-2xl border-2 border-slate-200 shadow-sm cursor-pointer hover:border-slate-400 transition" onclick="switchTab('audit-logs')">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-black uppercase tracking-wider text-slate-600">Lịch sử chỉnh sửa</span>
+            <div class="p-2.5 rounded-xl bg-purple-100 text-purple-950 font-black"><i data-lucide="history" class="w-5 h-5"></i></div>
+          </div>
+          <div class="mt-2 text-3xl font-black text-purple-800" id="stat-audit-count">0</div>
+          <p class="mt-1 text-xs text-slate-600 font-semibold">Nhấn xem chi tiết lịch sử sửa đổi</p>
+        </div>
+      </div>
+
+      <!-- LỊCH SỬ CHỈNH SỬA VOUCHER VÀ HÀNG HÓA GẦN ĐÂY -->
+      <div class="bg-white rounded-3xl p-6 border-2 border-slate-300 shadow-sm space-y-4">
+        <div class="flex items-center justify-between border-b border-slate-200 pb-3">
+          <div>
+            <h2 class="text-base font-black text-slate-950 flex items-center gap-2">
+              <i data-lucide="history" class="w-5 h-5 text-purple-700"></i>
+              <span>LỊCH SỬ CHỈNH SỬA VOUCHER VÀ HÀNG HÓA GẦN ĐÂY</span>
+            </h2>
+            <p class="text-xs text-slate-600 mt-0.5 font-medium">Lưu trữ các thao tác điều chỉnh hạn mức voucher, số lượng tồn kho và giá cả</p>
+          </div>
+          <button onclick="switchTab('audit-logs')" class="bg-slate-950 hover:bg-slate-800 text-white font-black text-xs px-4 py-2 rounded-xl transition shadow-xs cursor-pointer flex items-center gap-1.5">
+            <span>Xem toàn bộ lịch sử</span>
+            <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+          </button>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs">
+            <thead class="bg-slate-100 text-slate-900 uppercase font-black tracking-wider text-[11px] border-b border-slate-300">
+              <tr>
+                <th class="p-3">Thời gian</th>
+                <th class="p-3">Phân loại</th>
+                <th class="p-3">Đối tượng</th>
+                <th class="p-3">Nội dung thay đổi</th>
+                <th class="p-3">Người thực hiện</th>
+              </tr>
+            </thead>
+            <tbody id="dashboard-audit-tbody" class="divide-y divide-slate-200 font-medium">
+              <tr><td colspan="5" class="p-4 text-center text-slate-500">Đang tải lịch sử...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== TAB 2: QUẢN LÝ VOUCHER & HẠN MỨC QUÁN ==================== -->
+    <div id="content-venues" class="hidden space-y-4">
+      <div class="flex flex-wrap items-center justify-between gap-3 bg-white p-4 rounded-2xl border-2 border-slate-200">
+        <div>
+          <h2 class="text-base font-black text-slate-950">Danh sách Cơ sở Hợp tác Voucher</h2>
+          <p class="text-xs text-slate-600">Kiểm soát số lượng voucher phát ra, tránh tình trạng quán bị quá tải</p>
+        </div>
+        <button onclick="openModal('modal-add-venue')" class="bg-slate-950 hover:bg-slate-800 text-white px-4 py-2 rounded-xl text-xs font-black transition flex items-center gap-1.5 cursor-pointer shadow-xs">
+          <i data-lucide="plus" class="w-4 h-4"></i> Thêm cơ sở mới
+        </button>
+      </div>
+
+      <div class="bg-white rounded-2xl border-2 border-slate-300 overflow-hidden shadow-sm">
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs">
+            <thead class="bg-slate-200 text-slate-900 uppercase font-black tracking-wider text-[11px] border-b border-slate-300">
+              <tr>
+                <th class="p-3.5">Mã</th>
+                <th class="p-3.5">Tên cơ sở kinh doanh</th>
+                <th class="p-3.5">Phân loại</th>
+                <th class="p-3.5">Ưu đãi</th>
+                <th class="p-3.5">Hạn mức (Total)</th>
+                <th class="p-3.5">Đã phát</th>
+                <th class="p-3.5">Đã dùng tại quán</th>
+                <th class="p-3.5">Còn lại</th>
+                <th class="p-3.5 text-right">Thao tác</th>
+              </tr>
+            </thead>
+            <tbody id="venues-tbody" class="divide-y divide-slate-200 font-medium">
+              <tr><td colspan="9" class="p-6 text-center text-slate-500 font-bold">Đang tải dữ liệu từ máy chủ...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== TAB 3: ĐƠN HÀNG NÔNG SẢN OCOP ==================== -->
+    <div id="content-orders" class="hidden space-y-4">
+      <div class="flex flex-wrap items-center justify-between gap-3 bg-white p-4 rounded-2xl border-2 border-slate-200">
+        <div>
+          <h2 class="text-base font-black text-slate-950">Quản lý Đơn hàng Nông sản OCOP</h2>
+          <p class="text-xs text-slate-600">Đồng bộ trực tiếp từ SQL Server. Theo dõi tiền ZaloPay và trạng thái vận chuyển</p>
+        </div>
+        <div class="flex items-center gap-2">
+          <span class="text-xs font-bold text-slate-600">Bộ lọc:</span>
+          <select id="order-filter-status" onchange="filterOrders()" class="text-xs p-2 rounded-xl border-2 border-slate-300 bg-white font-bold text-slate-900">
+            <option value="ALL">Tất cả đơn hàng</option>
+            <option value="PendingConfirm">Chờ xác nhận</option>
+            <option value="ReadyToShip">Đã xác nhận còn hàng</option>
+            <option value="Shipping">Đang vận chuyển</option>
+            <option value="Completed">Đã giao thành công</option>
+            <option value="Cancelled">Tất cả đơn hủy</option>
+            <option value="UserCancelled">🔴 Người dùng hủy đơn</option>
+            <option value="AdminCancelled">⚪ HTX / Admin hủy đơn</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-2xl border-2 border-slate-300 overflow-hidden shadow-sm">
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs">
+            <thead class="bg-slate-200 text-slate-900 uppercase font-black tracking-wider text-[11px] border-b border-slate-300">
+              <tr>
+                <th class="p-3.5">Mã đơn</th>
+                <th class="p-3.5">Khách hàng</th>
+                <th class="p-3.5">Số điện thoại & Địa chỉ</th>
+                <th class="p-3.5">Thanh toán</th>
+                <th class="p-3.5">Trạng thái tiền</th>
+                <th class="p-3.5">Tiến độ giao hàng</th>
+                <th class="p-3.5">Thời gian</th>
+                <th class="p-3.5 text-right">Điều phối đơn</th>
+              </tr>
+            </thead>
+            <tbody id="orders-tbody" class="divide-y divide-slate-200 font-medium">
+              <tr><td colspan="8" class="p-6 text-center text-slate-500 font-bold">Đang tải dữ liệu đơn hàng...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== TAB 4: SẢN PHẨM OCOP ==================== -->
+    <div id="content-products" class="hidden space-y-4">
+      <div class="flex flex-wrap items-center justify-between gap-3 bg-white p-4 rounded-2xl border-2 border-slate-200">
+        <div>
+          <h2 class="text-base font-black text-slate-950">Danh mục Nông sản Đặc sản Đắk Song</h2>
+          <p class="text-xs text-slate-600">Khi sửa giá hoặc số lượng tồn kho ở đây, Mini App trên điện thoại sẽ tự động hiển thị giá mới</p>
+        </div>
+        <button onclick="openModal('modal-add-product')" class="bg-slate-950 hover:bg-slate-800 text-white px-4 py-2 rounded-xl text-xs font-black transition flex items-center gap-1.5 cursor-pointer shadow-xs">
+          <i data-lucide="plus" class="w-4 h-4"></i> Thêm nông sản mới
+        </button>
+      </div>
+
+      <div class="bg-white rounded-2xl border-2 border-slate-300 overflow-hidden shadow-sm">
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs">
+            <thead class="bg-slate-200 text-slate-900 uppercase font-black tracking-wider text-[11px] border-b border-slate-300">
+              <tr>
+                <th class="p-3.5">ID</th>
+                <th class="p-3.5">Tên sản phẩm</th>
+                <th class="p-3.5">Nguồn gốc tại Đắk Song</th>
+                <th class="p-3.5">Danh mục</th>
+                <th class="p-3.5">Quy cách</th>
+                <th class="p-3.5">Giá bán</th>
+                <th class="p-3.5">Tồn kho</th>
+                <th class="p-3.5 text-right">Thao tác</th>
+              </tr>
+            </thead>
+            <tbody id="products-tbody" class="divide-y divide-slate-200 font-medium">
+              <tr><td colspan="8" class="p-6 text-center text-slate-500 font-bold">Đang tải danh mục đặc sản...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== TAB 5: LỊCH SỬ CHỈNH SỬA VOUCHER VÀ HÀNG HÓA ==================== -->
+    <div id="content-audit-logs" class="hidden space-y-4">
+      <div class="flex flex-wrap items-center justify-between gap-3 bg-white p-4 rounded-2xl border-2 border-slate-200">
+        <div>
+          <h2 class="text-base font-black text-slate-950 flex items-center gap-2">
+            <i data-lucide="history" class="w-5 h-5 text-purple-700"></i>
+            <span>Lịch sử Chỉnh sửa & Điều phối</span>
+          </h2>
+          <p class="text-xs text-slate-600">Lưu lại chi tiết các lần thay đổi hạn mức voucher, giá bán/kho hàng và kết quả thi</p>
+        </div>
+        <div class="flex items-center gap-2">
+          <span class="text-xs font-bold text-slate-600">Phân loại:</span>
+          <select id="audit-filter-type" onchange="filterAuditLogs()" class="text-xs p-2 rounded-xl border-2 border-slate-300 bg-white font-bold text-slate-900 cursor-pointer">
+            <option value="ALL">Tất cả phân loại</option>
+            <option value="RESULT">🏆 Kết quả (BXH Quiz)</option>
+            <option value="VOUCHER">🎟️ Voucher cơ sở</option>
+            <option value="PRODUCT">📦 Hàng hóa OCOP</option>
+          </select>
+          <button onclick="loadAuditLogs()" class="bg-slate-950 hover:bg-slate-800 text-white px-3.5 py-2 rounded-xl text-xs font-black transition flex items-center gap-1.5 cursor-pointer shadow-xs">
+            <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i> Làm mới lịch sử
+          </button>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-2xl border-2 border-slate-300 overflow-hidden shadow-sm">
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs">
+            <thead class="bg-slate-200 text-slate-900 uppercase font-black tracking-wider text-[11px] border-b border-slate-300">
+              <tr>
+                <th class="p-3.5">Thời gian</th>
+                <th class="p-3.5">Phân loại</th>
+                <th class="p-3.5">Đối tượng</th>
+                <th class="p-3.5">Nội dung thay đổi</th>
+                <th class="p-3.5">Người thực hiện</th>
+              </tr>
+            </thead>
+            <tbody id="audit-logs-tbody" class="divide-y divide-slate-200 font-medium">
+              <tr><td colspan="5" class="p-6 text-center text-slate-500 font-bold">Đang tải lịch sử...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== TAB 6: BẢNG XẾP HẠNG NGƯỜI CHƠI QUIZ ==================== -->
+    <div id="content-leaderboard" class="hidden space-y-4">
+      <div class="flex flex-wrap items-center justify-between gap-3 bg-white p-4 rounded-2xl border-2 border-slate-200">
+        <div>
+          <h2 class="text-base font-black text-slate-950 flex items-center gap-2">
+            <i data-lucide="trophy" class="w-5 h-5 text-amber-500"></i>
+            <span>Bảng Xếp Hạng Người Chơi Quiz (Thi Chính Thức)</span>
+          </h2>
+          <p class="text-xs text-slate-600">Theo dõi chi tiết tên Zalo, avatar, số câu đúng, tỷ lệ chính xác, thời gian hoàn thành và thời điểm nộp bài</p>
+        </div>
+        <div class="flex items-center gap-2">
+          <span class="text-xs font-bold text-slate-600">Chọn tuần:</span>
+          <select id="leaderboard-week-select" onchange="loadLeaderboardForSelectedWeek()" class="text-xs p-2 rounded-xl border-2 border-slate-300 bg-white font-bold text-slate-900 cursor-pointer">
+          </select>
+          <button onclick="loadLeaderboardForSelectedWeek()" class="bg-slate-950 hover:bg-slate-800 text-white px-3.5 py-2 rounded-xl text-xs font-black transition flex items-center gap-1.5 cursor-pointer shadow-xs">
+            <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i> Làm mới
+          </button>
+        </div>
+      </div>
+
+      <!-- 3 THẺ TỔNG KẾT NHANH -->
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div class="bg-white p-4 rounded-2xl border-2 border-slate-200 shadow-sm flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-amber-100 text-amber-900 flex items-center justify-center font-black">
+            <i data-lucide="users" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <div class="text-[11px] font-bold text-slate-500 uppercase">Tổng thí sinh tham gia</div>
+            <div id="lb-total-participants" class="text-2xl font-black text-slate-950">0</div>
+          </div>
+        </div>
+
+        <div class="bg-white p-4 rounded-2xl border-2 border-slate-200 shadow-sm flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-900 flex items-center justify-center font-black">
+            <i data-lucide="crown" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <div class="text-[11px] font-bold text-slate-500 uppercase">Quán quân (Top 1)</div>
+            <div id="lb-top1-name" class="text-base font-black text-emerald-900 truncate max-w-[200px]">Chưa có</div>
+          </div>
+        </div>
+
+        <div class="bg-white p-4 rounded-2xl border-2 border-slate-200 shadow-sm flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-purple-100 text-purple-900 flex items-center justify-center font-black">
+            <i data-lucide="award" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <div class="text-[11px] font-bold text-slate-500 uppercase">Thành tích dẫn đầu</div>
+            <div id="lb-record-score" class="text-base font-black text-purple-900">0 câu - 0s</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-2xl border-2 border-slate-300 overflow-hidden shadow-sm">
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs">
+            <thead class="bg-slate-200 text-slate-900 uppercase font-black tracking-wider text-[11px] border-b border-slate-300">
+              <tr>
+                <th class="p-3.5 text-center w-16">Hạng</th>
+                <th class="p-3.5">Thí sinh (Tên & Avatar Zalo)</th>
+                <th class="p-3.5">Số câu đúng</th>
+                <th class="p-3.5">Tỷ lệ chính xác</th>
+                <th class="p-3.5">Thời gian hoàn thành</th>
+                <th class="p-3.5">Thời điểm nộp bài</th>
+                <th class="p-3.5">Phần thưởng quy định</th>
+                <th class="p-3.5 text-right">Thao tác</th>
+              </tr>
+            </thead>
+            <tbody id="leaderboard-tbody" class="divide-y divide-slate-200 font-medium">
+              <tr><td colspan="8" class="p-6 text-center text-slate-500 font-bold">Đang tải bảng xếp hạng...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ==================== MODAL THÊM CƠ SỞ KINH DOANH ==================== -->
+  <div id="modal-add-venue" class="hidden fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-md w-full p-6 space-y-4 shadow-2xl border-2 border-slate-300">
+      <div class="flex justify-between items-center border-b pb-3">
+        <h3 class="font-black text-sm text-slate-950">Thêm Cơ Sở Kinh Doanh Mới</h3>
+        <button onclick="closeModal('modal-add-venue')" class="text-slate-400 hover:text-slate-950 cursor-pointer"><i data-lucide="x" class="w-5 h-5"></i></button>
+      </div>
+      <form onsubmit="handleCreateVenue(event)" class="space-y-3 text-xs">
+        <div>
+          <label class="font-black text-slate-900">Tên cơ sở kinh doanh *</label>
+          <input id="v-name" type="text" required placeholder="Ví dụ: Cà Phê Gió Đắk Song" class="mt-1 w-full p-2.5 rounded-xl border-2 border-slate-300 font-semibold">
+        </div>
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="font-black text-slate-900">Phân loại *</label>
+            <select id="v-category" class="mt-1 w-full p-2.5 rounded-xl border-2 border-slate-300 bg-white font-semibold">
+              <option value="Ăn uống">Ăn uống</option>
+              <option value="Lưu trú">Lưu trú</option>
+              <option value="Đặc sản">Đặc sản</option>
+            </select>
+          </div>
+          <div>
+            <label class="font-black text-slate-900">Số điện thoại *</label>
+            <input id="v-phone" type="text" required placeholder="0989xxxxxx" class="mt-1 w-full p-2.5 rounded-xl border-2 border-slate-300 font-semibold">
+          </div>
+        </div>
+        <div>
+          <label class="font-black text-slate-900">Địa chỉ cụ thể tại Đắk Song *</label>
+          <input id="v-address" type="text" required placeholder="Tổ 2, TT. Đức An, Đắk Song" class="mt-1 w-full p-2.5 rounded-xl border-2 border-slate-300 font-semibold">
+        </div>
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="font-black text-slate-900">% Giảm giá voucher *</label>
+            <input id="v-discount" type="number" value="15" min="1" max="100" class="mt-1 w-full p-2.5 rounded-xl border-2 border-slate-300 font-bold text-emerald-900">
+          </div>
+          <div>
+            <label class="font-black text-slate-900">Hạn mức voucher tối đa *</label>
+            <input id="v-limit" type="number" value="100" min="1" class="mt-1 w-full p-2.5 rounded-xl border-2 border-slate-300 font-black text-slate-950">
+          </div>
+        </div>
+        <div class="pt-2 flex justify-end gap-2">
+          <button type="button" onclick="closeModal('modal-add-venue')" class="px-4 py-2 rounded-xl text-slate-700 hover:bg-slate-100 font-bold cursor-pointer">Hủy</button>
+          <button type="submit" class="px-4 py-2 rounded-xl bg-slate-950 hover:bg-slate-800 text-white font-black shadow-xs cursor-pointer">Lưu cơ sở</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL CẤP THÊM SỐ LƯỢNG VOUCHER ==================== -->
+  <div id="modal-add-vouchers" class="hidden fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-sm w-full p-6 space-y-4 shadow-2xl border-2 border-slate-300">
+      <div class="flex justify-between items-center border-b pb-3">
+        <div>
+          <h3 class="font-black text-sm text-slate-950 flex items-center gap-1.5 text-emerald-850">
+            <span class="inline-block w-2.5 h-2.5 rounded-full bg-emerald-600"></span>
+            Cấp Thêm Voucher Mới
+          </h3>
+          <p class="text-[11px] text-slate-500 font-medium">Bổ sung số lượng voucher trực tiếp vào cơ sở</p>
+        </div>
+        <button onclick="closeModal('modal-add-vouchers')" class="text-slate-400 hover:text-slate-950 cursor-pointer font-bold text-xl leading-none">&times;</button>
+      </div>
+      <form onsubmit="handleSubmittingAddVouchers(event)" class="space-y-3.5 text-xs">
+        <input id="add-v-venue-id" type="hidden">
+        <div>
+          <label class="text-slate-500 font-bold">Cơ sở kinh doanh:</label>
+          <div id="add-v-venue-name" class="font-black text-slate-950 text-sm mt-0.5"></div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2 p-3 bg-slate-50 rounded-2xl border border-slate-200">
+          <div>
+            <div class="text-[11px] text-slate-500 font-bold">Hiện còn lại:</div>
+            <div id="add-v-current-remaining" class="text-base font-black text-slate-900">0</div>
+          </div>
+          <div>
+            <div class="text-[11px] text-slate-500 font-bold">Tổng hạn mức cũ:</div>
+            <div id="add-v-current-total" class="text-base font-black text-slate-700">0</div>
+          </div>
+        </div>
+
+        <div>
+          <label class="font-black text-slate-900">Số lượng voucher cấp thêm (+):</label>
+          <input id="add-v-qty" type="number" required min="1" value="50" oninput="updateAddVouchersPreview()" class="mt-1 w-full p-2.5 rounded-xl border-2 border-emerald-500 font-black text-lg text-emerald-900">
+          
+          <div class="flex flex-wrap gap-1.5 mt-2">
+            <button type="button" onclick="setAddVouchersQty(10)" class="px-2.5 py-1 bg-slate-100 hover:bg-emerald-50 hover:text-emerald-800 rounded-lg font-black text-[11px] border border-slate-200 cursor-pointer">+10</button>
+            <button type="button" onclick="setAddVouchersQty(20)" class="px-2.5 py-1 bg-slate-100 hover:bg-emerald-50 hover:text-emerald-800 rounded-lg font-black text-[11px] border border-slate-200 cursor-pointer">+20</button>
+            <button type="button" onclick="setAddVouchersQty(50)" class="px-2.5 py-1 bg-slate-100 hover:bg-emerald-50 hover:text-emerald-800 rounded-lg font-black text-[11px] border border-slate-200 cursor-pointer">+50</button>
+            <button type="button" onclick="setAddVouchersQty(100)" class="px-2.5 py-1 bg-slate-100 hover:bg-emerald-50 hover:text-emerald-800 rounded-lg font-black text-[11px] border border-slate-200 cursor-pointer">+100</button>
+            <button type="button" onclick="setAddVouchersQty(200)" class="px-2.5 py-1 bg-slate-100 hover:bg-emerald-50 hover:text-emerald-800 rounded-lg font-black text-[11px] border border-slate-200 cursor-pointer">+200</button>
+          </div>
+        </div>
+
+        <div class="p-3 bg-emerald-50 border border-emerald-200 rounded-2xl space-y-1">
+          <div class="text-[11px] font-bold text-emerald-900">
+            Dự kiến sau khi thêm:
+          </div>
+          <div class="text-xs text-emerald-950 font-medium">
+            • Voucher còn lại: <span id="add-v-preview-remaining" class="font-black text-emerald-700 text-sm">50</span> voucher
+          </div>
+          <div class="text-xs text-emerald-950 font-medium">
+            • Tổng hạn mức mới: <span id="add-v-preview-total" class="font-black text-slate-800">150</span> voucher
+          </div>
+        </div>
+
+        <div class="pt-2 flex justify-end gap-2">
+          <button type="button" onclick="closeModal('modal-add-vouchers')" class="px-4 py-2 rounded-xl text-slate-700 hover:bg-slate-100 font-bold cursor-pointer">Hủy</button>
+          <button type="submit" class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-black shadow-xs cursor-pointer">
+            + Cấp thêm voucher
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL SỬA HẠN MỨC QUÁN ==================== -->
+  <div id="modal-edit-limit" class="hidden fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-sm w-full p-6 space-y-4 shadow-2xl border-2 border-slate-300">
+      <div class="flex justify-between items-center border-b pb-3">
+        <h3 class="font-black text-sm text-slate-950">Điều Chỉnh Hạn Mức Voucher</h3>
+        <button onclick="closeModal('modal-edit-limit')" class="text-slate-400 hover:text-slate-950 cursor-pointer"><i data-lucide="x" class="w-5 h-5"></i></button>
+      </div>
+      <form onsubmit="handleUpdateLimit(event)" class="space-y-3.5 text-xs">
+        <input id="edit-venue-id" type="hidden">
+        <div>
+          <label class="text-slate-500 font-bold">Tên cơ sở:</label>
+          <div id="edit-venue-name" class="font-black text-slate-950 text-sm mt-0.5"></div>
+        </div>
+        <div>
+          <label class="font-black text-slate-900">Hạn mức voucher mới (TotalLimit) *</label>
+          <input id="edit-venue-limit" type="number" required min="1" class="mt-1 w-full p-2.5 rounded-xl border-2 border-slate-300 font-black text-base text-emerald-900">
+          <p class="text-[11px] text-slate-500 mt-1 font-medium">Hệ thống sẽ chỉ phát voucher cho khách khi số lượng phát chưa vượt hạn mức này.</p>
+        </div>
+        <div class="pt-2 flex justify-end gap-2">
+          <button type="button" onclick="closeModal('modal-edit-limit')" class="px-4 py-2 rounded-xl text-slate-700 hover:bg-slate-100 font-bold cursor-pointer">Hủy</button>
+          <button type="submit" class="px-4 py-2 rounded-xl bg-slate-950 hover:bg-slate-800 text-white font-black shadow-xs cursor-pointer">Cập nhật hạn mức</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL THÊM SẢN PHẨM ==================== -->
+  <div id="modal-add-product" class="hidden fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-md w-full p-6 space-y-4 shadow-2xl border-2 border-slate-300">
+      <div class="flex justify-between items-center border-b pb-3">
+        <h3 class="font-black text-sm text-slate-950">Thêm Nông sản Đặc sản OCOP Mới</h3>
+        <button onclick="closeModal('modal-add-product')" class="text-slate-400 hover:text-slate-950 cursor-pointer"><i data-lucide="x" class="w-5 h-5"></i></button>
+      </div>
+      <form onsubmit="handleCreateProduct(event)" class="space-y-3 text-xs">
+        <div>
+          <label class="font-black text-slate-900">Tên sản phẩm *</label>
+          <input id="p-name" type="text" required placeholder="Ví dụ: Tiêu đỏ Đắk Song thượng hạng" class="mt-1 w-full p-2.5 rounded-xl border-2 border-slate-300 font-semibold">
+        </div>
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="font-black text-slate-900">Xuất xứ *</label>
+            <input id="p-origin" type="text" required value="Xã Đắk N’rung, Đắk Song" class="mt-1 w-full p-2.5 rounded-xl border-2 border-slate-300 font-semibold">
+          </div>
+          <div>
+            <label class="font-black text-slate-900">Phân loại *</label>
+            <select id="p-category" class="mt-1 w-full p-2.5 rounded-xl border-2 border-slate-300 bg-white font-semibold">
+              <option value="Hạt tiêu">Hạt tiêu</option>
+              <option value="Cà phê">Cà phê</option>
+              <option value="Hạt dinh dưỡng">Hạt dinh dưỡng</option>
+              <option value="Nông sản khô">Nông sản khô</option>
+            </select>
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="font-black text-slate-900">Giá bán (VNĐ) *</label>
+            <input id="p-price" type="number" required placeholder="150000" class="mt-1 w-full p-2.5 rounded-xl border-2 border-slate-300 font-black text-emerald-900">
+          </div>
+          <div>
+            <label class="font-black text-slate-900">Quy cách đóng gói *</label>
+            <input id="p-unit" type="text" required value="Gói 500g" class="mt-1 w-full p-2.5 rounded-xl border-2 border-slate-300 font-semibold">
+          </div>
+        </div>
+        <div>
+          <label class="font-black text-slate-900">Mô tả sản phẩm</label>
+          <textarea id="p-desc" rows="2" placeholder="Hạt to chắc mẩy, phơi nắng tự nhiên..." class="mt-1 w-full p-2.5 rounded-xl border-2 border-slate-300"></textarea>
+        </div>
+        <div>
+          <label class="font-black text-slate-900">Số lượng tồn kho ban đầu</label>
+          <input id="p-qty" type="number" value="100" class="mt-1 w-full p-2.5 rounded-xl border-2 border-slate-300 font-semibold">
+        </div>
+        <div class="pt-2 flex justify-end gap-2">
+          <button type="button" onclick="closeModal('modal-add-product')" class="px-4 py-2 rounded-xl text-slate-700 hover:bg-slate-100 font-bold cursor-pointer">Hủy</button>
+          <button type="submit" class="px-4 py-2 rounded-xl bg-slate-950 hover:bg-slate-800 text-white font-black shadow-xs cursor-pointer">Lưu sản phẩm</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL SỬA GIÁ & TỒN KHO SẢN PHẨM ==================== -->
+  <div id="modal-edit-product" class="hidden fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-sm w-full p-6 space-y-4 shadow-2xl border-2 border-slate-300">
+      <div class="flex justify-between items-center border-b pb-3">
+        <h3 class="font-black text-sm text-slate-950">Cập Nhật Giá & Tồn Kho</h3>
+        <button onclick="closeModal('modal-edit-product')" class="text-slate-400 hover:text-slate-950 cursor-pointer"><i data-lucide="x" class="w-5 h-5"></i></button>
+      </div>
+      <form onsubmit="handleSaveEditProduct(event)" class="space-y-3.5 text-xs">
+        <input id="edit-prod-id" type="hidden">
+        <div>
+          <label class="text-slate-500 font-bold">Tên sản phẩm:</label>
+          <div id="edit-prod-name" class="font-black text-slate-950 text-sm mt-0.5"></div>
+        </div>
+        <div>
+          <label class="font-black text-slate-900">Giá bán mới (VNĐ) *</label>
+          <input id="edit-prod-price" type="number" required min="1000" step="1000" class="mt-1 w-full p-2.5 rounded-xl border-2 border-slate-300 font-black text-base text-emerald-900">
+        </div>
+        <div>
+          <label class="font-black text-slate-900">Số lượng tồn kho mới *</label>
+          <input id="edit-prod-qty" type="number" required min="0" class="mt-1 w-full p-2.5 rounded-xl border-2 border-slate-300 font-black text-base text-slate-950">
+        </div>
+        <div class="pt-2 flex justify-end gap-2">
+          <button type="button" onclick="closeModal('modal-edit-product')" class="px-4 py-2 rounded-xl text-slate-700 hover:bg-slate-100 font-bold cursor-pointer">Hủy</button>
+          <button type="submit" class="px-4 py-2 rounded-xl bg-slate-950 hover:bg-slate-800 text-white font-black shadow-xs cursor-pointer">Lưu thay đổi</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL THÔNG BÁO POPUP (THAY THẾ ALERT) ==================== -->
+  <div id="modal-popup-notice" class="hidden fixed inset-0 z-[100] bg-slate-950/80 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-sm w-full p-6 space-y-4 shadow-2xl border-2 border-slate-300 text-center animate-in fade-in duration-150">
+      <div id="notice-icon" class="mx-auto w-12 h-12 rounded-2xl flex items-center justify-center text-2xl font-black bg-emerald-100 text-emerald-800">
+        <i data-lucide="check" class="w-6 h-6"></i>
+      </div>
+      <div class="space-y-1">
+        <h4 id="notice-title" class="font-black text-base text-slate-950">Thông báo</h4>
+        <p id="notice-message" class="text-xs text-slate-600 leading-relaxed font-medium">Nội dung thông báo</p>
+      </div>
+      <button onclick="closeModal('modal-popup-notice')" class="w-full py-2.5 rounded-xl bg-slate-950 hover:bg-slate-800 text-white font-black text-xs shadow-xs cursor-pointer">
+        Đã hiểu
+      </button>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL XÁC NHẬN POPUP (THAY THẾ CONFIRM) ==================== -->
+  <div id="modal-popup-confirm" class="hidden fixed inset-0 z-[100] bg-slate-950/80 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-sm w-full p-6 space-y-4 shadow-2xl border-2 border-slate-300 text-center animate-in fade-in duration-150">
+      <div class="mx-auto w-12 h-12 rounded-2xl flex items-center justify-center text-amber-900 bg-amber-100">
+        <i data-lucide="alert-triangle" class="w-6 h-6"></i>
+      </div>
+      <div class="space-y-1">
+        <h4 id="confirm-title" class="font-black text-base text-slate-950">Xác nhận thao tác</h4>
+        <p id="confirm-message" class="text-xs text-slate-600 leading-relaxed font-medium">Bạn có chắc chắn muốn thực hiện thao tác này?</p>
+      </div>
+      <div class="grid grid-cols-2 gap-2 pt-2">
+        <button onclick="closeModal('modal-popup-confirm')" class="py-2.5 rounded-xl border border-slate-300 hover:bg-slate-100 text-slate-700 font-bold text-xs cursor-pointer">
+          Hủy bỏ
+        </button>
+        <button id="confirm-action-btn" class="py-2.5 rounded-xl bg-emerald-800 hover:bg-emerald-900 text-white font-black text-xs shadow-xs cursor-pointer">
+          Đồng ý
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCRIPT LOGIC -->
+  <script>
+    function getAdminApiBase() {
+      if (typeof window !== 'undefined') {
+        const proto = window.location.protocol;
+        const origin = window.location.origin;
+        const port = window.location.port;
+        // Nếu mở file cục bộ trực tiếp (file://) hoặc origin rỗng/null
+        if (proto === 'file:' || !origin || origin === 'null') {
+          return 'http://localhost:5000';
+        }
+        // Nếu mở trên cổng Vite 5173
+        if (port === '5173' || port === '3000') {
+          return 'http://localhost:5000';
+        }
+        return origin;
+      }
+      return 'http://localhost:5000';
+    }
+    const API_BASE = getAdminApiBase();
+
+    async function adminFetch(endpoint, options = {}) {
+      const url = endpoint.startsWith('http') ? endpoint : `${API_BASE}${endpoint.startsWith('/') ? '' : '/'}${endpoint}`;
+      const headers = new Headers(options.headers || {});
+      headers.set('ngrok-skip-browser-warning', 'true');
+      const fetchOpts = { ...options, headers };
+      try {
+        const res = await fetch(url, fetchOpts);
+        return res;
+      } catch (err) {
+        // Tự động thử lại cổng localhost:5000 nếu URL ban đầu không phải localhost:5000
+        if (!url.startsWith('http://localhost:5000')) {
+          try {
+            const fallbackUrl = `http://localhost:5000${endpoint.startsWith('/') ? '' : '/'}${endpoint}`;
+            return await fetch(fallbackUrl, fetchOpts);
+          } catch {}
+        }
+        throw err;
+      }
+    }
+    let allOrdersData = [];
+
+    // HÀM ĐỊNH DẠNG THỜI GIAN CHUẨN GIỜ VIỆT NAM (GMT+7)
+    function formatVietnamDateTime(raw) {
+      if (!raw) return 'Không rõ';
+      if (typeof raw === 'string') {
+        const clean = raw.replace('Z', '').replace('T', ' ').trim();
+        const parts = clean.split(' ');
+        if (parts.length >= 2) {
+          const [dPart, tPart] = parts;
+          const dateSub = dPart.split('-');
+          if (dateSub.length === 3) {
+            const [year, month, day] = dateSub;
+            const timeSub = tPart.split('.')[0];
+            return `${timeSub} ${day.padStart(2, '0')}/${month.padStart(2, '0')}/${year}`;
+          }
+        }
+      }
+      const d = new Date(raw);
+      if (isNaN(d.getTime())) return String(raw);
+      return d.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit', second: '2-digit' }) + ' ' +
+             d.toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' });
+    }
+
+    // CUSTOM POPUP NOTIFICATION (REPLACES ALERT)
+    function showNotice(title, message, isError = false) {
+      document.getElementById('notice-title').innerText = title;
+      document.getElementById('notice-message').innerText = message;
+      const iconEl = document.getElementById('notice-icon');
+      if (isError) {
+        iconEl.className = 'mx-auto w-12 h-12 rounded-2xl flex items-center justify-center bg-red-100 text-red-800';
+        iconEl.innerHTML = '<i data-lucide="alert-circle" class="w-6 h-6"></i>';
+      } else {
+        iconEl.className = 'mx-auto w-12 h-12 rounded-2xl flex items-center justify-center bg-emerald-100 text-emerald-800';
+        iconEl.innerHTML = '<i data-lucide="check" class="w-6 h-6"></i>';
+      }
+      lucide.createIcons();
+      openModal('modal-popup-notice');
+    }
+
+    // CUSTOM POPUP CONFIRM (REPLACES CONFIRM)
+    function showConfirm(title, message, onConfirm) {
+      document.getElementById('confirm-title').innerText = title;
+      document.getElementById('confirm-message').innerText = message;
+      const btn = document.getElementById('confirm-action-btn');
+      btn.onclick = () => {
+        closeModal('modal-popup-confirm');
+        onConfirm();
+      };
+      openModal('modal-popup-confirm');
+      lucide.createIcons();
+    }
+
+    function switchTab(tab) {
+      ['dashboard', 'venues', 'orders', 'products', 'audit-logs', 'leaderboard'].forEach(t => {
+        const c = document.getElementById(`content-${t}`);
+        if (c) c.classList.add('hidden');
+        const tb = document.getElementById(`tab-${t}`);
+        if (tb) tb.className = 'tab-btn px-4 py-2.5 rounded-xl text-xs font-bold transition flex items-center gap-2 text-slate-700 hover:bg-slate-100 hover:text-slate-950';
+      });
+      const targetContent = document.getElementById(`content-${tab}`);
+      if (targetContent) targetContent.classList.remove('hidden');
+      const targetTab = document.getElementById(`tab-${tab}`);
+      if (targetTab) targetTab.className = 'tab-btn px-4 py-2.5 rounded-xl text-xs font-black transition flex items-center gap-2 bg-slate-950 text-white shadow-xs';
+      if (tab === 'audit-logs') loadAuditLogs();
+      if (tab === 'leaderboard') loadAdminLeaderboard();
+      lucide.createIcons();
+    }
+
+    function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
+    function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
+
+    async function loadStats() {
+      try {
+        const res = await adminFetch('/api/admin/dashboard/stats');
+        const json = await res.json();
+        if (json.success) {
+          const v = json.data.vouchers;
+          const o = json.data.orders;
+          document.getElementById('stat-total-venues').innerText = v.TotalVenues;
+          document.getElementById('stat-total-limit').innerText = v.TotalVoucherLimit;
+          document.getElementById('stat-issued-vouchers').innerText = v.TotalIssuedVouchers;
+          document.getElementById('stat-used-vouchers').innerText = v.TotalUsedVouchers;
+          document.getElementById('stat-total-revenue').innerText = Number(o.TotalRevenue).toLocaleString('vi-VN') + ' đ';
+          document.getElementById('stat-paid-orders').innerText = o.PaidOrdersCount;
+          if (document.getElementById('stat-audit-count')) {
+            document.getElementById('stat-audit-count').innerText = json.data.auditLogsCount || 0;
+          }
+          if (document.getElementById('stat-quiz-participants')) {
+            document.getElementById('stat-quiz-participants').innerText = json.data.quizParticipantsCount || 0;
+          }
+          if (document.getElementById('quiz-count-badge')) {
+            document.getElementById('quiz-count-badge').innerText = json.data.quizParticipantsCount || 0;
+          }
+
+          const pendingBadge = document.getElementById('pending-badge');
+          if (o.PendingConfirmOrdersCount > 0) {
+            pendingBadge.innerText = o.PendingConfirmOrdersCount;
+            pendingBadge.classList.remove('hidden');
+          } else {
+            pendingBadge.classList.add('hidden');
+          }
+        }
+      } catch (e) { console.error('Lỗi load stats:', e); }
+    }
+
+    async function loadVenues() {
+      try {
+        const res = await adminFetch('/api/admin/venues');
+        const json = await res.json();
+        if (json.success) {
+          const tbody = document.getElementById('venues-tbody');
+          if (json.data.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="9" class="p-6 text-center text-slate-500 font-bold">Chưa có cơ sở nào</td></tr>';
+            return;
+          }
+          tbody.innerHTML = json.data.map(v => `
+            <tr class="hover:bg-slate-50 transition border-b border-slate-200">
+              <td class="p-3.5 font-mono font-black text-slate-600">#${v.VenueId}</td>
+              <td class="p-3.5 font-black text-slate-950">${v.VenueName}<div class="text-[11px] text-slate-500 font-medium">${v.Address}</div></td>
+              <td class="p-3.5"><span class="px-2.5 py-1 rounded-lg bg-slate-200 text-slate-900 font-black text-[10px]">${v.Category}</span></td>
+              <td class="p-3.5 font-black text-emerald-800 text-sm">-${v.DiscountPercent}%</td>
+              <td class="p-3.5 font-black text-slate-950 text-sm">${v.TotalLimit}</td>
+              <td class="p-3.5 font-black text-amber-800">${v.IssuedCount}</td>
+              <td class="p-3.5 font-black text-emerald-850">${v.UsedCount}</td>
+              <td class="p-3.5"><span class="px-2.5 py-1 rounded-lg ${v.Remaining > 0 ? 'bg-emerald-100 text-emerald-950 border border-emerald-300' : 'bg-red-100 text-red-950 border border-red-300'} font-black text-[11px]">${v.Remaining}</span></td>
+              <td class="p-3.5 text-right whitespace-nowrap">
+                <button onclick="openAddVouchersModal(${v.VenueId}, '${v.VenueName.replace(/'/g, "\\'")}', ${v.Remaining}, ${v.TotalLimit}, ${v.IssuedCount})" class="px-2.5 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-black text-[11px] shadow-2xs cursor-pointer mr-1.5 transition">
+                  + Thêm voucher
+                </button>
+                <button onclick="editVenueLimit(${v.VenueId}, '${v.VenueName.replace(/'/g, "\\'")}', ${v.TotalLimit})" class="px-2.5 py-1.5 rounded-xl border border-slate-300 bg-white hover:bg-slate-100 font-black text-[11px] text-slate-800 shadow-2xs cursor-pointer">
+                  Sửa hạn mức
+                </button>
+                <button onclick="deleteVenue(${v.VenueId}, '${v.VenueName.replace(/'/g, "\\'")}')" class="px-2.5 py-1.5 rounded-xl border border-red-200 bg-red-50 hover:bg-red-100 font-black text-[11px] text-red-700 shadow-2xs cursor-pointer ml-1.5 transition">
+                  Xóa
+                </button>
+              </td>
+            </tr>
+          `).join('');
+        }
+      } catch (e) { console.error('Lỗi load venues:', e); }
+    }
+
+    function renderOrdersTable(data) {
+      const tbody = document.getElementById('orders-tbody');
+      if (data.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="8" class="p-8 text-center text-slate-500 font-bold">Chưa có đơn hàng nào phù hợp với bộ lọc</td></tr>';
+        return;
+      }
+      tbody.innerHTML = data.map(o => {
+        const isUserCancelled = o.OrderStatus === 'Cancelled' && (
+          o.Note ? (o.Note.includes('Khách') || o.Note.includes('Người dùng') || o.Note.includes('chủ động') || !o.Note.includes('hợp tác xã')) : true
+        );
+        const isAdminCancelled = o.OrderStatus === 'Cancelled' && !isUserCancelled;
+
+        const statusBadge = 
+          o.OrderStatus === 'PendingConfirm' ? '<span class="px-2.5 py-1 rounded-full bg-amber-100 text-amber-950 border border-amber-300 font-black text-[10px] inline-flex items-center gap-1"><i data-lucide="clock" class="w-3.5 h-3.5 text-amber-700"></i> Chờ xác nhận</span>' :
+          o.OrderStatus === 'ReadyToShip' ? '<span class="px-2.5 py-1 rounded-full bg-blue-100 text-blue-950 border border-blue-300 font-black text-[10px] inline-flex items-center gap-1"><i data-lucide="package-check" class="w-3.5 h-3.5 text-blue-700"></i> Đã xác nhận còn hàng</span>' :
+          o.OrderStatus === 'Shipping' ? '<span class="px-2.5 py-1 rounded-full bg-purple-100 text-purple-950 border border-purple-300 font-black text-[10px] inline-flex items-center gap-1"><i data-lucide="truck" class="w-3.5 h-3.5 text-purple-700"></i> Đang vận chuyển</span>' :
+          o.OrderStatus === 'Completed' ? '<span class="px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-950 border border-emerald-300 font-black text-[10px] inline-flex items-center gap-1"><i data-lucide="check-circle" class="w-3.5 h-3.5 text-emerald-700"></i> Đã giao thành công</span>' :
+          isUserCancelled ? '<span class="px-2.5 py-1 rounded-full bg-red-100 text-red-900 border border-red-300 font-black text-[10px] inline-flex items-center gap-1 shadow-2xs"><i data-lucide="user-x" class="w-3.5 h-3.5 text-red-600"></i> Người dùng hủy đơn</span>' :
+          '<span class="px-2.5 py-1 rounded-full bg-slate-200 text-slate-800 border border-slate-300 font-black text-[10px] inline-flex items-center gap-1"><i data-lucide="ban" class="w-3.5 h-3.5 text-slate-600"></i> HTX / Admin hủy</span>';
+
+        const actionButtons = 
+          o.OrderStatus === 'PendingConfirm' ? `
+            <div class="flex items-center justify-end gap-1.5">
+              <button onclick="updateOrderStatus(${o.OrderId}, 'ReadyToShip')" class="px-3 py-1.5 rounded-xl bg-emerald-800 hover:bg-emerald-900 text-white font-black text-[11px] shadow-xs cursor-pointer">
+                Xác nhận còn hàng
+              </button>
+              <button onclick="updateOrderStatus(${o.OrderId}, 'Cancelled')" class="px-2 py-1.5 rounded-xl border border-slate-300 hover:bg-red-50 text-red-700 font-bold text-[11px] cursor-pointer" title="Hết hàng / Hủy đơn">
+                Hủy
+              </button>
+            </div>
+          ` :
+          o.OrderStatus === 'ReadyToShip' ? `
+            <button onclick="updateOrderStatus(${o.OrderId}, 'Shipping')" class="px-3 py-1.5 rounded-xl bg-blue-700 hover:bg-blue-800 text-white font-black text-[11px] shadow-xs cursor-pointer">
+              Giao Viettel Post
+            </button>
+          ` :
+          o.OrderStatus === 'Shipping' ? `
+            <button onclick="updateOrderStatus(${o.OrderId}, 'Completed')" class="px-3 py-1.5 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-black text-[11px] shadow-xs cursor-pointer">
+              Giao thành công
+            </button>
+          ` :
+          isUserCancelled ? `
+            <div class="text-right">
+              <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-red-50 text-red-700 border border-red-200 font-black text-[11px]">
+                <i data-lucide="user-x" class="w-3 h-3"></i> Khách đã hủy
+              </span>
+            </div>
+          ` :
+          isAdminCancelled ? `
+            <div class="text-right">
+              <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-100 text-slate-600 border border-slate-200 font-bold text-[11px]">
+                <i data-lucide="ban" class="w-3 h-3"></i> HTX đã hủy
+              </span>
+            </div>
+          ` :
+          '<span class="text-slate-400 font-bold text-[11px]">Đã hoàn tất</span>';
+
+        return `
+          <tr class="hover:bg-slate-50 transition border-b border-slate-200">
+            <td class="p-3.5 font-mono font-black text-slate-950">#${o.OrderCode}</td>
+            <td class="p-3.5">
+              <div class="font-black text-slate-950">${o.CustomerName}</div>
+              ${isUserCancelled ? '<div class="text-[10px] text-red-600 font-bold mt-0.5 inline-flex items-center gap-0.5"><i data-lucide="user-x" class="w-3 h-3"></i> Khách tự hủy đơn</div>' : ''}
+            </td>
+            <td class="p-3.5">
+              <div class="font-black text-emerald-900">${o.Phone}</div>
+              <div class="text-[11px] text-slate-600 font-medium max-w-xs truncate">${o.ShippingAddress}</div>
+              ${o.Note ? `<div class="text-[10px] ${isUserCancelled ? 'text-red-700 font-bold' : 'text-slate-500 font-medium'} italic mt-0.5">Ghi chú: ${o.Note}</div>` : ''}
+            </td>
+            <td class="p-3.5 font-black text-emerald-950 text-sm">${Number(o.FinalAmount).toLocaleString('vi-VN')} đ</td>
+            <td class="p-3.5">
+              <span class="px-2.5 py-1 rounded-lg ${o.PaymentStatus === 'Paid' ? 'bg-emerald-100 text-emerald-950 border border-emerald-300' : o.PaymentStatus === 'Refunded' ? 'bg-red-100 text-red-950 border border-red-300' : 'bg-slate-200 text-slate-800'} font-black text-[10px]">
+                ${o.PaymentStatus === 'Paid' ? 'Đã trả ZaloPay' : o.PaymentStatus === 'Refunded' ? 'Đã hoàn tiền' : 'Chờ trả tiền'}
+              </span>
+            </td>
+            <td class="p-3.5">${statusBadge}</td>
+            <td class="p-3.5 text-slate-500 font-semibold text-[11px]">${formatVietnamDateTime(o.CreatedAt)}</td>
+            <td class="p-3.5 text-right">${actionButtons}</td>
+          </tr>
+        `;
+      }).join('');
+      lucide.createIcons();
+    }
+
+    async function loadOrders() {
+      try {
+        const res = await adminFetch('/api/admin/orders');
+        const json = await res.json();
+        if (json.success) {
+          allOrdersData = json.data;
+          filterOrders();
+        }
+      } catch (e) { console.error('Lỗi load orders:', e); }
+    }
+
+    function filterOrders() {
+      const filter = document.getElementById('order-filter-status').value;
+      if (filter === 'ALL') {
+        renderOrdersTable(allOrdersData);
+      } else if (filter === 'UserCancelled') {
+        renderOrdersTable(allOrdersData.filter(o => 
+          o.OrderStatus === 'Cancelled' && (
+            o.Note ? (o.Note.includes('Khách') || o.Note.includes('Người dùng') || o.Note.includes('chủ động') || !o.Note.includes('hợp tác xã')) : true
+          )
+        ));
+      } else if (filter === 'AdminCancelled') {
+        renderOrdersTable(allOrdersData.filter(o => 
+          o.OrderStatus === 'Cancelled' && o.Note && o.Note.includes('hợp tác xã')
+        ));
+      } else {
+        renderOrdersTable(allOrdersData.filter(o => o.OrderStatus === filter));
+      }
+    }
+
+    async function loadProducts() {
+      try {
+        const res = await adminFetch('/api/products');
+        const json = await res.json();
+        if (json.success) {
+          const tbody = document.getElementById('products-tbody');
+          tbody.innerHTML = json.data.map(p => `
+            <tr class="hover:bg-slate-50 transition border-b border-slate-200">
+              <td class="p-3.5 font-mono font-black text-slate-600">#${p.ProductId}</td>
+              <td class="p-3.5 font-black text-slate-950">${p.ProductName}</td>
+              <td class="p-3.5 text-slate-700 font-medium">${p.Origin}</td>
+              <td class="p-3.5"><span class="px-2.5 py-1 rounded-lg bg-slate-200 text-slate-900 font-black text-[10px]">${p.Category}</span></td>
+              <td class="p-3.5 text-slate-600 font-medium">${p.Unit}</td>
+              <td class="p-3.5 font-black text-emerald-900 text-sm">${Number(p.Price).toLocaleString('vi-VN')} đ</td>
+              <td class="p-3.5 font-black ${p.InStockQuantity < 20 ? 'text-red-700' : 'text-slate-950'}">${p.InStockQuantity}</td>
+              <td class="p-3.5 text-right">
+                <button onclick="openEditProductModal(${p.ProductId}, '${p.ProductName.replace(/'/g, "\\'")}', ${p.Price}, ${p.InStockQuantity})" class="px-3 py-1.5 rounded-xl border border-slate-300 bg-white hover:bg-slate-100 font-black text-[11px] text-slate-800 shadow-2xs cursor-pointer">
+                  Sửa giá & Kho
+                </button>
+              </td>
+            </tr>
+          `).join('');
+        }
+      } catch (e) { console.error('Lỗi load products:', e); }
+    }
+
+    let currentAddVenueData = { id: 0, remaining: 0, total: 0 };
+
+    function openAddVouchersModal(id, name, remaining, total, issued) {
+      currentAddVenueData = { id, remaining: Number(remaining) || 0, total: Number(total) || 0 };
+      document.getElementById('add-v-venue-id').value = id;
+      document.getElementById('add-v-venue-name').innerText = name;
+      document.getElementById('add-v-current-remaining').innerText = remaining;
+      document.getElementById('add-v-current-total').innerText = total;
+      document.getElementById('add-v-qty').value = 50;
+      updateAddVouchersPreview();
+      openModal('modal-add-vouchers');
+    }
+
+    function setAddVouchersQty(qty) {
+      document.getElementById('add-v-qty').value = qty;
+      updateAddVouchersPreview();
+    }
+
+    function updateAddVouchersPreview() {
+      const qty = parseInt(document.getElementById('add-v-qty').value, 10) || 0;
+      const newRemaining = currentAddVenueData.remaining + qty;
+      const newTotal = currentAddVenueData.total + qty;
+      document.getElementById('add-v-preview-remaining').innerText = newRemaining > 0 ? newRemaining : 0;
+      document.getElementById('add-v-preview-total').innerText = newTotal > 0 ? newTotal : 0;
+    }
+
+    async function handleSubmittingAddVouchers(e) {
+      e.preventDefault();
+      const id = document.getElementById('add-v-venue-id').value;
+      const qty = parseInt(document.getElementById('add-v-qty').value, 10);
+      if (!qty || qty <= 0) {
+        showNotice('Thông báo', 'Vui lòng nhập số lượng voucher lớn hơn 0!', true);
+        return;
+      }
+      try {
+        const res = await adminFetch(`/api/admin/venues/${id}/add-vouchers`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ quantityToAdd: qty })
+        });
+        const json = await res.json();
+        if (json.success) {
+          closeModal('modal-add-vouchers');
+          showNotice('Thành công', json.message || `Đã cấp thêm +${qty} voucher thành công!`);
+          loadVenues();
+          loadStats();
+          loadAuditLogs();
+        } else {
+          showNotice('Lỗi', json.message, true);
+        }
+      } catch (e) {
+        showNotice('Lỗi kết nối', 'Không thể kết nối đến máy chủ để cấp thêm voucher!', true);
+      }
+    }
+
+    function editVenueLimit(id, name, limit) {
+      document.getElementById('edit-venue-id').value = id;
+      document.getElementById('edit-venue-name').innerText = name;
+      document.getElementById('edit-venue-limit').value = limit;
+      openModal('modal-edit-limit');
+    }
+
+    async function handleUpdateLimit(e) {
+      e.preventDefault();
+      const id = document.getElementById('edit-venue-id').value;
+      const limit = parseInt(document.getElementById('edit-venue-limit').value, 10);
+      try {
+        const res = await adminFetch(`/api/admin/venues/${id}/limit`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ newTotalLimit: limit })
+        });
+        const json = await res.json();
+        if (json.success) {
+          closeModal('modal-edit-limit');
+          showNotice('Thành công', 'Đã cập nhật hạn mức voucher thành công!');
+          loadVenues();
+          loadStats();
+          loadAuditLogs();
+        } else {
+          showNotice('Lỗi', json.message, true);
+        }
+      } catch (e) { showNotice('Lỗi kết nối', 'Không thể kết nối đến máy chủ', true); }
+    }
+
+    async function deleteVenue(id, name) {
+      if (!confirm(`Bạn có chắc chắn muốn XÓA voucher của cơ sở "${name}"?\n\nCơ sở này sẽ bị xóa khỏi hệ thống và loại bỏ vĩnh viễn khỏi Vòng quay may mắn.`)) {
+        return;
+      }
+      try {
+        const res = await adminFetch(`/api/admin/venues/${id}`, {
+          method: 'DELETE',
+        });
+        const json = await res.json();
+        if (json.success) {
+          showNotice('Thành công', json.message || `Đã xóa voucher của cơ sở "${name}" thành công!`);
+          loadVenues();
+          loadStats();
+          loadAuditLogs();
+        } else {
+          showNotice('Lỗi', json.message || 'Không thể xóa cơ sở này!', true);
+        }
+      } catch (e) {
+        showNotice('Lỗi kết nối', 'Không thể kết nối đến máy chủ để xóa voucher!', true);
+      }
+    }
+
+    async function handleCreateVenue(e) {
+      e.preventDefault();
+      const body = {
+        venueName: document.getElementById('v-name').value,
+        category: document.getElementById('v-category').value,
+        phone: document.getElementById('v-phone').value,
+        address: document.getElementById('v-address').value,
+        discountPercent: parseInt(document.getElementById('v-discount').value, 10),
+        totalLimit: parseInt(document.getElementById('v-limit').value, 10),
+      };
+      try {
+        const res = await adminFetch('/api/admin/venues', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(body)
+        });
+        const json = await res.json();
+        if (json.success) {
+          closeModal('modal-add-venue');
+          showNotice('Thành công', 'Đã thêm cơ sở kinh doanh mới thành công!');
+          loadVenues();
+          loadStats();
+          loadAuditLogs();
+        } else {
+          showNotice('Lỗi', json.message, true);
+        }
+      } catch (e) { showNotice('Lỗi kết nối', 'Không thể kết nối đến máy chủ', true); }
+    }
+
+    async function handleCreateProduct(e) {
+      e.preventDefault();
+      const body = {
+        productName: document.getElementById('p-name').value,
+        origin: document.getElementById('p-origin').value,
+        category: document.getElementById('p-category').value,
+        price: parseInt(document.getElementById('p-price').value, 10),
+        unit: document.getElementById('p-unit').value,
+        description: document.getElementById('p-desc').value,
+        inStockQuantity: parseInt(document.getElementById('p-qty').value, 10),
+      };
+      try {
+        const res = await adminFetch('/api/admin/products', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(body)
+        });
+        const json = await res.json();
+        if (json.success) {
+          closeModal('modal-add-product');
+          showNotice('Thành công', 'Đã thêm nông sản OCOP mới thành công!');
+          loadProducts();
+          loadStats();
+          loadAuditLogs();
+        } else {
+          showNotice('Lỗi', json.message, true);
+        }
+      } catch (e) { showNotice('Lỗi kết nối', 'Không thể kết nối đến máy chủ', true); }
+    }
+
+    function openEditProductModal(id, name, currentPrice, currentQty) {
+      document.getElementById('edit-prod-id').value = id;
+      document.getElementById('edit-prod-name').innerText = name;
+      document.getElementById('edit-prod-price').value = currentPrice;
+      document.getElementById('edit-prod-qty').value = currentQty;
+      openModal('modal-edit-product');
+    }
+
+    async function handleSaveEditProduct(e) {
+      e.preventDefault();
+      const id = document.getElementById('edit-prod-id').value;
+      const newPrice = parseInt(document.getElementById('edit-prod-price').value, 10);
+      const newQty = parseInt(document.getElementById('edit-prod-qty').value, 10);
+
+      try {
+        const res = await adminFetch(`/api/admin/products/${id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ price: newPrice, inStockQuantity: newQty })
+        });
+        const json = await res.json();
+        if (json.success) {
+          closeModal('modal-edit-product');
+          showNotice('Thành công', 'Cập nhật giá và tồn kho sản phẩm thành công!');
+          loadProducts();
+          loadStats();
+          loadAuditLogs();
+        } else {
+          showNotice('Lỗi', json.message, true);
+        }
+      } catch (e) { showNotice('Lỗi', 'Không thể cập nhật sản phẩm', true); }
+    }
+
+    async function updateOrderStatus(orderId, newStatus) {
+      let confirmTitle = 'Xác nhận trạng thái đơn';
+      let confirmMsg = 'Bạn có chắc chắn muốn chuyển trạng thái đơn hàng này?';
+      if (newStatus === 'ReadyToShip') {
+        confirmTitle = 'Xác nhận còn hàng';
+        confirmMsg = 'Bạn có chắc chắn đã xác nhận còn hàng?';
+      } else if (newStatus === 'Cancelled') {
+        confirmTitle = 'Hủy đơn hàng';
+        confirmMsg = 'Bạn có chắc chắn muốn hủy đơn hàng này không?';
+      }
+
+      showConfirm(confirmTitle, confirmMsg, async () => {
+        try {
+          const res = await adminFetch(`/api/admin/orders/${orderId}/status`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ newStatus })
+          });
+          const json = await res.json();
+          if (json.success) {
+            showNotice('Thành công', 'Đã cập nhật trạng thái đơn hàng!');
+            loadOrders();
+            loadStats();
+          } else {
+            showNotice('Lỗi', json.message, true);
+          }
+        } catch (e) { showNotice('Lỗi kết nối', 'Không thể kết nối máy chủ', true); }
+      });
+    }
+
+    let allAuditLogsData = [];
+
+    function getAuditBadge(l) {
+      const isOutOfStock = (l.ActionType || '') === 'Hết voucher';
+      if (isOutOfStock) {
+        return '<span class="px-2.5 py-0.5 rounded-full bg-red-100 text-red-950 border border-red-300 font-black text-[10px] inline-flex items-center gap-1">⚠️ Hết voucher</span>';
+      }
+
+      const tt = (l.TargetType || '').toLowerCase();
+      const act = (l.ActionType || '').toLowerCase();
+
+      if (tt.includes('kết quả') || tt.includes('bxh') || tt.includes('quiz') || act.includes('kết quả') || act.includes('thí sinh')) {
+        return '<span class="px-2.5 py-0.5 rounded-full bg-purple-100 text-purple-950 border border-purple-300 font-black text-[10px] inline-flex items-center gap-1"><i data-lucide="trophy" class="w-3 h-3 text-purple-700"></i> Kết quả</span>';
+      }
+      if (tt.includes('voucher') || act.includes('voucher')) {
+        return '<span class="px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-950 border border-amber-300 font-black text-[10px] inline-flex items-center gap-1"><i data-lucide="ticket" class="w-3 h-3 text-amber-700"></i> Voucher</span>';
+      }
+      if (tt.includes('đơn hàng') || tt.includes('don hang') || act.includes('đơn hàng') || act.includes('hủy đơn')) {
+        return '<span class="px-2.5 py-0.5 rounded-full bg-blue-100 text-blue-950 border border-blue-300 font-black text-[10px] inline-flex items-center gap-1"><i data-lucide="shopping-cart" class="w-3 h-3 text-blue-700"></i> Đơn hàng</span>';
+      }
+      return '<span class="px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-950 border border-emerald-300 font-black text-[10px] inline-flex items-center gap-1"><i data-lucide="package" class="w-3 h-3 text-emerald-700"></i> Hàng hóa OCOP</span>';
+    }
+
+    function renderAuditLogsTable(data) {
+      const tbody = document.getElementById('audit-logs-tbody');
+      if (!tbody) return;
+      if (data.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="5" class="p-6 text-center text-slate-500 font-bold">Không có lịch sử nào phù hợp với bộ lọc</td></tr>';
+        return;
+      }
+      tbody.innerHTML = data.map(l => {
+        const isOutOfStock = (l.ActionType || '') === 'Hết voucher';
+        const typeBadge = getAuditBadge(l);
+        const dateStr = formatVietnamDateTime(l.CreatedAt);
+        const rowBg = isOutOfStock ? 'bg-red-50/50 hover:bg-red-50' : 'hover:bg-slate-50';
+        const nameColor = isOutOfStock ? 'text-red-700' : 'text-slate-950';
+        const detailsColor = isOutOfStock ? 'text-red-900 font-bold' : 'text-slate-700 font-semibold';
+        return `
+          <tr class="${rowBg} transition border-b border-slate-200">
+            <td class="p-3.5 text-slate-500 font-mono text-[11px] whitespace-nowrap">${dateStr}</td>
+            <td class="p-3.5">${typeBadge}</td>
+            <td class="p-3.5 font-black ${nameColor}">${l.TargetName}</td>
+            <td class="p-3.5 ${detailsColor} text-xs">${l.Details}</td>
+            <td class="p-3.5 text-slate-600 font-bold text-[11px]">${l.AdminName || 'Admin'}</td>
+          </tr>
+        `;
+      }).join('');
+      lucide.createIcons();
+    }
+
+    function filterAuditLogs() {
+      const filter = document.getElementById('audit-filter-type')?.value || 'ALL';
+      let filtered = allAuditLogsData;
+      if (filter === 'RESULT') {
+        filtered = allAuditLogsData.filter(l => {
+          const tt = (l.TargetType || '').toLowerCase();
+          const act = (l.ActionType || '').toLowerCase();
+          return tt.includes('kết quả') || tt.includes('bxh') || tt.includes('quiz') || act.includes('kết quả') || act.includes('thí sinh');
+        });
+      } else if (filter === 'VOUCHER') {
+        filtered = allAuditLogsData.filter(l => {
+          const tt = (l.TargetType || '').toLowerCase();
+          const act = (l.ActionType || '').toLowerCase();
+          return (tt.includes('voucher') || act.includes('voucher'));
+        });
+      } else if (filter === 'PRODUCT') {
+        filtered = allAuditLogsData.filter(l => {
+          const tt = (l.TargetType || '').toLowerCase();
+          const act = (l.ActionType || '').toLowerCase();
+          return !tt.includes('kết quả') && !tt.includes('bxh') && !tt.includes('quiz') && !act.includes('kết quả') &&
+                 !tt.includes('voucher') && !act.includes('voucher');
+        });
+      }
+      renderAuditLogsTable(filtered);
+    }
+
+    async function loadAuditLogs() {
+      try {
+        const res = await adminFetch('/api/admin/audit-logs');
+        const json = await res.json();
+        if (json.success) {
+          allAuditLogsData = json.data || [];
+          filterAuditLogs();
+
+          const dashTbody = document.getElementById('dashboard-audit-tbody');
+          if (dashTbody) {
+            if (allAuditLogsData.length === 0) {
+              dashTbody.innerHTML = '<tr><td colspan="5" class="p-4 text-center text-slate-500 font-bold">Chưa có lịch sử chỉnh sửa nào</td></tr>';
+            } else {
+              dashTbody.innerHTML = allAuditLogsData.slice(0, 5).map(l => {
+                const isOutOfStock = (l.ActionType || '') === 'Hết voucher';
+                const typeBadge = getAuditBadge(l);
+                const dateStr = formatVietnamDateTime(l.CreatedAt);
+                const rowBg = isOutOfStock ? 'bg-red-50/50 hover:bg-red-50' : 'hover:bg-slate-50';
+                const nameColor = isOutOfStock ? 'text-red-700' : 'text-slate-900';
+                const detailsColor = isOutOfStock ? 'text-red-900 font-bold' : 'text-slate-700 font-medium';
+                return `
+                  <tr class="${rowBg} transition border-b border-slate-200 text-xs">
+                    <td class="p-3 text-slate-500 font-mono text-[11px] whitespace-nowrap">${dateStr}</td>
+                    <td class="p-3">${typeBadge}</td>
+                    <td class="p-3 font-bold ${nameColor}">${l.TargetName}</td>
+                    <td class="p-3 ${detailsColor}">${l.Details}</td>
+                    <td class="p-3 text-slate-600 font-bold text-[11px]">${l.AdminName || 'Admin'}</td>
+                  </tr>
+                `;
+              }).join('');
+              lucide.createIcons();
+            }
+          }
+        }
+      } catch (e) { console.error('Lỗi load audit logs:', e); }
+    }
+
+    let currentLeaderboardWeek = '';
+
+    function formatDurationMs(ms) {
+      if (!ms || isNaN(ms)) return '0s';
+      const totalSeconds = Math.round(ms / 1000);
+      const minutes = Math.floor(totalSeconds / 60);
+      const seconds = totalSeconds % 60;
+      if (minutes === 0) return `${seconds}s`;
+      return `${minutes}m ${seconds < 10 ? '0' : ''}${seconds}s`;
+    }
+
+    function getPlayerTag(userId, attemptId) {
+      if (!userId && attemptId) return '#' + String(attemptId).padStart(4, '0').slice(-4);
+      if (!userId) return '#1001';
+      let hash = 0;
+      for (let i = 0; i < userId.length; i++) {
+        hash = (hash * 31 + userId.charCodeAt(i)) >>> 0;
+      }
+      return '#' + ((hash % 9000) + 1000);
+    }
+
+    async function loadAdminLeaderboard() {
+      try {
+        const resWeeks = await adminFetch(`/api/leaderboard/weeks`);
+        if (resWeeks.ok) {
+          const jsonWeeks = await resWeeks.json();
+          const select = document.getElementById('leaderboard-week-select');
+          if (jsonWeeks.success && jsonWeeks.data) {
+            const weeks = jsonWeeks.data.weeks || [];
+            const curWeek = jsonWeeks.data.currentWeek;
+            if (!currentLeaderboardWeek) {
+              currentLeaderboardWeek = curWeek || weeks[0];
+            }
+            if (select) {
+              select.innerHTML = weeks.map(w => `
+                <option value="${w}" ${w === currentLeaderboardWeek ? 'selected' : ''}>
+                  Tuần ${w}${w === curWeek ? ' (Hiện tại)' : ''}
+                </option>
+              `).join('');
+            }
+          }
+        }
+      } catch (e) {
+        console.warn('Lỗi tải danh sách tuần:', e);
+      }
+      await loadLeaderboardForSelectedWeek();
+    }
+
+    async function loadLeaderboardForSelectedWeek() {
+      const select = document.getElementById('leaderboard-week-select');
+      const weekId = select && select.value ? select.value : (currentLeaderboardWeek || '');
+      currentLeaderboardWeek = weekId;
+
+      const tbody = document.getElementById('leaderboard-tbody');
+      if (tbody) {
+        tbody.innerHTML = '<tr><td colspan="8" class="p-6 text-center text-slate-500 font-bold">Đang tải bảng xếp hạng...</td></tr>';
+      }
+
+      try {
+        const res = await adminFetch(`/api/leaderboard?weekId=${encodeURIComponent(weekId)}`);
+        if (!res.ok) {
+          throw new Error(`Máy chủ phản hồi mã lỗi ${res.status}`);
+        }
+        const json = await res.json();
+        if (json.success && json.data) {
+          const list = json.data.leaderboard || [];
+          const totalPart = json.data.totalParticipants !== undefined ? json.data.totalParticipants : list.length;
+          const totalEl = document.getElementById('lb-total-participants');
+          if (totalEl) totalEl.innerText = totalPart;
+
+          const top1El = document.getElementById('lb-top1-name');
+          const recordEl = document.getElementById('lb-record-score');
+
+          if (list.length > 0) {
+            const top1 = list[0];
+            if (top1El) top1El.innerText = top1.name;
+            if (recordEl) recordEl.innerText = `${top1.score}/${top1.totalQuestions} câu • ${formatDurationMs(top1.timeMs)}`;
+          } else {
+            if (top1El) top1El.innerText = 'Chưa có';
+            if (recordEl) recordEl.innerText = 'Chưa có';
+          }
+
+          if (list.length === 0) {
+            if (tbody) tbody.innerHTML = '<tr><td colspan="8" class="p-8 text-center text-slate-500 font-bold">Chưa có thí sinh nào thi chính thức trong tuần này!</td></tr>';
+            return;
+          }
+
+          if (tbody) {
+            tbody.innerHTML = list.map((u, idx) => {
+              const rank = idx + 1;
+              const rankBadge = 
+                rank === 1 ? '<span class="inline-flex items-center justify-center w-7 h-7 rounded-full bg-amber-400 text-stone-950 font-black text-xs shadow-xs">🥇 1</span>' :
+                rank === 2 ? '<span class="inline-flex items-center justify-center w-7 h-7 rounded-full bg-slate-300 text-slate-900 font-black text-xs shadow-xs">🥈 2</span>' :
+                rank === 3 ? '<span class="inline-flex items-center justify-center w-7 h-7 rounded-full bg-amber-700 text-white font-black text-xs shadow-xs">🥉 3</span>' :
+                `<span class="inline-flex items-center justify-center w-7 h-7 rounded-full bg-slate-100 text-slate-700 font-black text-xs border border-slate-300">#${rank}</span>`;
+
+              const percent = Math.round((u.score / (u.totalQuestions || 1)) * 100);
+              const rewardBadge = rank <= 3
+                ? `<span class="px-2.5 py-1 rounded-full bg-amber-100 text-amber-950 border border-amber-300 font-black text-[10px] inline-flex items-center gap-1">🏆 Vinh danh Top ${rank}</span>`
+                : rank <= 5
+                ? '<span class="px-2.5 py-1 rounded-full bg-blue-100 text-blue-950 border border-blue-300 font-black text-[10px] inline-flex items-center gap-1">🎖️ Top 5 chung cuộc</span>'
+                : '<span class="px-2.5 py-1 rounded-full bg-slate-100 text-slate-600 border border-slate-200 font-semibold text-[10px]">Đạt chuẩn hoàn thành</span>';
+
+              const createdDate = formatVietnamDateTime(u.createdAt);
+
+              return `
+                <tr class="hover:bg-slate-50 transition border-b border-slate-200">
+                  <td class="p-3.5 text-center">${rankBadge}</td>
+                  <td class="p-3.5">
+                    <div class="flex items-center gap-3">
+                      <img src="${u.avatar || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80'}" alt="" class="w-9 h-9 rounded-full object-cover border-2 ${rank <= 3 ? 'border-amber-400 shadow-xs' : 'border-slate-300'}">
+                      <div>
+                        <div class="font-black text-slate-950 text-sm flex items-center gap-1.5">
+                          <span>${u.name}</span>
+                          <span class="text-[10px] font-mono font-bold text-slate-600 bg-slate-100 px-1.5 py-0.5 rounded border border-slate-300">${getPlayerTag(u.zaloUserId, u.attemptId)}</span>
+                          ${rank === 1 ? '<span class="text-amber-500 text-xs">👑</span>' : ''}
+                        </div>
+                        <div class="text-[11px] font-mono text-slate-500">ID: ${u.zaloUserId || 'N/A'}</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="p-3.5 font-black text-slate-950 text-sm">
+                    <span class="text-emerald-800">${u.score}</span> / ${u.totalQuestions} câu
+                  </td>
+                  <td class="p-3.5">
+                    <span class="px-2.5 py-1 rounded-lg ${percent >= 80 ? 'bg-emerald-100 text-emerald-950 border border-emerald-300' : 'bg-slate-200 text-slate-800'} font-black text-[11px]">
+                      ${percent}%
+                    </span>
+                  </td>
+                  <td class="p-3.5 font-bold text-slate-800 font-mono text-xs">
+                    <span class="px-2.5 py-1 rounded-lg bg-blue-50 text-blue-900 border border-blue-200 font-black">
+                      ⏱️ ${formatDurationMs(u.timeMs)}
+                    </span>
+                  </td>
+                  <td class="p-3.5 text-slate-500 font-mono text-[11px] whitespace-nowrap">
+                    ${createdDate}
+                  </td>
+                  <td class="p-3.5">${rewardBadge}</td>
+                  <td class="p-3.5 text-right whitespace-nowrap">
+                    <button onclick="deleteLeaderboardEntry(${u.attemptId || 0}, '${(u.name || '').replace(/'/g, "\\'")}', '${getPlayerTag(u.zaloUserId, u.attemptId)}')" class="px-2.5 py-1.5 rounded-xl border border-red-200 bg-red-50 hover:bg-red-100 font-black text-[11px] text-red-700 shadow-2xs cursor-pointer transition">
+                      Xóa
+                    </button>
+                  </td>
+                </tr>
+              `;
+            }).join('');
+          }
+          lucide.createIcons();
+        } else {
+          if (tbody) tbody.innerHTML = `<tr><td colspan="8" class="p-6 text-center text-red-600 font-bold">${json?.message || 'Không thể lấy dữ liệu BXH!'}</td></tr>`;
+        }
+      } catch (e) {
+        console.error('Lỗi tải BXH:', e);
+        if (tbody) {
+          tbody.innerHTML = `
+            <tr>
+              <td colspan="8" class="p-6 text-center">
+                <div class="text-red-600 font-black mb-1.5 text-sm">⚠️ Lỗi kết nối máy chủ khi tải BXH!</div>
+                <div class="text-xs text-slate-500 mb-3 font-mono">${e.message || 'Không thể kết nối đến Backend'}</div>
+                <button onclick="loadAdminLeaderboard()" class="px-4 py-2 bg-slate-950 text-white rounded-xl text-xs font-bold hover:bg-slate-800 transition shadow-xs cursor-pointer inline-flex items-center gap-1.5">
+                  <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i> Thử tải lại
+                </button>
+              </td>
+            </tr>
+          `;
+          lucide.createIcons();
+        }
+      }
+    }
+
+    async function deleteLeaderboardEntry(attemptId, name, tag) {
+      if (!attemptId) return;
+      const displayTag = tag ? ` (${tag})` : '';
+      showConfirm(
+        'Xác nhận xóa kết quả thi',
+        `Bạn có chắc chắn muốn xóa kết quả thi của thí sinh "${name}${displayTag}" khỏi Bảng xếp hạng không?`,
+        async () => {
+          try {
+            const res = await adminFetch(`/api/admin/leaderboard/${attemptId}`, { method: 'DELETE' });
+            const json = await res.json();
+            if (json.success) {
+              showNotice('Thành công', json.message || 'Đã xóa kết quả thi thành công!');
+              loadLeaderboardForSelectedWeek();
+              loadStats();
+              loadAuditLogs();
+            } else {
+              showNotice('Lỗi', json.message || 'Không thể xóa kết quả thi này!', true);
+            }
+          } catch (e) {
+            showNotice('Lỗi kết nối', 'Không thể kết nối đến máy chủ!', true);
+          }
+        }
+      );
+    }
+
+    function loadAllData() {
+      loadStats();
+      loadVenues();
+      loadOrders();
+      loadProducts();
+      loadAuditLogs();
+      loadAdminLeaderboard();
+      lucide.createIcons();
+    }
+
+    window.onload = () => {
+      loadAllData();
+      setInterval(() => {
+        loadStats();
+        loadVenues();
+        loadOrders();
+      }, 4000);
+    };
+  </script>
+</body>
+</html>

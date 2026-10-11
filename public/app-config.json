@@ -1,0 +1,18 @@
+{
+  "app": {
+    "appId": "3200332855373927018",
+    "title": "Đắk Song Quest",
+    "headerTitle": "Đắk Song Quest",
+    "headerColor": "#064e3b",
+    "textColor": "white",
+    "statusBar": "transparent",
+    "leftButton": "none"
+  },
+  "listCSS": [
+    "assets/index.css"
+  ],
+  "listSyncJS": [
+    "assets/index.module.js"
+  ],
+  "listAsyncJS": []
+}
