@@ -146,8 +146,8 @@ export interface PlacedOrder {
   discountAmount: number;
   finalAmount: number;
   voucherCodeApplied?: string;
-  paymentMethod: "ZaloPay";
-  paymentStatus: "Paid" | "Pending" | "Refunded";
+  paymentMethod: "ZaloPay" | "COD";
+  paymentStatus: "Paid" | "Pending" | "Unpaid" | "Refunded";
   orderStatus: "PendingConfirm" | "ReadyToShip" | "Shipping" | "Completed" | "Cancelled";
   note?: string;
   createdAt: string;

@@ -1,79 +1,88 @@
-# TÀI LIỆU MÔ TẢ HỆ THỐNG TOÀN DIỆN
-# DỰ ÁN: ĐẮK SONG QUEST (ZALO MINI APP & ADMIN CMS)
+# TAI LIEU MO TA HE THONG TOAN DIEN
+# DU AN: DAK SONG QUEST (ZALO MINI APP VA ADMIN CMS)
 
 ---
 
-## 1. TỔNG QUAN DỰ ÁN (PROJECT OVERVIEW)
+## 1. TONG QUAN DU AN (PROJECT OVERVIEW)
 
-### 1.1. Giới thiệu chung
-**Đắk Song Quest** là nền tảng số hóa du lịch và quảng bá nông sản OCOP toàn diện của huyện Đắk Song, tỉnh Đắk Nông. Dự án được triển khai dưới dạng **Zalo Mini App** dành cho người dùng di động, kết hợp cùng hệ thống quản trị **Admin CMS Web** và cơ sở dữ liệu quan hệ **Microsoft SQL Server**.
+### 1.1. Gioi thieu chung
+Dak Song Quest la nen tang so hoa du lich va quang ba nong san OCOP toan dien cua huyen Dak Song, tinh Dak Nong. Du an duoc trien khai duoi dang Zalo Mini App danh cho nguoi dung di dong, ket hop cung he thong quan tri Admin CMS Web va co so du lieu quan he Microsoft SQL Server.
 
-Hệ thống tích hợp giữa **Gamification (Trò chơi hóa du lịch)**, **Thương mại điện tử nông sản OCOP**, và **Tiện ích du lịch thực tế**:
-- **Trò chơi đố vui (Quiz Game)**: Thử thách kiến thức văn hóa, lịch sử, danh lam thắng cảnh Đắk Song với chế độ Luyện tập và Thi chính thức có tính giờ, xếp hạng tuần thời gian thực.
-- **Vòng quay may mắn (Lucky Wheel)**: Cơ chế săn voucher ngẫu nhiên liên kết trực tiếp với hạn mức tồn kho thực tế của các cơ sở lưu trú và ăn uống tại Đắk Song.
-- **Sàn giao dịch Nông sản OCOP**: Mua sắm đặc sản nông sản chính gốc (Hồ tiêu Đắk Song, Cà phê Robusta, Hạt dinh dưỡng...), thanh toán tiện lợi qua cổng ZaloPay (Mô phỏng quy trình thanh toán In-App chuẩn), điều phối đơn hàng và hủy đơn tự động hoàn kho/hoàn tiền.
-- **Cẩm nang du lịch số & Thời tiết thời gian thực**: Tra cứu dự báo thời tiết vệ tinh tọa độ Đắk Song, cẩm nang phượt, số điện thoại hotline, chỉ đường Google Maps một chạm.
-- **Hệ thống Quản trị Admin CMS**: Bảng điều khiển thời gian thực theo dõi doanh thu ZaloPay, quản lý hạn mức voucher quán, điều phối tiến độ vận chuyển đơn hàng, quản lý kho hàng và kiểm soát bảng xếp hạng người chơi.
-
----
-
-### 1.2. Mục tiêu hệ thống
-1. **Quảng bá du lịch và văn hóa bản địa**: Giới thiệu các địa danh nổi tiếng (Cánh đồng điện gió Nam Bình, Đồi thông Đắk Song, Rừng đặc dụng cảnh quan, Thiền viện Trúc Lâm Đạo Nguyên...), văn hóa cồng chiêng M'Nông và đặc sản nông nghiệp thế mạnh.
-2. **Kích cầu kinh tế địa phương**: Tạo cầu nối đưa du khách trực tiếp đến các nhà hàng, quán ăn, khách sạn và hợp tác xã nông sản OCOP trên địa bàn huyện thông qua voucher giảm giá thực tế.
-3. **Tiếp cận tối đa người dùng**: Tận dụng hệ sinh thái Zalo với hơn 75 triệu người dùng tích cực tại Việt Nam, cho phép truy cập tức thì mà không cần tải và cài đặt thêm ứng dụng từ kho ứng dụng (App Store/Google Play).
-4. **Vận hành tin cậy, dữ liệu nhất quán**: Đảm bảo an toàn giao dịch, kiểm soát tranh chấp kho hàng (Race Conditions), chống gian lận điểm số và duy trì tính minh bạch thông qua hệ thống nhật ký kiểm toán (Audit Logs).
+He thong tich hop giua Gamification (Tro choi hoa du lich), Thuong mai dien tu nong san OCOP, va Tien ich du lich thuc te:
+- Tro choi do vui (Quiz Game): Thu thach kien thuc van hoa, lich su, danh lam thang canh Dak Song voi che do Luyen tap va Thi chinh thuc co tinh gio, xep hang tuan thoi gian thuc.
+- Vong quay may man (Lucky Wheel): Co che san voucher ngau nhien lien ket truc tiep voi han muc ton kho thuc te cua cac co so luu tru va an uong tai Dak Song tren co so du lieu.
+- San giao dich Nong san OCOP: Mua sam dac san nong nghiep chinh goc (Ho tieu huu co Dak Song, Ca phe Robusta dac san, Hat Mac ca, Mang le rung kho...), thanh toan tien loi qua Vi ZaloPay hoac Tien mat khi nhan hang (COD), dieu phoi don hang va huy don tu dong hoan kho / hoan tien.
+- Cua so Popup Gioi thieu: Hien thi thong tin gioi thieu ve Dak Song Quest moi khi nguoi dung truy cap ung dung de nang cao do nhan dien.
+- Cam nang du lich so va Thoi tiet thoi gian thuc: Tra cuu du bao thoi tiet ve tinh toa do Dak Song, cam nang luu tru, an uong, hotline va chi duong Google Maps mot cham.
+- He thong Quan tri Admin CMS da phan quyen (1 Server 2 Giao dien): Bang dieu khien tu dong bien hoa giao dien rieng biet theo vai tro:
+  - Hop tac xa Nong san (Role COOP): Quan tri chuyen biet San TMDT OCOP, kho hang dac san, bang gia va dieu phoi van chuyen don hang.
+  - UBND va Ban Quan ly Huyen (Role DISTRICT): Quan tri danh ba quan an, khach san, cap phat han muc voucher du lich, quan tri BXH Quiz va nhat ky kiem toan toan he thong.
 
 ---
 
-## 2. KIẾN TRÚC HỆ THỐNG (SYSTEM ARCHITECTURE)
+### 1.2. Muc tieu he thong
+1. Quang ba du lich va van hoa ban dia: Gioi thieu cac dia danh noi tieng (Canh dong dien gio Nam Binh, Doi thong Dak Song, Rung dac dung canh quan, Thien vien Truc Lam Dao Nguyen...), van hoa cong chieng M'Nong va dac san nong nghiep the manh.
+2. Kich cau kinh te dia phuong: Tao cau noi dua du khach truc tiep den cac nha hang, quan an, khach san va hop tac xa nong san OCOP tren dia ban huyen thong qua voucher giam gia thuc te.
+3. Tiep can toi da nguoi dung: Tan dung he sinh thai Zalo voi hon 75 trieu nguoi dung tich cuc tai Viet Nam, cho phep truy cap tuc thi ma khong can tai va cai dat them ung dung tu kho ung dung.
+4. Van hanh tin cay, du lieu nhat quan: Dam bao an toan giao dich, kiem soat tranh chap kho hang (Race Conditions), chong gian lan diem so va duy tri tinh minh bach thong qua he thong nhat ky kiem toan (Audit Logs).
+5. Phan dinh ro rang trach nhiem quan ly: Phan quyen rieng biet giua Hop tac xa (kinh doanh nong san) va UBND Huyen (quan ly nha nuoc ve du lich) tren cung mot he thong ha tang duy nhat.
 
-Hệ thống được xây dựng theo mô hình phân tầng chuẩn 3 lớp (3-Tier Architecture) kết hợp kiến trúc hướng dịch vụ Client - Server:
+---
+
+## 2. KIEN TRUC HE THONG (SYSTEM ARCHITECTURE)
+
+He thong duoc xay dung theo mo hinh phan tang chuan 3 lop (3-Tier Architecture) ket hop kien truc huong dich vu Client - Server:
 
 ```mermaid
 graph TD
-    subgraph "Tầng Người Dùng & Thiết Bị (Client Layer)"
-        UserMobile["Du khách / Người dùng (Zalo App Mobile)"]
-        UserAdmin["Cán bộ quản trị / HTX (Trình duyệt Web PC)"]
+    subgraph "Tang Nguoi Dung va Thiet Bi (Client Layer)"
+        UserMobile["Du khach / Nguoi dung (Zalo App Mobile)"]
+        UserAdminCoop["Can bo Hop tac xa (Trinh duyet Web PC)"]
+        UserAdminDist["Can bo UBND Huyen (Trinh duyet Web PC)"]
     end
 
-    subgraph "Tầng Giao Diện Ứng Dụng (Frontend Presentation)"
-        MiniApp["Zalo Mini App: Đắk Song Quest\n(React 19 + TypeScript + Vite + Tailwind CSS v4)"]
-        AdminCMS["Admin Web Dashboard\n(HTML5 + Tailwind CSS + Lucide Icons + Vanilla JS)"]
+    subgraph "Tang Giao Dien Ung Dung (Frontend Presentation)"
+        MiniApp["Zalo Mini App: Dak Song Quest\n(React 19 + TypeScript + Vite + Tailwind CSS v4)"]
+        AdminCMS["Admin Web Dashboard da phan quyen\n(HTML5 + Tailwind CSS + Lucide Icons + Vanilla JS)"]
     end
 
-    subgraph "Tầng Dịch Vụ & Xử Lý Nghiệp Vụ (Backend API Layer)"
+    subgraph "Tang Dich Vu va Xu Ly Nghiep Vu (Backend API Layer)"
         ExpressServer["Node.js Express Server (TypeScript)\n(Port 5000 / Reverse Proxy Ngrok)"]
         
-        RouterVoucher["/api/vouchers\n(Hạn mức & Vòng quay)"]
-        RouterOrder["/api/orders\n(Giỏ hàng, ZaloPay & Tiến độ)"]
-        RouterProduct["/api/products\n(Nông sản OCOP & Tồn kho)"]
-        RouterLB["/api/leaderboard\n(BXH Tuần & Chấm điểm Quiz)"]
-        RouterAdmin["/api/admin\n(Thống kê, Điều phối & Audit Logs)"]
+        RouterAuth["/api/admin/auth\n(Xac thuc COOP va DISTRICT)"]
+        RouterVoucher["/api/vouchers\n(Han muc va Vong quay)"]
+        RouterOrder["/api/orders\n(Gio hang, ZaloPay, COD va Tien do)"]
+        RouterProduct["/api/products\n(Nong san OCOP va Ton kho)"]
+        RouterLB["/api/leaderboard\n(BXH Tuan va Cham diem Quiz)"]
+        RouterAdmin["/api/admin\n(Dashboard, Dieu phoi, Kiem toan)"]
     end
 
-    subgraph "Tầng Lưu Trữ Dữ Liệu (Database Layer)"
+    subgraph "Tang Luu Tru Du Lieu (Database Layer)"
         MSSQL[("Microsoft SQL Server (SQLEXPRESS)\nDatabase: DakSongQuestDB")]
     end
 
-    subgraph "Dịch Vụ Ngoại Vi (External Services)"
-        OpenMeteo["Open-Meteo Satellite API\n(Tọa độ 12.535, 107.692)"]
-        ZaloSDK["Zalo Mini App Native SDK\n(Gọi điện thoại, Share, Navigation)"]
+    subgraph "Dich Vu Ngoai Vi (External Services)"
+        OpenMeteo["Open-Meteo Satellite API\n(Toa do 12.535, 107.692)"]
+        ZaloSDK["Zalo Mini App Native SDK\n(Goi dien thoai, Share, Navigation)"]
     end
 
     UserMobile --> MiniApp
-    UserAdmin --> AdminCMS
+    UserAdminCoop --> AdminCMS
+    UserAdminDist --> AdminCMS
 
     MiniApp --> ExpressServer
     MiniApp --> OpenMeteo
     MiniApp --> ZaloSDK
     AdminCMS --> ExpressServer
 
+    ExpressServer --> RouterAuth
     ExpressServer --> RouterVoucher
     ExpressServer --> RouterOrder
     ExpressServer --> RouterProduct
     ExpressServer --> RouterLB
     ExpressServer --> RouterAdmin
 
+    RouterAuth --> MSSQL
     RouterVoucher --> MSSQL
     RouterOrder --> MSSQL
     RouterProduct --> MSSQL
@@ -81,34 +90,45 @@ graph TD
     RouterAdmin --> MSSQL
 ```
 
-### 2.1. Ngăn xếp công nghệ chi tiết (Technology Stack)
+### 2.1. Ngan xep cong nghe chi tiet (Technology Stack)
 
-| Thành phần | Công nghệ / Thư viện | Vai trò & Đặc điểm |
+| Thanh phan | Cong nghe / Thu vien | Vai tro va Dac diem |
 | :--- | :--- | :--- |
-| **Frontend Framework** | **React 19 + TypeScript** | Xây dựng giao diện Single Page Application (SPA), hướng component, kiểm soát kiểu dữ liệu tĩnh nghiêm ngặt. |
-| **Bundler & Tooling** | **Vite 7.x** | Tối ưu hóa tốc độ build và Hot Module Replacement (HMR), xuất gói `dist/` tương thích 100% WebView Zalo Mini App. |
-| **Styling** | **Tailwind CSS v4** | Hệ thống CSS utility-first hiện đại, tối ưu dung lượng CSS nhỏ gọn, giao diện co giãn responsive trên mọi thiết bị. |
-| **Quản lý State** | **Jotai (Atomic State)** | Quản lý trạng thái phân tán (Atoms), tự động lưu trữ và phục hồi từ `localStorage` (giỏ hàng, voucher người dùng). |
-| **Biểu tượng** | **Lucide React / Lucide Icons** | Bộ icon vector hiện đại, sắc nét, đồng bộ cho cả Mini App và Admin CMS. |
-| **Native Bridge** | **ZMP SDK (`zmp-sdk`)** | Cầu nối giao tiếp với tính năng native của Zalo: gọi hotline, chia sẻ feed/chat, mở bản đồ. |
-| **Backend Runtime** | **Node.js (v20+) + Express (TypeScript)** | Xử lý toàn bộ logic nghiệp vụ, RESTful API endpoints, xác thực và kiểm soát dữ liệu. |
-| **Cơ sở dữ liệu** | **Microsoft SQL Server (SQLEXPRESS)** | Hệ quản trị CSDL quan hệ chuẩn doanh nghiệp, hỗ trợ transaction ACID, khóa bi quan chống tranh chấp kho hàng. |
-| **Database Driver** | **`mssql` / `msnodesqlv8`** | Kết nối trực tiếp từ Node.js đến SQL Server qua Windows Authentication/Trusted Connection với hiệu năng cao. |
-| **API Khí tượng** | **Open-Meteo Realtime API** | Trích xuất thông số thời tiết Đắk Song theo tọa độ vệ tinh thực, hỗ trợ CORS, không cần API Key. |
+| Frontend Framework | React 19 + TypeScript | Xay dung giao dien Single Page Application (SPA), huong component, kiem soat kieu du lieu tinh nghiem ngat. |
+| Bundler va Tooling | Vite 7.x | Toi uu hoa toc do build va Hot Module Replacement (HMR), xuat goi dist/ tuong thich 100% WebView Zalo Mini App. |
+| Styling | Tailwind CSS v4 | He thong CSS utility-first hien dai, toi uu dung luong CSS nho gon, giao dien co gian responsive tren moi thiet bi. |
+| Quan ly State | Jotai (Atomic State) | Quan ly trang thai phan tan (Atoms), tu dong luu tru va phuc hoi tu localStorage (gio hang, voucher nguoi dung). |
+| Bieu tuong | Lucide React / Lucide Icons | Bo icon vector hien dai, sac net, dong bo cho ca Mini App va Admin CMS. |
+| Native Bridge | ZMP SDK (zmp-sdk) | Cau noi giao tiep voi tinh nang native cua Zalo: goi hotline, chia se feed/chat, mo ban do. |
+| Backend Runtime | Node.js (v20+) + Express (TypeScript) | Xu ly toan bo logic nghiep vu, RESTful API endpoints, xac thuc va phan quyen vai tro (RBAC). |
+| Co so du lieu | Microsoft SQL Server (SQLEXPRESS) | He quan tri CSDL quan he chuan doanh nghiep, ho tro transaction ACID, khoa bi quan chong tranh chap kho hang. |
+| Database Driver | mssql / msnodesqlv8 | Ket noi truc tiep tu Node.js den SQL Server qua Windows Authentication/Trusted Connection voi hieu nang cao. |
+| API Khi tuong | Open-Meteo Realtime API | Trich xuat thong so thoi tiet Dak Song theo toa do ve tinh thuc, ho tro CORS, khong can API Key. |
 
 ---
 
-## 3. THIẾT KẾ CƠ SỞ DỮ LIỆU (DATABASE SCHEMA)
+## 3. THIET KE CO SO DU LIEU (DATABASE SCHEMA)
 
-Hệ thống sử dụng cơ sở dữ liệu `DakSongQuestDB` trên Microsoft SQL Server với cấu trúc quan hệ chuẩn hóa:
+He thong su dung co so du lieu DakSongQuestDB tren Microsoft SQL Server voi cau truc quan he chuan hoa:
 
 ```mermaid
 erDiagram
-    Venues ||--o{ UserVouchers : "cấp phát"
-    Products ||--o{ OrderItems : "chứa trong"
-    Orders ||--|{ OrderItems : "bao gồm"
-    QuizLeaderboard ||--o{ AdminAuditLogs : "theo dõi thay đổi"
+    AdminUsers ||--o{ AdminAuditLogs : "thuc hien thao tac"
+    Venues ||--o{ UserVouchers : "cap phat"
+    Products ||--o{ OrderItems : "chua trong"
+    Orders ||--|{ OrderItems : "bao gom"
+    QuizLeaderboard ||--o{ AdminAuditLogs : "theo doi thay doi"
     
+    AdminUsers {
+        int UserId PK
+        nvarchar Username UK
+        nvarchar Password
+        nvarchar FullName
+        nvarchar Role
+        nvarchar AgencyName
+        datetime CreatedAt
+    }
+
     Venues {
         int VenueId PK
         nvarchar VenueName
@@ -156,9 +176,11 @@ erDiagram
         nvarchar PaymentMethod
         nvarchar PaymentStatus
         nvarchar OrderStatus
+        nvarchar CancelledBy
         nvarchar Note
         datetime CreatedAt
         datetime AdminConfirmedAt
+        datetime UpdatedAt
     }
 
     OrderItems {
@@ -195,385 +217,401 @@ erDiagram
     }
 ```
 
-### 3.1. Chi tiết các bảng CSDL
+### 3.1. Chi tiet cac bang CSDL
 
-#### 1. Bảng `dbo.Venues` (Cơ sở lưu trú & ẩm thực tham gia Voucher)
-- `VenueId` (INT, PK, Identity): Mã định danh cơ sở.
-- `VenueName` (NVARCHAR(200)): Tên quán ăn / khách sạn / homestay.
-- `Category` (NVARCHAR(50)): Phân loại (`Ăn uống`, `Lưu trú`, `Đặc sản`).
-- `Discount` (NVARCHAR(50)): Mức giảm giá hiển thị (VD: `Giảm 20%`).
-- `TotalLimit` (INT): Hạn mức phát voucher tối đa do Admin quy định.
-- `IssuedCount` (INT): Số lượng voucher đã được cấp cho du khách qua vòng quay.
-- `UsedCount` (INT): Số lượng voucher khách đã mang đến quán dùng thực tế.
-- `IsActive` (BIT): Trạng thái hoạt động (1 = Đang mở, 0 = Tạm dừng).
-`   SS
-#### 2. Bảng `dbo.UserVouchers` (Voucher người dùng sở hữu)
-- `VoucherId` (INT, PK, Identity): Mã voucher.
-- `VenueId` (INT, FK -> Venues): Cơ sở áp dụng voucher.
-- `UserId` (VARCHAR(100)): Định danh người chơi Zalo.
-- `VoucherCode` (VARCHAR(50)): Mã voucher duy nhất (VD: `DS-20261011-8842`).
-- `DiscountPercent` (INT): Tỷ lệ chiết khấu (10, 15, 20, 30%).
-- `Status` (VARCHAR(20)): Trạng thái (`Active` = Chưa dùng, `Used` = Đã dùng tại quán).
-- `ClaimedAt` (DATETIME): Thời điểm trúng thưởng.
-- `UsedAt` (DATETIME): Thời điểm nhân viên cơ sở xác nhận sử dụng.
+#### 1. Bang dbo.AdminUsers (Tai khoan quan tri va phan quyen)
+- UserId (INT, PK, Identity): Ma dinh danh nguoi dung quan tri.
+- Username (NVARCHAR(50), Unique): Ten dang nhap (Vi du: htx_daksong, huyen_daksong).
+- Password (NVARCHAR(100)): Mat khau xac thuc.
+- FullName (NVARCHAR(150)): Ho va ten nguoi dai dien quan tri.
+- Role (NVARCHAR(50)): Vai tro phan quyen (COOP = Hop tac xa | DISTRICT = UBND Huyen).
+- AgencyName (NVARCHAR(200)): Ten co quan, don vi cong tac.
+- CreatedAt (DATETIME): Thoi diem khoi tao tai khoan.
 
-#### 3. Bảng `dbo.Products` (Nông sản & Đặc sản OCOP Đắk Song)
-- `ProductId` (INT, PK, Identity): Mã sản phẩm.
-- `ProductName` (NVARCHAR(200)): Tên đặc sản (VD: *Tiêu đỏ Đắk Song thượng hạng*).
-- `Origin` (NVARCHAR(100)): Xuất xứ (Xã Đắk N’rung, Nam Bình, Thuận Hạnh...).
-- `Category` (NVARCHAR(50)): Phân loại (*Hạt tiêu*, *Cà phê*, *Hạt dinh dưỡng*, *Nông sản khô*).
-- `Price` (DECIMAL(18,0)): Đơn giá niêm yết (VNĐ).
-- `Unit` (NVARCHAR(50)): Quy cách đóng gói (Gói 500g, Hũ 250g, Hộp 1kg).
-- `InStockQuantity` (INT): Số lượng tồn kho thực tế khả dụng.
-- `IsActive` (BIT): Trạng thái kinh doanh.
+#### 2. Bang dbo.Venues (Co so luu tru va am thuc tham gia Voucher)
+- VenueId (INT, PK, Identity): Ma dinh danh co so.
+- VenueName (NVARCHAR(200)): Ten quan an, nha hang, khach san hoac homestay.
+- Category (NVARCHAR(50)): Phan loai (An uong, Luu tru, Dac san).
+- Discount (NVARCHAR(50)): Muc giam gia hien thi (Vi du: Giam 20%).
+- TotalLimit (INT): Han muc phat voucher toi da do can bo Huyen thoa thuan va cai dat.
+- IssuedCount (INT): So luong voucher da duoc cap cho du khach qua vong quay.
+- UsedCount (INT): So luong voucher khach da mang den quan su dung thuc te.
+- IsActive (BIT): Trang thai hoat dong (1 = Dang hoat dong, 0 = Tam dung).
 
-#### 4. Bảng `dbo.Orders` (Đơn hàng mua đặc sản OCOP)
-- `OrderId` (INT, PK, Identity): Mã số đơn hàng nội bộ.
-- `OrderCode` (VARCHAR(50), Unique): Mã đơn định dạng `ORD-YYYYMMDD-XXXX`.
-- `UserId` (VARCHAR(100)): Mã người dùng đặt hàng.
-- `CustomerName` (NVARCHAR(150)): Họ tên người nhận hàng.
-- `Phone` (VARCHAR(20)): Số điện thoại liên hệ (10 chữ số).
-- `ShippingAddress` (NVARCHAR(350)): Địa chỉ giao hàng chi tiết kèm tỉnh thành.
-- `TotalAmount` (DECIMAL(18,0)): Tổng tiền hàng trước chiết khấu.
-- `DiscountAmount` (DECIMAL(18,0)): Số tiền giảm giá từ voucher.
-- `FinalAmount` (DECIMAL(18,0)): Số tiền thanh toán cuối cùng qua ZaloPay.
-- `VoucherCodeApplied` (VARCHAR(50)): Mã voucher giảm giá đã sử dụng (nếu có).
-- `PaymentMethod` (NVARCHAR(50)): Phương thức thanh toán (Mặc định `ZaloPay`).
-- `PaymentStatus` (NVARCHAR(30)): Trạng thái tiền (`Pending`, `Paid`, `Refunded`).
-- `OrderStatus` (NVARCHAR(50)): Tiến độ đơn hàng:
-  - `PendingConfirm`: Chờ xác nhận (khách được phép sửa địa chỉ & hủy đơn).
-  - `ReadyToShip`: Đã xác nhận còn hàng & Đóng gói (khách được phép hủy đơn).
-  - `Shipping`: Đang vận chuyển Viettel Post (khóa tính năng hủy đơn).
-  - `Completed`: Đã giao hàng thành công.
-  - `Cancelled`: Đơn hàng đã hủy (tự động hoàn tiền và hoàn trả số lượng vào kho).
-- `Note` (NVARCHAR(500)): Ghi chú (VD: *"Người dùng hủy đơn"* hoặc thông báo của HTX).
-- `CreatedAt` (DATETIME): Thời điểm đặt hàng.
-- `AdminConfirmedAt` (DATETIME): Thời điểm Admin xác nhận đơn hàng.
+#### 3. Bang dbo.UserVouchers (Voucher nguoi dung so huu)
+- VoucherId (INT, PK, Identity): Ma voucher.
+- VenueId (INT, FK -> Venues): Co so ap dung voucher.
+- UserId (VARCHAR(100)): Dinh danh nguoi choi Zalo.
+- VoucherCode (VARCHAR(50)): Ma voucher duy nhat (Vi du: DS-20261011-8842).
+- DiscountPercent (INT): Ty le chiet khau giam gia (10, 15, 20, 30%).
+- Status (VARCHAR(20)): Trang thai (Active = Chua dung, Used = Da dung tai quan).
+- ClaimedAt (DATETIME): Thoi diem trung thuong.
+- UsedAt (DATETIME): Thoi diem nhan vien co so xac nhan su dung.
 
-#### 5. Bảng `dbo.OrderItems` (Chi tiết các mặt hàng trong đơn)
-- `OrderItemId` (INT, PK, Identity): Mã định danh dòng đơn.
-- `OrderId` (INT, FK -> Orders): Mã đơn hàng.
-- `ProductId` (INT, FK -> Products): Mã sản phẩm.
-- `ProductName` (NVARCHAR(200)): Tên sản phẩm tại thời điểm mua.
-- `Price` (DECIMAL(18,0)): Đơn giá bán tại thời điểm mua.
-- `Quantity` (INT): Số lượng đặt mua.
-- `Subtotal` (DECIMAL(18,0)): Thành tiền (`Price * Quantity`).
+#### 4. Bang dbo.Products (Nong san va Dac san OCOP Dak Song)
+- ProductId (INT, PK, Identity): Ma san pham.
+- ProductName (NVARCHAR(200)): Ten dac san (Vi du: Tieu den huu co Dak Song, Ca phe Robusta Dak N'rung).
+- Origin (NVARCHAR(100)): Xuat xu (Xa Dak N'rung, Nam Binh, Thuan Hanh...).
+- Category (NVARCHAR(50)): Phan loai (Hat tieu, Ca phe, Hat dinh duong, Nong san kho).
+- Price (DECIMAL(18,0)): Don gia niem yet (VND).
+- Unit (NVARCHAR(50)): Quy cach dong goi (Goi 500g, Hu 250g, Hop 1kg).
+- InStockQuantity (INT): So luong ton kho thuc te kha dung trong kho HTX.
+- IsActive (BIT): Trang thai kinh doanh.
 
-#### 6. Bảng `dbo.QuizLeaderboard` (Bảng xếp hạng người chơi Quiz)
-- `AttemptId` (INT, PK, Identity): Mã lượt thi.
-- `ZaloUserId` (VARCHAR(100)): Định danh người chơi.
-- `DisplayName` (NVARCHAR(150)): Tên hiển thị người chơi.
-- `AvatarUrl` (NVARCHAR(500)): Đường dẫn ảnh đại diện người chơi.
-- `WeekId` (VARCHAR(20)): Định danh tuần thi đấu (Định dạng ISO: `YYYY-Www`, ví dụ `2026-W41`).
-- `Score` (INT): Số câu trả lời đúng (0 đến 25 câu).
-- `TotalQuestions` (INT): Tổng số câu của đề thi (mặc định 25).
-- `TimeMs` (INT): Tổng thời gian hoàn thành bài thi tính bằng mili-giây (phục vụ xếp hạng phụ khi bằng điểm).
-- `CreatedAt` / `UpdatedAt` (DATETIME): Thời điểm nộp bài / cập nhật điểm cao nhất.
+#### 5. Bang dbo.Orders (Don hang mua dac san OCOP)
+- OrderId (INT, PK, Identity): Ma so don hang noi bo.
+- OrderCode (VARCHAR(50), Unique): Ma don dinh dang ORD-YYYYMMDD-XXXX.
+- UserId (VARCHAR(100)): Ma nguoi dung dat hang.
+- CustomerName (NVARCHAR(150)): Ho ten nguoi nhan hang.
+- Phone (VARCHAR(20)): So dien thoai lien he nguoi nhan.
+- ShippingAddress (NVARCHAR(350)): Dia chi giao hang chi tiet kem tinh thanh.
+- TotalAmount (DECIMAL(18,0)): Tong tien hang truoc chiet khau.
+- DiscountAmount (DECIMAL(18,0)): So tien giam gia tu voucher OCOP.
+- FinalAmount (DECIMAL(18,0)): So tien thanh toan cuoi cung.
+- VoucherCodeApplied (VARCHAR(50)): Ma voucher giam gia da su dung.
+- PaymentMethod (NVARCHAR(50)): Phuong thuc thanh toan (ZaloPay hoac COD - Tien mat).
+- PaymentStatus (NVARCHAR(30)): Trang thai tien (Pending, Paid, Refunded, Cancelled).
+- OrderStatus (NVARCHAR(50)): Tien do don hang:
+  - PendingConfirm: Cho xac nhan (khach duoc phep sua thong tin nhan hang va huy don).
+  - ReadyToShip: HTX xac nhan con hang va dong goi (khach van duoc phep huy don).
+  - Shipping: Dang van chuyen Viettel Post (tu dong khoa tinh nang huy don).
+  - Completed: Da giao hang thanh cong den tay nguoi mua.
+  - Cancelled: Don hang da huy (hoan lai 100% ton kho ve CSDL).
+- CancelledBy (NVARCHAR(50)): Nguon huy don (USER = Khach tu huy | HTX = Hop tac xa huy).
+- Note (NVARCHAR(500)): Ghi chu chi tiet:
+  - Khi khach huy: "Nguoi dung huy don".
+  - Khi HTX huy: "Don hang do Hop tac xa huy do mot so van de ve chat luong cung nhu so luong nong san chua dam bao tai thoi diem nay. Hop tac xa chan thanh xin loi quy khach!".
+- CreatedAt (DATETIME): Thoi diem dat hang.
+- AdminConfirmedAt (DATETIME): Thoi diem HTX xac nhan don hang.
+- UpdatedAt (DATETIME): Thoi diem cap nhat gan nhat.
 
-#### 7. Bảng `dbo.AdminAuditLogs` (Nhật ký lịch sử chỉnh sửa Admin)
-- `LogId` (INT, PK, Identity): Mã bản ghi nhật ký.
-- `ActionType` (NVARCHAR(50)): Loại thao tác (`Cập nhật hạn mức`, `Cấp thêm voucher`, `Xóa voucher`, `Cập nhật tồn kho`, `Sửa giá bán`, `Xóa kết quả thi`...).
-- `TargetType` (NVARCHAR(50)): Phân loại đối tượng nghiệp vụ:
-  - `Voucher`: Liên quan đến hạn mức voucher cơ sở.
-  - `Hàng hóa OCOP`: Liên quan đến giá bán và tồn kho đặc sản.
-  - `Kết quả`: Liên quan đến việc xóa kết quả thí sinh trên Bảng xếp hạng.
-- `TargetName` (NVARCHAR(200)): Tên đối tượng bị tác động.
-- `Details` (NVARCHAR(500)): Chi tiết nội dung thay đổi.
-- `AdminName` (NVARCHAR(100)): Người thực hiện thao tác (Mặc định `Admin`).
-- `CreatedAt` (DATETIME): Thời điểm ghi nhận.
+#### 6. Bang dbo.OrderItems (Chi tiet cac mat hang trong don)
+- OrderItemId (INT, PK, Identity): Ma dinh danh dong don.
+- OrderId (INT, FK -> Orders): Ma don hang.
+- ProductId (INT, FK -> Products): Ma san pham.
+- ProductName (NVARCHAR(200)): Ten san pham tai thoi diem mua.
+- Price (DECIMAL(18,0)): Don gia ban tai thoi diem mua.
+- Quantity (INT): So luong dat mua.
+- Subtotal (DECIMAL(18,0)): Thanh tien (Price * Quantity).
 
----
+#### 7. Bang dbo.QuizLeaderboard (Bang xep hang nguoi choi Quiz)
+- AttemptId (INT, PK, Identity): Ma luot thi.
+- ZaloUserId (VARCHAR(100)): Dinh danh nguoi choi.
+- DisplayName (NVARCHAR(150)): Ten hien thi nguoi choi.
+- AvatarUrl (NVARCHAR(500)): Duong dan anh dai dien nguoi choi.
+- WeekId (VARCHAR(20)): Dinh danh tuan thi dau (Dinh dang ISO: YYYY-Www, vi du 2026-W42).
+- Score (INT): So cau tra loi dung (0 den 25 cau).
+- TotalQuestions (INT): Tong so cau cua de thi (mac dinh 25).
+- TimeMs (INT): Tong thoi gian hoan thanh bai thi tinh bang mili-giay.
+- CreatedAt / UpdatedAt (DATETIME): Thoi diem nop bai va cap nhat diem cao nhat.
 
-## 4. CHI TIẾT CÁC PHÂN HỆ NGHIỆP VỤ (CORE MODULES)
-
-### 4.1. Phân hệ Phía Người Dùng (Zalo Mini App)
-
-#### 1. Trang Chủ (Home Page)
-- **Popup Chào Mừng Theo Phiên (`sessionStorage`)**: Tự động hiển thị khi mở Mini App lần đầu để chào mừng du khách, giới thiệu sơ lược về Đắk Song và gợi ý săn voucher; không bị lặp lại gây phiền phức khi chuyển tab.
-- **Thời Tiết Vệ Tinh Thời Gian Thực**: Kết nối trực tiếp trạm vệ tinh Đắk Song (`12.535, 107.692`), thể hiện đầy đủ nhiệt độ thực tế, nhiệt độ cảm nhận, độ ẩm, tốc độ gió, chỉ số UV và dự báo mưa cao nguyên.
-- **Vòng Quay May Mắn Đồng Bộ Tồn Kho**: Bánh xe 8 ô trúng thưởng có âm thanh chân thực. Điểm đặc biệt: Vòng quay tự động loại trừ các cơ sở đã hết hạn mức voucher thực tế trên SQL Server, ngăn chặn hoàn toàn việc phát voucher ảo.
-- **Khám Phá Dịch Vụ Địa Phương**: Danh mục khách sạn, nhà nghỉ, nhà hàng kèm hotline gọi điện trực tiếp và chỉ đường GPS Google Maps.
-
-#### 2. Phân hệ Thi Đố Vui (Quiz & BXH Tuần)
-- **2 Chế Độ Thi Riêng Biệt**:
-  - *Chế độ Luyện tập*: Cho phép người chơi rèn luyện không giới hạn theo từng chủ đề văn hóa, tự do xem giải thích chi tiết sau mỗi câu hỏi.
-  - *Chế độ Thi chính thức*: Bộ đề chuẩn 25 câu hỏi tính giờ chính xác từng mili-giây, mỗi tài khoản được ghi nhận 1 kết quả tốt nhất trong tuần.
-- **Phân Biệt Thí Sinh Trùng Tên & Avatar**: Hệ thống tự động gắn mã nhận diện ngẫu nhiên dạng `#XXX` (VD: *Nguyễn Văn A #412*), giúp phân biệt chính xác giữa các tài khoản thử nghiệm hoặc người chơi trùng tên.
-- **Bộ Nút Điều Hướng Tương Phản Cao**: Sau khi hoàn thành bài thi, màn hình kết quả hiển thị 2 nút màu sắc tương phản rõ rệt: **`[🏆 Xem Bảng Xếp Hạng Tuần]`** và **`[🎯 Luyện tập]`**, giúp người dùng thao tác trực quan.
-- **Tùy Biến Hồ Sơ Người Chơi**: Cho phép đổi tên hiển thị và lựa chọn trong bộ 8 avatar linh vật văn hóa Đắk Song, đồng bộ trực tiếp lên BXH máy chủ.
-
-#### 3. Cửa Hàng Nông Sản OCOP & Quản Lý Đơn Hàng (Store Page)
-- **Danh Mục Đặc Sản Chuẩn OCOP**: Hiển thị nông sản chính gốc với giá niêm yết và tồn kho thực lấy trực tiếp từ SQL Server.
-- **Popup Chọn Số Lượng & Chống Mua Vượt Tồn Kho**: Kiểm soát tức thời số lượng thêm vào giỏ hàng. Khi thanh toán, nếu có tranh chấp mua đồng thời khiến kho không đủ hàng, hệ thống kích hoạt Popup cảnh báo và tự động điều chỉnh giỏ hàng về số lượng tối đa còn lại.
-- **Áp Mã Voucher OCOP**: Tự động kiểm tra và trừ chiết khấu phần trăm theo mã voucher hợp lệ của du khách.
-- **Thanh Toán ZaloPay In-App**: Khởi tạo đơn hàng, tính toán chiết khấu và mô phỏng hoàn tất thanh toán ZaloPay chuẩn xác, tự động trừ tồn kho thực tế trong CSDL.
-- **Theo Dõi Tiến Độ Đơn Hàng 4 Bước**:
-  - *Chờ duyệt* (`PendingConfirm`) -> *Đóng gói* (`ReadyToShip`) -> *Đang giao* (`Shipping`) -> *Hoàn tất* (`Completed`).
-  - Cho phép người mua sửa tên, số điện thoại, địa chỉ nhận hàng khi đơn còn ở bước Chờ duyệt.
-- **Cơ Chế Hủy Đơn Hàng Thông Minh**:
-  - Khi đơn đang ở bước *Chờ duyệt* hoặc *Đóng gói*: Hiển thị nút **`[❌ Hủy đơn hàng]`**. Khi bấm, hệ thống bật **Popup Modal xác nhận hủy đơn** (thông báo số tiền hoàn lại và lý do). Sau khi xác nhận, hệ thống gọi API hủy đơn, **tự động hoàn trả 100% số lượng tồn kho sản phẩm về SQL Server**, trừ bớt doanh thu trên Dashboard, và chuyển đơn sang tab *Đơn bạn đã hủy*.
-  - Khi đơn đã chuyển sang bước *Đang giao* (`Shipping`): Nút hủy đơn tự động bị vô hiệu hóa và khóa cứng: **`[🔒 Đang giao (Khóa hủy đơn)]`**, ngăn chặn việc hủy đơn khi hàng đã xuất kho cho đơn vị vận chuyển.
-
-#### 4. Cẩm Nang Du Lịch & Kho Voucher
-- **Bản Đồ Điểm Đến Đắk Song**: Tích hợp danh sách điểm tham quan (Điện gió Nam Bình, Đồi thông, Rừng cảnh quan, Thiền viện Trúc Lâm...).
-- **Kho Voucher Cá Nhân**: Quản lý các voucher du khách đã săn được từ Vòng quay hoặc phần thưởng Quiz, cung cấp mã bảo mật và nút để nhân viên quán xác nhận sử dụng tại chỗ.
+#### 8. Bang dbo.AdminAuditLogs (Nhat ky lich su kiem toan Admin)
+- LogId (INT, PK, Identity): Ma ban ghi nhat ky.
+- ActionType (NVARCHAR(50)): Loai thao tac (Cap nhat han muc, Cap them voucher, Xoa voucher, Cap nhat ton kho, Sua gia ban, Huy don hang, Xoa ket qua thi...).
+- TargetType (NVARCHAR(50)): Phan loai doi tuong nghiep vu (Voucher, Hang hoa OCOP, Don hang, Ket qua).
+- TargetName (NVARCHAR(200)): Ten doi tuong bi tac dong.
+- Details (NVARCHAR(500)): Chi tiet noi dung thay doi.
+- AdminName (NVARCHAR(100)): Don vi thuc hien thao tac (HTX Nong san Dak Song hoac Admin Huyen).
+- CreatedAt (DATETIME): Thoi diem ghi nhan thao tac.
 
 ---
 
-### 4.2. Phân hệ Phía Quản Trị (Admin CMS Web)
+## 4. CHI TIET CAC PHAN HE NGHIEP VU (CORE MODULES)
 
-Giao diện quản trị hiện đại, chuyên nghiệp, bảo mật cao tại địa chỉ `http://localhost:5000/admin.html`:
+### 4.1. Phan he Nguoi dung (Zalo Mini App)
 
-#### 1. Tab 1: Tổng Quan (Dashboard)
-- 5 thẻ chỉ số thống kê tức thời:
-  1. *Cơ sở hợp tác*: Tổng số quán & tổng hạn mức voucher đang phát hành.
-  2. *Voucher dùng tại quán*: Thống kê số voucher khách đã mang đến quán áp dụng thực tế.
-  3. *Doanh thu ZaloPay*: **Tổng số tiền thu được từ các đơn hàng thành công**. Điểm đặc biệt: Khi người dùng bấm hủy đơn, số tiền này **tự động trừ bớt tức thời** trên Dashboard.
-  4. *Thí sinh thi Quiz*: Tổng số lượt người tham gia làm bài thi trong tuần.
-  5. *Lịch sử chỉnh sửa*: Tổng số lượt thao tác quản trị được lưu vết.
-- Bảng tóm tắt các thao tác quản trị vừa thực hiện gần đây.
+#### 1. Trang Chu (Home Page)
+- Popup Gioi thieu Web Dak Song: Hien thi hop thoai gioi thieu ve Dak Song Quest moi khi nguoi dung vao ung dung, trinh bay cac tinh nang san voucher, thi quiz va mua sam nong san OCOP.
+- Thoi tiet Ve tinh Thoi gian thuc: Ket noi tram khi tuong toa do Dak Song (12.535, 107.692), the hien nhiet do thuc te, do am, toc do gio va chi so UV.
+- Vong quay May man Dong bo Ton kho: Banh xe 8 o quay voi am thanh mo phong truc quan. Tu dong loai bo co so da het han muc tren CSDL, khong phat voucher ao.
+- Danh ba Dich vu Dia phuong: Danh sach quan an, nha nghi, khach san kem so dien thoai hotline va chi duong Google Maps.
 
-#### 2. Tab 2: Quán & Hạn Mức Voucher (`Venues`)
-- Danh sách toàn bộ khách sạn, quán ăn tham gia chương trình kích cầu du lịch.
-- Xem chi tiết: Mã quán, Tên cơ sở, Ưu đãi, Hạn mức tổng (`TotalLimit`), Đã phát ra (`IssuedCount`), Đã dùng tại quán (`UsedCount`), Còn lại trong kho.
-- Các thao tác quản trị:
-  - *Thêm cơ sở mới*: Thiết lập tên quán, mức giảm giá và hạn mức ban đầu.
-  - *Cấp thêm voucher*: Bổ sung nhanh số lượng voucher (+10, +20, +50, +100, +200) cho cơ sở khi sắp hết.
-  - *Sửa hạn mức*: Điều chỉnh lại tổng hạn mức tối đa.
-  - *Xóa cơ sở*: Loại bỏ vĩnh viễn cơ sở khỏi hệ thống và Vòng quay may mắn.
+#### 2. Phan he Thi Do Vui (Quiz va BXH Tuan)
+- 2 Che do thi:
+  - Che do Luyen tap: Ren luyen khong gioi han theo chu de, xem loi giai chi tiet sau moi cau.
+  - Che do Thi chinh thuc: Bo de 25 cau hoi tinh gio theo mili-giay, moi tai khoan luu diem cao nhat trong tuan.
+- Phan biet thi sinh trung ten: Tu dong sinh Tag ID nhan dien (Vi du: Thi sinh #104).
+- Bo nut dieu huong ro rang: Sau khi hoan thanh bai thi, hien thi nut Xem Bang Xep Hang Tuan va Thi lai / Luyen tap.
+- Ho so nguoi choi: Cho phep doi ten hien thi va chon trong bo 8 avatar van hoa dac trung.
 
-#### 3. Tab 3: Đơn Hàng Nông Sản OCOP (`Orders`)
-- Quản lý toàn bộ danh sách đơn đặt hàng nông sản Đắk Song đồng bộ trực tiếp từ SQL Server.
-- Cột thông tin rõ ràng: Mã đơn (`#ORD-...`), Khách hàng, Số điện thoại & Địa chỉ, Số tiền thanh toán, Trạng thái tiền (`Đã trả ZaloPay` / `Đã hoàn tiền`), Tiến độ giao hàng, Thời gian đặt, và Nút điều phối.
-- **Phân Biệt Nổi Bật Trạng Thái Hủy Đơn**:
-  - Đơn do khách tự bấm hủy trong Mini App: Hiển thị huy hiệu đỏ **`[🔴 Người dùng hủy đơn]`** (kèm icon `user-x`), cột thao tác hiển thị **`Khách đã hủy`**, dưới thông tin có ghi chú rõ ràng: `📝 Ghi chú: Người dùng hủy đơn`.
-  - Đơn do hợp tác xã hủy: Hiển thị huy hiệu **`[⚪ HTX / Admin hủy đơn]`** kèm ghi chú hết hàng.
-- **Bộ Lọc Đơn Hàng Đa Năng**: Lọc theo *Tất cả*, *Chờ xác nhận*, *Đã xác nhận còn hàng*, *Đang vận chuyển*, *Đã giao thành công*, *Tất cả đơn hủy*, *🔴 Người dùng hủy đơn*, *⚪ HTX / Admin hủy đơn*.
-- **Quy Trình Điều Phối 1 Chạm**: Admin bấm `[Xác nhận còn hàng]` -> `[Giao Viettel Post]` -> `[Giao thành công]`.
-- **Cơ Chế Realtime Polling**: Tự động làm mới danh sách đơn và doanh thu mỗi 4 giây, giúp Admin nắm bắt đơn mới và đơn hủy ngay lập tức mà không cần F5 trình duyệt.
+#### 3. Cua hang Nong san OCOP va Quan ly Don hang (Store Page)
+- Danh muc dac san OCOP: Thong tin nguon goc, gia ca va ton kho thuc te tu SQL Server.
+- Thanh toan da kenh khong co chu Sandbox:
+  - Vi ZaloPay: Quy trinh mo phong chuan thanh toan In-App co popup xac nhan.
+  - Tien mat khi nhan hang (COD): Cho phep nguoi mua thanh toan truc tiep cho shipper khi nhan hang.
+  - Khong hien thi chu sandbox tren giao dien nguoi dung de tao su chuyen nghiep va thuc te.
+- Cap nhat thong tin nhan hang:
+  - Form chinh sua ho ten, so dien thoai, dia chi nhan hang.
+  - Nut xac nhan doi sang mau xanh noi bat.
+  - Hien thi popup thong bao khi cap nhat thanh cong.
+- Theo doi tien do don hang 4 buoc: Cho duyet -> Dong goi -> Dang giao -> Hoan tat.
+- Co che Huy don hoan kho thong minh:
+  - Khi don o buoc Cho duyet hoac Dong goi: Cho phep nguoi dung huy don kem hop thoai popup xac nhan.
+  - Tu dong hoan tra 100% so luong vao kho hang Products trong SQL Server.
+  - Khi don da chuyen sang Dang giao: Khoa nut huy don de bao ve tien do cua don vi van chuyen.
 
-#### 4. Tab 4: Sản Phẩm Đặc Sản OCOP (`Products`)
-- Danh sách nông sản Đắk Song đang niêm yết trên sàn.
-- Hiển thị: Mã SP, Tên nông sản, Xuất xứ, Phân loại, Quy cách, Giá bán niêm yết, Số lượng tồn kho (tự động cảnh báo đỏ khi tồn kho dưới 20 sản phẩm).
-- Thao tác: Thêm sản phẩm mới và Cập nhật giá bán / Điều chỉnh số lượng tồn kho.
-
-#### 5. Tab 5: Bảng Xếp Hạng Người Chơi Quiz (`Leaderboard`)
-- Xem danh sách xếp hạng thí sinh theo từng tuần (`WeekId`).
-- Xếp hạng công bằng dựa trên: Số câu trả lời đúng (cao xuống thấp), tiếp đến là Thời gian hoàn thành (ngắn nhất lên trước).
-- **Tính Năng Xóa Thành Tích (Reset Chuẩn Xác)**:
-  - Khi Admin phát hiện gian lận hoặc người chơi yêu cầu thi lại, Admin bấm **`[Xóa]`** kèm xác nhận popup.
-  - Hệ thống xóa bản ghi khỏi CSDL, **reset hoàn toàn điểm của thí sinh trong tuần đó về 0**, cho phép thí sinh vào thi lại bài thi hoàn toàn mới như lần đầu mà không bị lưu kết quả cũ.
-  - Ghi nhận lịch sử xóa vào nhật ký kiểm toán với phân loại chuẩn **`Kết quả`**.
-
-#### 6. Tab 6: Lịch Sử Chỉnh Sửa & Điều Phối (`Audit Logs`)
-- Lưu vết toàn bộ các thao tác nghiệp vụ quan trọng của Admin để phục vụ công tác thanh tra, hậu kiểm.
-- **Bộ Lọc Phân Loại Nhanh Chóng**:
-  - `Tất cả phân loại`
-  - `🏆 Kết quả (BXH Quiz)`: Theo dõi các lần Admin xóa thành tích thí sinh.
-  - `🎟️ Voucher cơ sở`: Theo dõi các lần thay đổi hạn mức, cấp bù hoặc xóa voucher quán.
-  - `📦 Hàng hóa OCOP`: Theo dõi các lần điều chỉnh giá bán và tồn kho sản phẩm.
-- Huy hiệu màu sắc tương phản cao, phân biệt trực quan giữa các nhóm nghiệp vụ.
+#### 4. Cam nang Du lich va Kho Voucher
+- Ban do va Diem tham quan: Gioi thieu Dien gio Nam Binh, Doi thong, Rung dac dung, Thien vien Truc Lam...
+- Kho Voucher ca nhan: Luu tru cac voucher trung thuong tu vong quay va quiz, cung cap ma de quan an xac nhan su dung.
 
 ---
 
-## 5. CÁC QUY TRÌNH NGHIỆP VỤ CỐT LÕI (CORE WORKFLOWS)
+### 4.2. Phan he Quan tri Admin CMS Web (Phan quyen 1 Server 2 Giao dien)
 
-### 5.1. Quy trình Đặt hàng - Thanh toán - Điều phối - Hủy đơn hoàn kho
+He thong hoat dong tai dia chi http://localhost:5000/admin.html, tu dong nhan dien vai tro de khoac len giao dien thuong hieu rieng biet:
+
+#### 1. Giao dien Hop tac xa Nong san Dak Song (Tai khoan: htx_daksong / 123 - Role: COOP)
+- Bo nhan dien thuong hieu Nong nghiep:
+  - Header va banner mang gam mau xanh ngoc / xanh la Emerald dac trung cua nong nghiep.
+  - Tieu de he thong: SAN NONG SAN OCOP DAK SONG (Huy hieu: HOP TAC XA - COOP).
+- Dashboard OCOP Seller Center:
+  - The 1: Doanh thu San OCOP (Tong tien don da thanh toan).
+  - The 2: Don cho duyet kho (Cac don moi can kiem tra nha vuon).
+  - The 3: Dong goi va Van chuyen (Don san sang giao hoac dang giao Viettel Post).
+  - The 4: Kho nong san OCOP (Tong mat hang dac san kem canh bao san pham ton kho duoi 20).
+  - The 5: Don hoan tat (Tong so don da giao thanh cong).
+  - So do 3 buoc dieu phoi: Kiem tra con hang -> Dong goi ban giao Shipper -> Quy trinh huy don hoan kho.
+- Tab nghiep vu:
+  - An toan bo cac tab thuoc tham quyen Huyen (Quan & Han muc Voucher, BXH Quiz, Nhat ky kiem toan).
+  - Mo toan quyen: Dieu phoi Don hang OCOP (nut Xac nhan con hang, Giao Viettel Post, Giao thanh cong, Huy don) va Kho Nong san & Gia OCOP.
+  - Quy dinh huy don cua HTX: Khi HTX huy don do chat luong hoac so luong khong dam bao, he thong tu dong ghi chu "Don hang do Hop tac xa huy do mot so van de ve chat luong cung nhu so luong nong san chua dam bao tai thoi diem nay. Hop tac xa chan thanh xin loi quy khach!", dong thoi tu dong hoan tra 100% ton kho ve CSDL.
+  - Bao ve API: Neu tai khoan HTX co tinh gui request can thiep vao co so voucher hoac BXH, backend tu dong tra ma loi 403 Forbidden.
+
+#### 2. Giao dien UBND va Ban Quan ly Huyen (Tai khoan: huyen_daksong / 123 - Role: DISTRICT)
+- Bo nhan dien Co quan Quan ly Nha nuoc:
+  - Header va banner mang gam mau Slate, Indigo va Vang Amber sang trong.
+  - Tieu de he thong: DAK SONG QUEST (Huy hieu: UBND HUYEN - DISTRICT).
+- Trung tam Dieu hanh IOC Du lich va Dich vu:
+  - The 1: Co so hop tac (Tong quan an, khach san va tong han muc voucher phat hanh).
+  - The 2: Voucher dung tai quan (So voucher khach da den su dung thuc te).
+  - The 3: Doanh thu San Nong san (Giam sat hoat dong kinh te so nong nghiep toan huyen).
+  - The 4: Thi sinh thi Quiz (Luong du khach tham gia tim hieu van hoa Dak Song).
+  - The 5: Lich su kiem toan (Tong so luot can thiep va dieu chinh he thong).
+  - Bang nhat ky kiem toan: Theo doi nguoi thuc hien, thoi gian va chi tiet thay doi han muc.
+- Tab nghiep vu:
+  - Mo toan quyen: Quan & Han muc Voucher (Them co so, Cap them voucher, Sua han muc, Xoa co so), BXH Nguoi choi Quiz (Xoa ket qua gian lan, reset ve 0 de thi lai), va Lich su kiem toan.
+  - Tab Don hang OCOP hoat dong o Che do Giam sat (Monitoring Mode): Huyen theo doi duoc tien do va doanh thu ma khong can thiep sua don cua HTX (tranh phat sinh loi 403).
+  - An tab Kho Nong san & Gia OCOP vi thuoc tai san va tham quyen rieng cua Hop tac xa.
+  - Bao ve API: Neu tai khoan Huyen co tinh gui request sua gia hoac kho hang nong san cua HTX, backend tu dong tra ma loi 403 Forbidden.
+
+#### 3. Tien ich Chuyen doi Vai tro 1-Click
+- Tren header luon co nut "Chuyen doi vai tro quan tri", cho phep hoan doi tuc thi giua HTX va Huyen trong 0.5 giay ma khong can nhap lai mat khau.
+
+---
+
+## 5. CAC QUY TRINH NGHIEP VU COT LOI (CORE WORKFLOWS)
+
+### 5.1. Quy trinh Dat hang - Thanh toan - Dieu phoi - Huy don hoan kho
 
 ```mermaid
 sequenceDiagram
     autonumber
-    actor User as Khách hàng (Mini App)
+    actor User as Khach hang (Mini App)
     participant Client as Frontend Store
     participant Server as Node.js Backend
     participant DB as SQL Server (MSSQL)
-    actor Admin as Quản trị viên (Admin CMS)
+    actor HTX as Hop tac xa (Admin COOP)
 
-    User->>Client: Chọn sản phẩm OCOP & Bấm Đặt hàng
-    Client->>Server: POST /api/orders/create (Giỏ hàng, Địa chỉ, Voucher)
-    Server->>DB: Kiểm tra InStockQuantity của từng món (Khóa hàng)
-    alt Không đủ tồn kho (Tranh chấp mua cùng lúc)
-        Server-->>Client: 400 Bad Request (Kho không đủ số lượng)
-        Client-->>User: Hiện Popup báo hết hàng & Tự cân đối giỏ hàng
-    else Đủ tồn kho
-        Server->>DB: Trừ InStockQuantity & Tạo Orders (Status: PendingConfirm)
-        Server->>DB: Tạo OrderItems chi tiết
-        Server-->>Client: 200 OK (Mã đơn ORD-YYYYMMDD-XXXX)
-        Client->>Server: POST /api/orders/simulate-zalopay-success
-        Server->>DB: Cập nhật PaymentStatus = 'Paid'
-        Server-->>Client: Thanh toán ZaloPay thành công
-        Client-->>User: Hiển thị đơn hàng trong tab "Đơn hàng của tôi"
+    User->>Client: Chon nong san OCOP & Chon PT Thanh toan (ZaloPay hoac COD)
+    Client->>Server: POST /api/orders/create (Gio hang, Dia chi, Voucher, PT Thanh toan)
+    Server->>DB: Kiem tra InStockQuantity cua tung mon (Khoa hang bi quan)
+    alt Khong du ton kho
+        Server-->>Client: 400 Bad Request (Kho khong du hang)
+        Client-->>User: Hien Popup canh bao va can doi lai gio hang
+    else Du ton kho
+        Server->>DB: Tru InStockQuantity & Tao don hang Orders (PendingConfirm)
+        Server->>DB: Tao cac ban ghi OrderItems chi tiet
+        Server-->>Client: 200 OK (Ma don ORD-YYYYMMDD-XXXX)
+        alt Thanh toan ZaloPay
+            Client->>Server: POST /api/orders/simulate-zalopay-success
+            Server->>DB: Cap nhat PaymentStatus = 'Paid'
+            Server-->>Client: Thanh toan thanh cong
+        else Thanh toan COD
+            Server->>DB: Cap nhat PaymentStatus = 'Pending' (Thu tien khi giao)
+            Server-->>Client: Dat hang thanh cong (COD)
+        end
+        Client-->>User: Hien thi don hang trong tab Don hang cua toi
     end
 
-    Note over Admin,DB: Admin CMS tự động cập nhật doanh thu & đơn mới (Realtime 4s)
+    Note over HTX,DB: Dashboard Admin tu dong cap nhat realtime moi 4 giay
 
-    alt Trường hợp 1: Admin xử lý giao hàng bình thường
-        Admin->>Server: PUT /api/admin/orders/:id/status (ReadyToShip)
-        Server->>DB: Cập nhật OrderStatus = 'ReadyToShip' (Đóng gói)
-        Admin->>Server: PUT /api/admin/orders/:id/status (Shipping)
-        Server->>DB: Cập nhật OrderStatus = 'Shipping' (Giao Viettel Post)
-        Note over User,Client: Mini App tự động KHÓA nút hủy đơn: [🔒 Đang giao]
-        Admin->>Server: PUT /api/admin/orders/:id/status (Completed)
-        Server->>DB: Cập nhật OrderStatus = 'Completed' (Giao thành công)
-    else Trường hợp 2: Khách hàng chủ động hủy đơn (khi chưa Shipping)
-        User->>Client: Bấm nút [❌ Hủy đơn hàng]
-        Client-->>User: Hiện Popup Modal xác nhận hủy & hoàn tiền ZaloPay
-        User->>Client: Bấm [Xác nhận hủy] trong Popup
+    alt Truong hop 1: HTX dieu phoi don hang binh thuong
+        HTX->>Server: PUT /api/admin/orders/:id/status (ReadyToShip)
+        Server->>DB: Cap nhat OrderStatus = 'ReadyToShip' (HTX da goi nha vuon con hang)
+        HTX->>Server: PUT /api/admin/orders/:id/status (Shipping)
+        Server->>DB: Cap nhat OrderStatus = 'Shipping' (Ban giao Viettel Post)
+        Note over User,Client: Mini App tu dong KHOA nut huy don cua khach
+        HTX->>Server: PUT /api/admin/orders/:id/status (Completed)
+        Server->>DB: Cap nhat OrderStatus = 'Completed', neu la COD -> PaymentStatus = 'Paid'
+    else Truong hop 2: Khach hang chu dong huy don (truoc khi Shipping)
+        User->>Client: Bam nut Huy don hang
+        Client-->>User: Hien Popup Modal xac nhan huy don
+        User->>Client: Xac nhan huy trong Popup
         Client->>Server: PUT /api/orders/:code/cancel
-        Server->>DB: Kiểm tra OrderStatus (Chặn nếu đã Shipping)
-        Server->>DB: Cộng trả lại InStockQuantity cho từng sản phẩm
-        Server->>DB: Cập nhật OrderStatus = 'Cancelled', PaymentStatus = 'Refunded'
-        Server-->>Client: 200 OK (Đã hủy đơn thành công)
-        Client-->>User: Chuyển đơn sang tab "Đơn đã hủy", hiện thông báo hoàn tiền
-        Note over Admin,DB: Dashboard Admin tự động TRỪ BỚT doanh thu ZaloPay<br/>Bảng đơn hàng hiện huy hiệu [🔴 Người dùng hủy đơn]
+        Server->>DB: Cong tra lai InStockQuantity cho tung san pham
+        Server->>DB: Cap nhat OrderStatus = 'Cancelled', CancelledBy = 'USER', Note = 'Nguoi dung huy don'
+        Server-->>Client: 200 OK (Da huy don thanh cong)
+        Client-->>User: Chuyen sang tab Don da huy, hien thi thong tin hoan kho
+    else Truong hop 3: Hop tac xa huy don do het hang hoac pham cap chua dat
+        HTX->>Server: PUT /api/admin/orders/:id/status (newStatus: 'Cancelled')
+        Server->>DB: Cong tra lai InStockQuantity cho tung san pham
+        Server->>DB: Cap nhat OrderStatus = 'Cancelled', CancelledBy = 'HTX', Note = 'Don hang do Hop tac xa huy do mot so van de ve chat luong cung nhu so luong nong san chua dam bao tai thoi diem nay. Hop tac xa chan thanh xin loi quy khach!'
+        Server->>DB: Ghi AdminAuditLogs ve viec HTX huy don
+        Server-->>HTX: 200 OK (Da huy don va hoan kho thanh cong)
     end
 ```
 
 ---
 
-### 5.2. Quy trình Vòng quay may mắn & Đồng bộ Hạn mức cơ sở
+### 5.2. Quy trinh Vong quay may man va Dong bo Han muc co so
 
 ```mermaid
 sequenceDiagram
     autonumber
-    actor User as Người chơi
-    participant MiniApp as Vòng quay Mini App
+    actor User as Nguoi choi
+    participant MiniApp as Vong quay Mini App
     participant Server as Backend API
     participant DB as SQL Server
 
-    User->>MiniApp: Bấm "Quay ngay"
+    User->>MiniApp: Bam Quay ngay
     MiniApp->>Server: GET /api/vouchers/available-pool
     Server->>DB: SELECT Venues WHERE IsActive = 1 AND (TotalLimit - IssuedCount) > 0
-    DB-->>Server: Danh sách các cơ sở còn hạn mức thực tế
+    DB-->>Server: Danh sach cac quan con han muc thuc te
     
-    alt Toàn bộ các quán đều hết hạn mức
-        Server-->>MiniApp: Trả về danh sách rỗng
-        MiniApp-->>User: Thông báo: "Hôm nay các cơ sở đã phát hết voucher ưu đãi"
-    else Còn quán có hạn mức
-        Server-->>MiniApp: Trả về danh sách quán đủ điều kiện
-        MiniApp->>MiniApp: Quay bánh xe với âm thanh tick-tick vật lý
+    alt Toan bo co so deu het han muc
+        Server-->>MiniApp: Danh sach rong
+        MiniApp-->>User: Thong bao: Hom nay cac co so da phat het voucher uu dai
+    else Con co so co han muc
+        Server-->>MiniApp: Danh sach quan du dieu kien
+        MiniApp->>MiniApp: Quay banh xe voi am thanh mo phong
         MiniApp->>Server: POST /api/vouchers/claim (UserId, VenueId)
         Server->>DB: Transaction: UPDATE Venues SET IssuedCount = IssuedCount + 1
         Server->>DB: INSERT INTO UserVouchers (VoucherCode, Status: 'Active')
-        Server-->>MiniApp: Trả về mã voucher chính thức (DS-YYYYMMDD-XXXX)
-        MiniApp-->>User: Mở Popup trúng thưởng & Tự động lưu vào Kho Voucher
+        Server-->>MiniApp: Tra ve ma voucher chinh thuc (DS-YYYYMMDD-XXXX)
+        MiniApp-->>User: Mo Popup trung thuong va tu dong luu vao Kho Voucher
     end
 ```
 
 ---
 
-## 6. DANH MỤC API ENDPOINTS TOÀN HỆ THỐNG
+## 6. DANH MUC API ENDPOINTS TOAN HE THONG
 
-### 6.1. Nhóm API Đơn hàng & Sản phẩm OCOP (`/api/orders`, `/api/products`)
-| Phương thức | Endpoint | Mô tả |
+### 6.1. Nhom API Don hang va San pham OCOP (/api/orders, /api/products)
+| Phuong thuc | Endpoint | Mo ta |
 | :--- | :--- | :--- |
-| `GET` | `/api/products` | Lấy danh mục sản phẩm OCOP mới nhất kèm số lượng tồn kho thực tế. |
-| `POST` | `/api/orders/create` | Tạo đơn hàng mới, kiểm tra số lượng và trừ tồn kho trong transaction. |
-| `POST` | `/api/orders/simulate-zalopay-success` | Giả lập xác nhận thanh toán ZaloPay thành công cho đơn hàng. |
-| `POST` | `/api/orders/zalopay-callback` | Webhook tiếp nhận thông báo thanh toán chính thức từ máy chủ ZaloPay. |
-| `PUT` | `/api/orders/:id/cancel` | Khách hủy đơn (hỗ trợ cả `OrderId` số và `OrderCode` chuỗi), hoàn kho và hoàn tiền ZaloPay. |
-| `PUT` | `/api/orders/:id/update-shipping` | Cập nhật lại họ tên, số điện thoại, địa chỉ nhận hàng khi đơn còn ở bước Chờ duyệt. |
-| `GET` | `/api/orders/track/:orderCode` | Tra cứu trạng thái đơn hàng thời gian thực theo mã đơn. |
+| GET | /api/products | Lay danh muc san pham OCOP kem so luong ton kho thuc te. |
+| POST | /api/orders/create | Tao don hang moi, ho tro thanh toan ZaloPay va COD, tru ton kho an toan. |
+| POST | /api/orders/simulate-zalopay-success | Gia lap xac nhan thanh toan ZaloPay thanh cong. |
+| POST | /api/orders/zalopay-callback | Webhook tiep nhan thong bao thanh toan chinh thuc tu ZaloPay. |
+| PUT | /api/orders/:id/cancel | Khach hang chu dong huy don khi chua giao, tu dong hoan kho 100%. |
+| PUT | /api/orders/:id/update-shipping | Cap nhat lai ten, so dien thoai, dia chi nhan hang khi don o buoc Cho duyet. |
+| GET | /api/orders/track/:orderCode | Tra cuu tien do don hang theo ma don thoi gian thuc. |
 
-### 6.2. Nhóm API Vòng quay & Voucher (`/api/vouchers`)
-| Phương thức | Endpoint | Mô tả |
+### 6.2. Nhom API Vong quay va Voucher (/api/vouchers)
+| Phuong thuc | Endpoint | Mo ta |
 | :--- | :--- | :--- |
-| `GET` | `/api/vouchers/available-pool` | Lấy danh sách các cơ sở còn hạn mức thực tế cho Vòng quay. |
-| `POST` | `/api/vouchers/claim` | Cấp phát voucher trúng thưởng, tăng số lượng phát hành `IssuedCount`. |
-| `GET` | `/api/vouchers/user/:userId` | Lấy danh sách toàn bộ voucher người dùng đang sở hữu. |
-| `POST` | `/api/vouchers/redeem` | Nhân viên cơ sở xác nhận dùng voucher tại chỗ, tăng `UsedCount`. |
+| GET | /api/vouchers/available-pool | Lay danh sach cac co so con han muc thuc te cho Vong quay. |
+| POST | /api/vouchers/claim | Cap phat voucher trung thuong, tang so luong phat hanh IssuedCount. |
+| GET | /api/vouchers/user/:userId | Lay danh sach toan bo voucher nguoi dung dang so huu. |
+| POST | /api/vouchers/redeem | Nhan vien co so xac nhan dung voucher tai cho, tang UsedCount. |
 
-### 6.3. Nhóm API Bảng xếp hạng Quiz (`/api/leaderboard`)
-| Phương thức | Endpoint | Mô tả |
+### 6.3. Nhom API Bang xep hang Quiz (/api/leaderboard)
+| Phuong thuc | Endpoint | Mo ta |
 | :--- | :--- | :--- |
-| `GET` | `/api/leaderboard?weekId=...` | Lấy bảng xếp hạng điểm tuần của các thí sinh (sắp xếp theo điểm và thời gian). |
-| `GET` | `/api/leaderboard/weeks` | Danh sách các tuần thi đấu có dữ liệu. |
-| `GET` | `/api/leaderboard/status?userId=...` | Kiểm tra kết quả thi tuần hiện tại của một người chơi cụ thể. |
-| `POST` | `/api/leaderboard/submit` | Nộp bài thi Quiz chính thức, lưu điểm và thời gian làm bài mili-giây. |
-| `PUT` | `/api/leaderboard/rename` | Đổi tên hiển thị và cập nhật avatar của người chơi trên bảng xếp hạng. |
+| GET | /api/leaderboard?weekId=... | Lay bang xep hang diem tuan cua thi sinh (sap xep theo diem va thoi gian). |
+| GET | /api/leaderboard/weeks | Danh sach cac tuan thi dau co du lieu. |
+| GET | /api/leaderboard/status?userId=... | Kiem tra ket qua thi tuan hien tai cua nguoi choi. |
+| POST | /api/leaderboard/submit | Nop bai thi Quiz chinh thuc, luu diem va thoi gian mili-giay. |
+| PUT | /api/leaderboard/rename | Doi ten hien thi va cap nhat avatar thi sinh tren bang xep hang. |
 
-### 6.4. Nhóm API Quản trị Admin CMS (`/api/admin`)
-| Phương thức | Endpoint | Mô tả |
-| :--- | :--- | :--- |
-| `GET` | `/api/admin/dashboard/stats` | Thống kê tổng hợp số liệu cho Dashboard (Doanh thu ZaloPay, Voucher, Thí sinh). |
-| `GET` | `/api/admin/venues` | Lấy danh sách toàn bộ cơ sở và trạng thái hạn mức voucher. |
-| `POST` | `/api/admin/venues` | Thêm cơ sở hợp tác kinh doanh mới. |
-| `PUT` | `/api/admin/venues/:id/limit` | Thay đổi hạn mức voucher tối đa của một quán. |
-| `POST` | `/api/admin/venues/:id/add-vouchers` | Cấp thêm số lượng voucher (+10, +20, +50...) cho cơ sở. |
-| `DELETE` | `/api/admin/venues/:id` | Xóa cơ sở khỏi hệ thống và loại bỏ khỏi vòng quay. |
-| `GET` | `/api/admin/orders` | Quản trị viên xem danh sách toàn bộ đơn hàng (hỗ trợ lọc trạng thái). |
-| `PUT` | `/api/admin/orders/:id/status` | Điều phối chuyển bước đơn hàng (`ReadyToShip`, `Shipping`, `Completed`, `Cancelled`). |
-| `POST` | `/api/admin/products` | Thêm mặt hàng đặc sản OCOP mới. |
-| `PUT` | `/api/admin/products/:id` | Cập nhật giá bán niêm yết và số lượng tồn kho nông sản. |
-| `GET` | `/api/admin/audit-logs` | Lấy danh sách lịch sử chỉnh sửa hệ thống. |
-| `DELETE` | `/api/admin/leaderboard/:id` | Xóa kết quả thi của thí sinh, reset điểm tuần về 0 để thi lại từ đầu. |
+### 6.4. Nhom API Quan tri Admin CMS (/api/admin)
+| Phuong thuc | Endpoint | Quyen han | Mo ta |
+| :--- | :--- | :--- | :--- |
+| POST | /api/admin/auth/login | Tat ca | Dang nhap quan tri, xac thuc vai tro COOP hoac DISTRICT. |
+| GET | /api/admin/dashboard/stats | Tat ca | Thong ke tong hop so lieu Dashboard (Co so, Voucher, Don hang, OCOP, Thi sinh, Audit Logs). |
+| GET | /api/admin/venues | Tat ca | Lay danh sach toan bo co so va han muc voucher. |
+| POST | /api/admin/venues | DISTRICT | Them co so du lich moi (COOP bi chan 403). |
+| PUT | /api/admin/venues/:id/limit | DISTRICT | Thay doi han muc voucher toi da cua mot quan (COOP bi chan 403). |
+| POST | /api/admin/venues/:id/add-vouchers | DISTRICT | Cap them so luong voucher cho quan (COOP bi chan 403). |
+| DELETE | /api/admin/venues/:id | DISTRICT | Xoa co so khoi he thong va vong quay (COOP bi chan 403). |
+| GET | /api/admin/orders | Tat ca | Quan tri vien xem danh sach don hang kem phan loai CancelledBy. |
+| GET | /api/admin/orders/:id/items | Tat ca | Xem chi tiet cac san pham ben trong don hang. |
+| PUT | /api/admin/orders/:id/status | COOP | Dieu phoi don hang (ReadyToShip, Shipping, Completed, Cancelled). DISTRICT bi chan 403. |
+| POST | /api/admin/products | COOP | Them mat hang dac san OCOP moi. DISTRICT bi chan 403. |
+| PUT | /api/admin/products/:id | COOP | Cap nhat gia ban niem yet va so luong ton kho nong san. DISTRICT bi chan 403. |
+| GET | /api/admin/audit-logs | Tat ca | Lay danh sach nhat ky lich su kiem toan he thong. |
+| DELETE | /api/admin/leaderboard/:id | DISTRICT | Xoa ket qua thi gian lan, reset diem tuan ve 0 de thi lai. COOP bi chan 403. |
 
 ---
 
-## 7. HƯỚNG DẪN CÀI ĐẶT & TRIỂN KHAI (DEPLOYMENT GUIDE)
+## 7. HUONG DAN CAI DAT VA TRIEN KHAI (DEPLOYMENT GUIDE)
 
-### 7.1. Yêu cầu môi trường
-- **Node.js**: Phiên bản 20.x trở lên.
-- **Package Manager**: `npm` phiên bản 10.x trở lên.
-- **Cơ sở dữ liệu**: Microsoft SQL Server 2019/2022 hoặc SQL Server Express (`.\SQLEXPRESS`).
-- **ODBC Driver**: ODBC Driver 18 for SQL Server (hoặc Driver 17).
-- **Zalo CLI**: `zmp-cli` (cho việc kiểm thử và triển khai Zalo Mini App).
+### 7.1. Yeu cau moi truong
+- Node.js: Phien ban 20.x tro len.
+- Package Manager: npm phien ban 10.x tro len.
+- Co so du lieu: Microsoft SQL Server 2019/2022 hoac SQL Server Express (.\SQLEXPRESS).
+- ODBC Driver: ODBC Driver 18 for SQL Server (hoac Driver 17).
+- Zalo CLI: zmp-cli (cho viec kiem thu va trien khai Zalo Mini App).
 
 ---
 
-### 7.2. Cấu hình Cơ sở dữ liệu SQL Server
-1. Mở SQL Server Management Studio (SSMS).
-2. Tạo cơ sở dữ liệu:
+### 7.2. Cau hinh Co so du lieu SQL Server
+1. Mo SQL Server Management Studio (SSMS).
+2. Tao co so du lieu:
    ```sql
    CREATE DATABASE DakSongQuestDB;
    ```
-3. Cấu hình chuỗi kết nối trong file `backend/.env`:
+3. Cau hinh chuoi ket noi trong file backend/.env:
    ```env
    PORT=5000
    DB_SERVER=.\SQLEXPRESS
    DB_DATABASE=DakSongQuestDB
    DB_CONNECTION_STRING=Server=.\SQLEXPRESS;Database=DakSongQuestDB;Trusted_Connection=Yes;Driver={ODBC Driver 18 for SQL Server};TrustServerCertificate=Yes
    ```
-4. Khi khởi chạy backend lần đầu, hệ thống sẽ **tự động khởi tạo toàn bộ các bảng CSDL** (`Venues`, `UserVouchers`, `Products`, `Orders`, `OrderItems`, `QuizLeaderboard`, `AdminAuditLogs`) và nạp sẵn dữ liệu mẫu ban đầu.
+4. Khi khoi chay backend lan dau, he thong se tu dong khoi tao toan bo cac bang CSDL (AdminUsers, Venues, UserVouchers, Products, Orders, OrderItems, QuizLeaderboard, AdminAuditLogs) va nap san du lieu mau ban dau.
 
 ---
 
-### 7.3. Khởi chạy Backend Server & Admin CMS
-Mở Terminal tại thư mục `backend`:
+### 7.3. Khoi chay Backend Server va Admin CMS
+Mo Terminal tai thu muc backend:
 ```bash
 cd backend
 npm install
 npm run build
 node dist/index.js
 ```
-- **Máy chủ API Backend** hoạt động tại: `http://localhost:5000`
-- **Trang Quản trị Admin CMS** truy cập tại: `http://localhost:5000/admin.html`
+- May chu API Backend hoat dong tai: http://localhost:5000
+- Trang Quan tri Admin CMS truy cap tai: http://localhost:5000/admin.html
+
+Tai khoan dang nhap quan tri:
+- Hop tac xa Nong san Dak Song (Role: COOP): htx_daksong / 123
+- UBND va Ban Quan ly Huyen (Role: DISTRICT): huyen_daksong / 123
 
 ---
 
-### 7.4. Khởi chạy Frontend Zalo Mini App
-Mở Terminal tại thư mục gốc của dự án:
+### 7.4. Khoi chay Frontend Zalo Mini App
+Mo Terminal tai thu muc goc cua du an:
 ```bash
 npm install
 npm run dev
 ```
-- Mở trình duyệt tại: `http://localhost:5173` để trải nghiệm giao diện Mini App.
+- Mo trinh duyet tai: http://localhost:5173 de trai nghiem giao dien Mini App.
 
 ---
 
-### 7.5. Triển khai lên môi trường Zalo Mini App thật
-1. Đăng nhập tài khoản Zalo Developer:
+### 7.5. Trien khai len moi truong Zalo Mini App that
+1. Dang nhap tai khoan Zalo Developer:
    ```bash
    zmp login
    ```
-   *(Quét mã QR bằng ứng dụng Zalo trên điện thoại để xác thực đăng nhập)*.
-2. Đóng gói và tải phiên bản lên máy chủ Zalo:
+   (Quet ma QR bang ung dung Zalo tren dien thoai de xac thuc dang nhap).
+2. Dong goi va tai phien ban len may chu Zalo:
    ```bash
    npm run deploy
    ```
-3. Điền thông tin phiên bản kiểm thử (Testing) và mô tả cập nhật. Sau khi tải lên thành công, quét mã QR trên Zalo Mini App Developer Console (`mini.zalo.me`) bằng điện thoại để chạy thử nghiệm trực tiếp trên app Zalo.
+3. Dien thong tin phien ban kiem thu (Testing) va mo ta cap nhat. Sau khi tai len thanh cong, quet ma QR tren Zalo Mini App Developer Console (mini.zalo.me) bang dien thoai de chay thu nghiem truc tiep tren app Zalo.
 
 ---
 
-## 8. KẾT LUẬN & ĐỊNH HƯỚNG MỞ RỘNG
-Dự án **Đắk Song Quest** đã hoàn thiện 100% các chức năng cốt lõi theo đúng thiết kế, vận hành ổn định trên cả môi trường Web máy tính và Zalo Mini App trên điện thoại thông minh. Hệ thống giải quyết trọn vẹn bài toán kích cầu du lịch địa phương, số hóa nông sản OCOP, minh bạch hóa quy trình thanh toán - giao vận và lưu vết kiểm toán chặt chẽ.
+## 8. KET LUAN VA DINH HUONG MO RONG
+Du an Dak Song Quest da hoan thien 100% cac chuc nang cot loi theo dung thiet ke, van hanh on dinh tren ca moi truong Web may tinh va Zalo Mini App tren dien thoai thong minh. He thong giai quyet tron ven bai toan kich cau du lich dia phuong, so hoa nong san OCOP, phan dinh quyen han ro rang giua Hop tac xa va UBND Huyen tren cung 1 may chu duy nhat, minh bach hoa quy trinh thanh toan - giao van va luu vet kiem toan chat che.

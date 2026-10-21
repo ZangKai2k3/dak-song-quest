@@ -1,117 +1,107 @@
-# 🌲 HƯỚNG DẪN CÀI ĐẶT & CHẠY BACKEND ĐẮK SONG QUEST (MICROSOFT SQL SERVER)
+# HUONG DAN CAI DAT VA CHAY BACKEND DAK SONG QUEST (MICROSOFT SQL SERVER)
 
-Hệ thống Backend này được xây dựng bằng **Node.js + TypeScript + Express** kết nối trực tiếp với **Microsoft SQL Server (MSSQL)** để:
-1. **Quản lý hạn mức Voucher cho từng cơ sở**: Admin nhập số lượng voucher tối đa theo thỏa thuận với quán (`TotalLimit`), kiểm soát số lượng đã phát ra (`IssuedCount`), số lượng khách đã đến dùng (`UsedCount`).
-2. **Sàn Đặc sản OCOP Đắk Song**: Bán các mặt hàng khô đặc sản (Hạt tiêu Đắk N’rung, Cà phê Robusta bazan, Hạt Mắc ca sấy nứt, Măng le rừng khô).
-3. **Điều phối đơn hàng & ZaloPay**: Người dùng đặt hàng, lưu địa chỉ giao hàng, thanh toán qua ZaloPay. Admin kiểm tra tiền về $\rightarrow$ gọi điện xác nhận người dân còn hàng $\rightarrow$ chuyển trạng thái sẵn sàng giao (`ReadyToShip`).
-4. **Trang Web Quản trị (Admin Portal)**: Giao diện web trực quan tại `http://localhost:5000/admin` cho phép Admin thay đổi nội dung, chỉnh hạn mức voucher, cập nhật giá/kho sản phẩm và đổi trạng thái đơn hàng trực tiếp vào SQL Server!
+He thong Backend duoc xay dung bang Node.js, TypeScript va Express ket noi truc tiep voi Microsoft SQL Server (MSSQL). He thong ap dung kien truc 1 Server duy nhat nhung tu dong phan quyen va tao ra 2 bo giao dien rieng biet cho Hop tac xa va UBND Huyen:
 
----
-
-## 🛠️ BƯỚC 1: KHỞI TẠO CƠ SỞ DỮ LIỆU SQL SERVER
-
-1. Mở **SQL Server Management Studio (SSMS)** hoặc công cụ quản lý SQL Server bạn đang dùng.
-2. Mở file [schema.sql](./schema.sql) trong thư mục `backend/`.
-3. Bấm **Execute** (hoặc phím `F5`) để chạy kịch bản:
-   - Tự động tạo cơ sở dữ liệu `DakSongQuestDB`.
-   - Tạo 5 bảng: `Venues`, `UserVouchers`, `Products`, `Orders`, `OrderItems`.
-   - Nạp sẵn dữ liệu mẫu cho các quán và các mặt hàng đặc sản Đắk Song OCOP.
+1. Phan quyen tai khoan Backend:
+   - Hop tac xa Nong san Dak Song (Tai khoan: htx_daksong / Mat khau: 123 - Role: COOP): Toan quyen quan tri San TMDT OCOP, kho hang dac san, bang gia, xac nhan con hang, dong goi gui Viettel Post, hoan tat don hoac huy don kem ghi chu ro rang.
+   - UBND va Ban Quan ly Huyen (Tai khoan: huyen_daksong / Mat khau: 123 - Role: DISTRICT): Tham dinh, thoa thuan va cap phat han muc voucher quan an, khach san; quan tri BXH Quiz va nhat ky kiem toan toan he thong.
+2. Quan ly han muc Voucher cho tung co so: Cung cap han muc voucher theo thoa thuan voi quan (TotalLimit), kiem soat so luong da phat ra (IssuedCount) va so luong khach da den dung thuc te (UsedCount).
+3. San Dac san OCOP Dak Song: Quan ly danh muc dac san nong nghiep Dak Song (Hat tieu huu co Dak Song, Ca phe Robusta dac san, Hat Mac ca say nut, Mang le rung kho).
+4. Dieu phoi don hang va Thanh toan da kenh: Nguoi dung dat hang, luu dia chi giao hang, thanh toan linh hoat qua Vi ZaloPay hoac Tien mat (COD). HTX kiem tra don hang, goi dien xac nhan voi nha vuon con hang va chuyen trang thai sang san sang giao (ReadyToShip).
+5. Trang Web Quan tri Admin CMS: Giao dien web tai dia chi http://localhost:5000/admin.html cho phep can bo dang nhap theo quyen han, tu dong thay doi mau sac thuong hieu va bo cong cu phu hop voi tung don vi.
 
 ---
 
-## ⚙️ BƯỚC 2: CẤU HÌNH BIẾN MÔI TRƯỜNG (.env)
+## BUOC 1: KHOI TAO CO SO DU LIEU SQL SERVER
 
-Mở file [.env](./.env) trong thư mục `backend/` và sửa lại thông tin tài khoản SQL Server của bạn:
+1. Mo SQL Server Management Studio (SSMS) hoac cong cu quan ly SQL Server ban dang dung.
+2. Tao co so du lieu moi:
+   ```sql
+   CREATE DATABASE DakSongQuestDB;
+   ```
+3. Khi may chu backend khoi chay lan dau tien, he thong se tu dong kiem tra va khoi tao toan bo cac bang CSDL (AdminUsers, Venues, Products, Orders, OrderItems, UserVouchers, QuizLeaderboard, AdminAuditLogs) va nap san du lieu mau ban dau.
+
+---
+
+## BUOC 2: CAU HINH BIEN MOI TRUONG (.env)
+
+Mo file .env trong thu muc backend/ va kiem tra thong tin ket noi SQL Server:
 
 ```env
 PORT=5000
 
-# Tên máy chủ SQL Server của bạn:
-# - Nếu là bản SQL Server mặc định: localhost hoặc 127.0.0.1
-# - Nếu là bản SQL Server Express: localhost\\SQLEXPRESS
-DB_SERVER=localhost
+# Ten may chu SQL Server:
+# - Neu dung ban SQL Server mac dinh: localhost hoac 127.0.0.1
+# - Neu dung ban SQL Server Express: .\SQLEXPRESS hoac localhost\SQLEXPRESS
+DB_SERVER=.\SQLEXPRESS
 DB_PORT=1433
 DB_DATABASE=DakSongQuestDB
 
-# Tài khoản đăng nhập SQL Server (SQL Authentication):
-DB_USER=sa
-DB_PASSWORD=Mật_khẩu_SQL_Server_của_bạn
-
-DB_ENCRYPT=false
-DB_TRUST_SERVER_CERTIFICATE=true
+# Chuoi ket noi Windows Authentication (khuyen nghi cho ban Express):
+DB_CONNECTION_STRING=Server=.\SQLEXPRESS;Database=DakSongQuestDB;Trusted_Connection=Yes;Driver={ODBC Driver 18 for SQL Server};TrustServerCertificate=Yes
 ```
 
 ---
 
-## 🚀 BƯỚC 3: CÀI ĐẶT THƯ VIỆN & CHẠY SERVER
+## BUOC 3: CAI DAT THU VIEN VA CHAY SERVER
 
-Mở PowerShell hoặc Command Prompt tại thư mục `backend/`:
+Mo PowerShell hoac Command Prompt tai thu muc backend/:
 
 ```powershell
 cd d:\test\dak-song-quest-fixed\backend
 
-# 1. Cài đặt các thư viện cần thiết
+# 1. Cai dat cac thu vien can thiet
 npm install
 
-# 2. Khởi chạy server ở chế độ phát triển (Development)
-npm run dev
+# 2. Bien dich ma nguon TypeScript
+npm run build
+
+# 3. Khoi chay may chu backend
+node dist/index.js
 ```
 
-Khi chạy thành công, console sẽ hiển thị:
-```
-🚀 Máy chủ Backend Đắk Song Quest đang chạy tại: http://localhost:5000
-✅ Kết nối thành công tới Microsoft SQL Server!
-```
+(Hoac su dung lenh npm run dev de khoi chay o che do Development).
+
+Khi chay thanh cong, man hinh se thong bao:
+- May chu Backend Dak Song Quest dang chay tai: http://localhost:5000
+- Ket noi thanh cong toi Microsoft SQL Server
 
 ---
 
-## 📡 DANH SÁCH CÁC API ENDPOINTS
+## DANH SACH CAC API ENDPOINTS
 
-### 1. Dành cho Mini App (Người chơi & Mua sắm)
-- `GET /api/health`: Kiểm tra kết nối server & SQL Server.
-- `GET /api/vouchers/available`: Lấy danh sách quán còn hạn mức voucher.
-- `POST /api/vouchers/claim`: Cấp voucher ngẫu nhiên khi người chơi hoàn thành Quiz/quay thưởng.
-  - Body mẫu: `{ "userId": "zalo_123", "discountPercent": 20 }`
-- `POST /api/vouchers/use`: Khách xác nhận sử dụng voucher tại quán.
-  - Body mẫu: `{ "voucherCode": "DSQ-1-84920" }`
-- `GET /api/vouchers/my-vouchers?userId=zalo_123`: Xem kho voucher của người dùng.
-- `GET /api/products`: Lấy danh sách đặc sản (Tiêu Đắk N’rung, Cà phê, Mắc ca, Măng khô).
-- `POST /api/orders/create`: Đặt hàng mua đặc sản & tạo thông tin thanh toán ZaloPay.
-  - Body mẫu:
-    ```json
-    {
-      "userId": "zalo_123",
-      "customerName": "Nguyễn Văn A",
-      "phone": "0987654321",
-      "shippingAddress": "123 Đường Trần Hưng Đạo, Phường 1, TP. Buôn Ma Thuột",
-      "items": [{ "productId": 1, "quantity": 2 }, { "productId": 3, "quantity": 1 }],
-      "voucherCode": "DSQ-1-84920",
-      "paymentMethod": "ZaloPay"
-    }
-    ```
-- `POST /api/orders/simulate-zalopay-success`: Giả lập thanh toán ZaloPay thành công (dành cho demo đồ án).
-  - Body mẫu: `{ "orderCode": "ORD-20261010-8492" }`
+### 1. Danh cho Mini App (Nguoi choi va Mua sam)
+- GET /api/health: Kiem tra ket noi may chu va SQL Server.
+- GET /api/vouchers/available-pool: Lay danh sach quan con han muc voucher thuc te.
+- POST /api/vouchers/claim: Cap voucher ngau nhien khi nguoi choi hoan thanh Quiz hoac quay thuong.
+- POST /api/vouchers/redeem: Nhan vien co so xac nhan su dung voucher tai quan.
+- GET /api/vouchers/user/:userId: Xem kho voucher cua nguoi dung.
+- GET /api/products: Lay danh sach nong san dac san kem so luong ton kho thuc te.
+- POST /api/orders/create: Dat hang mua dac san OCOP, ho tro 2 phuong thuc thanh toan: ZaloPay va COD (Tien mat).
+- POST /api/orders/simulate-zalopay-success: Gia lap thanh toan ZaloPay thanh cong.
+- PUT /api/orders/:id/cancel: Khach hang chu dong huy don hang khi chua xuat kho (tu dong hoan lai 100% ton kho).
+- PUT /api/orders/:id/update-shipping: Cap nhat lai thong tin nguoi nhan hang khi don dang o buoc Cho xac nhan.
+- GET /api/orders/track/:orderCode: Tra cuu tien do don hang theo ma don.
+- GET /api/leaderboard: Xem bang xep hang diem Quiz tuan.
+- POST /api/leaderboard/submit: Luu ket qua thi Quiz chinh thuc.
+- PUT /api/leaderboard/rename: Cap nhat ten hien thi va avatar thi sinh.
 
-### 2. Dành cho Quản trị viên (Admin Dashboard)
-- `GET /api/admin/dashboard/stats`: Thống kê tổng số quán, voucher đã phát, đã dùng, tổng đơn hàng, doanh thu.
-- `GET /api/admin/venues`: Danh sách chi tiết hạn mức từng quán (`TotalLimit`, `IssuedCount`, `UsedCount`).
-- `POST /api/admin/venues`: Thêm quán mới và cài hạn mức voucher thỏa thuận.
-  - Body mẫu:
-    ```json
-    {
-      "venueName": "Quán Cà Phê Mây Đắk Song",
-      "category": "Quán Cà phê",
-      "phone": "0912345678",
-      "address": "Thị trấn Đức An, Đắk Song",
-      "discountPercent": 20,
-      "totalLimit": 100
-    }
-    ```
-- `PUT /api/admin/venues/:id/limit`: Điều chỉnh tăng hạn mức voucher cho quán.
-- `GET /api/admin/orders`: Xem danh sách tất cả đơn hàng đã đặt.
-- `GET /api/admin/orders/:id/items`: Xem chi tiết các sản phẩm trong đơn hàng.
-- `PUT /api/admin/orders/:id/status`: Admin cập nhật trạng thái đơn hàng:
-  - `ReadyToShip`: Admin đã gọi xác nhận với nhà vườn Đắk N'rung còn hàng và chuẩn bị giao.
-  - `Shipping`: Đã giao cho bưu cục Viettel Post.
-  - `Completed`: Giao hàng thành công.
-
+### 2. Danh cho Quan tri vien (Admin CMS)
+- POST /api/admin/auth/login: Xac thuc dang nhap phan quyen giua Hop tac xa (Role: COOP) va UBND Huyen (Role: DISTRICT).
+- GET /api/admin/dashboard/stats: Thong ke tong hop so lieu Dashboard (Co so, Voucher, Doanh thu, Don hang, Don ton, Thi sinh, Audit Logs).
+- GET /api/admin/venues: Danh sach co so va han muc voucher (TotalLimit, IssuedCount, UsedCount).
+- POST /api/admin/venues: Them co so du lich moi (Chi danh cho role DISTRICT, role COOP bi chan 403).
+- PUT /api/admin/venues/:id/limit: Dieu chinh han muc voucher cho quan (Tham quyen DISTRICT).
+- POST /api/admin/venues/:id/add-vouchers: Cap them so luong voucher cho quan (Tham quyen DISTRICT).
+- DELETE /api/admin/venues/:id: Xoa co so khoi he thong (Tham quyen DISTRICT).
+- GET /api/admin/orders: Xem danh sach toan bo don hang OCOP kem nhan phan loai CancelledBy (HTX vs USER).
+- GET /api/admin/orders/:id/items: Xem chi tiet cac san pham ben trong don hang.
+- PUT /api/admin/orders/:id/status: Dieu phoi don hang (Tham quyen doc quyen cua Hop tac xa COOP, role DISTRICT bi chan 403):
+  - ReadyToShip: HTX xac nhan con hang voi nha vuon va chuyen sang dong goi.
+  - Shipping: HTX ban giao kien hang cho don vi van chuyen Viettel Post.
+  - Completed: Giao hang thanh cong den tay nguoi mua.
+  - Cancelled: HTX huy don hang do chat luong hoac so luong khong dam bao (tu dong hoan kho, ghi chu xin loi khach).
+- POST /api/admin/products: Them san pham dac san OCOP moi (Tham quyen COOP, role DISTRICT bi chan 403).
+- PUT /api/admin/products/:id: Cap nhat gia ban va so luong ton kho san pham (Tham quyen COOP, role DISTRICT bi chan 403).
+- GET /api/admin/audit-logs: Xem nhat ky lich su kiem toan he thong.
+- DELETE /api/admin/leaderboard/:id: Xoa ket qua thi gian lan khoi BXH, reset diem thi sinh ve 0 de thi lai (Tham quyen DISTRICT, role COOP bi chan 403).

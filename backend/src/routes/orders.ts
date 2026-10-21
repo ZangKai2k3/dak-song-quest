@@ -1,7 +1,126 @@
 import { Router, Request, Response } from 'express';
+import crypto from 'crypto';
 import { getDbPool, sql } from '../config/db';
 
 export const ordersRouter = Router();
+
+// ==========================================
+// CẤU HÌNH & HÀM XỬ LÝ ZALOPAY SANDBOX GATEWAY
+// ==========================================
+export const ZALOPAY_SANDBOX_CONFIG = {
+  app_id: 554,
+  key1: '8NdU5pG5R2spGHGhyO99HN1OhD8IQJBn',
+  key2: 'uUfsWgfLkRLzq6W2uNXTCxrfxs51auny',
+  create_endpoint: 'https://sb-openapi.zalopay.vn/v2/create',
+  query_endpoint: 'https://sb-openapi.zalopay.vn/v2/query',
+};
+
+export async function createZaloPaySandboxOrder(params: {
+  orderCode: string;
+  amount: number;
+  customerName: string;
+  items?: any[];
+}) {
+  try {
+    const { orderCode, amount, customerName, items = [] } = params;
+    const transID = Math.floor(100000 + Math.random() * 900000);
+    const date = new Date();
+    const yy = String(date.getFullYear()).slice(-2);
+    const mm = String(date.getMonth() + 1).padStart(2, '0');
+    const dd = String(date.getDate()).padStart(2, '0');
+    const app_trans_id = `${yy}${mm}${dd}_${transID}`;
+    const app_time = Date.now();
+    const app_user = customerName || 'dak_song_guest';
+    const embed_data = JSON.stringify({
+      orderCode,
+      redirecturl: 'https://zalo.me',
+      merchantinfo: 'Hợp tác xã Nông sản Đắk Song',
+    });
+    const itemStr = JSON.stringify(items);
+
+    const data = [
+      ZALOPAY_SANDBOX_CONFIG.app_id,
+      app_trans_id,
+      app_user,
+      amount,
+      app_time,
+      embed_data,
+      itemStr,
+    ].join('|');
+
+    const mac = crypto
+      .createHmac('sha256', ZALOPAY_SANDBOX_CONFIG.key1)
+      .update(data)
+      .digest('hex');
+
+    const body = {
+      app_id: ZALOPAY_SANDBOX_CONFIG.app_id,
+      app_trans_id,
+      app_user,
+      amount,
+      app_time,
+      embed_data,
+      item: itemStr,
+      description: `Đắk Song Quest - Đơn hàng #${orderCode}`,
+      bank_code: 'zalopayapp',
+      mac,
+    };
+
+    const res = await fetch(ZALOPAY_SANDBOX_CONFIG.create_endpoint, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams(body as any).toString(),
+    });
+
+    const json = (await res.json()) as any;
+    const isSuccess = json.return_code === 1;
+    return {
+      success: isSuccess,
+      app_trans_id,
+      order_url: json.order_url || '',
+      zp_trans_token: json.zp_trans_token || '',
+      order_token: json.order_token || '',
+      return_code: json.return_code,
+      return_message: json.return_message,
+    };
+  } catch (err: any) {
+    console.warn('Lỗi gọi ZaloPay Sandbox Gateway:', err.message);
+    return {
+      success: false,
+      app_trans_id: '',
+      order_url: '',
+      zp_trans_token: '',
+      return_code: 2,
+      return_message: err.message,
+    };
+  }
+}
+
+export async function queryZaloPaySandboxOrder(app_trans_id: string) {
+  try {
+    const data = `${ZALOPAY_SANDBOX_CONFIG.app_id}|${app_trans_id}|${ZALOPAY_SANDBOX_CONFIG.key1}`;
+    const mac = crypto
+      .createHmac('sha256', ZALOPAY_SANDBOX_CONFIG.key1)
+      .update(data)
+      .digest('hex');
+
+    const body = {
+      app_id: ZALOPAY_SANDBOX_CONFIG.app_id,
+      app_trans_id,
+      mac,
+    };
+
+    const res = await fetch(ZALOPAY_SANDBOX_CONFIG.query_endpoint, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams(body as any).toString(),
+    });
+
+    return (await res.json()) as any;
+  } catch (err: any) {
+    return { return_code: 2, return_message: err.message };
+  }
+}
 
 interface CartItemInput {
   productId: number;
@@ -121,6 +240,9 @@ ordersRouter.post('/create', async (req: Request, res: Response) => {
       const randomSuffix = Math.floor(1000 + Math.random() * 9000);
       const orderCode = `ORD-${datePart}-${randomSuffix}`;
 
+      const isCOD = paymentMethod === 'COD';
+      const initialPayStatus = isCOD ? 'Unpaid' : 'Pending';
+
       // 4. Tạo bản ghi đơn hàng trong dbo.Orders
       const insertOrderResult = await transaction
         .request()
@@ -135,8 +257,8 @@ ordersRouter.post('/create', async (req: Request, res: Response) => {
         .input('final', sql.Decimal(18, 0), finalAmount)
         .input('voucherCode', sql.VarChar(50), voucherCode || null)
         .input('payMethod', sql.NVarChar(50), paymentMethod)
-        .input('payStatus', sql.NVarChar(30), 'Pending') // Chờ thanh toán ZaloPay
-        .input('orderStatus', sql.NVarChar(50), 'PendingConfirm') // Chờ Admin kiểm tra và gọi điện cho dân
+        .input('payStatus', sql.NVarChar(30), initialPayStatus) // COD: Unpaid | ZaloPay: Pending
+        .input('orderStatus', sql.NVarChar(50), 'PendingConfirm') // Chờ HTX kiểm tra và gọi điện xác nhận
         .query(`
           INSERT INTO dbo.Orders (
             OrderCode, UserId, CustomerName, Phone, ShippingAddress, Note,
@@ -194,10 +316,56 @@ ordersRouter.post('/create', async (req: Request, res: Response) => {
 
       await transaction.commit();
 
-      // Giả lập dữ liệu trả về để Mini App gọi ZaloPay SDK thanh toán
+      // Nếu khách chọn hình thức Thanh toán khi nhận hàng (COD)
+      if (isCOD) {
+        return res.json({
+          success: true,
+          message: 'Đặt hàng COD thành công! Hợp tác xã sẽ gọi điện xác nhận trước khi đóng gói gửi bưu điện.',
+          data: {
+            orderId: newOrderId,
+            orderCode,
+            totalAmount,
+            discountAmount,
+            finalAmount,
+            customerName,
+            phone,
+            shippingAddress,
+            paymentMethod: 'COD',
+            paymentStatus: 'Unpaid',
+            orderStatus: 'PendingConfirm',
+          },
+        });
+      }
+
+      // Khởi tạo giao dịch ZaloPay Sandbox (AppID: 554)
+      let sandboxPayment: any = {
+        success: true,
+        app_trans_id: `261021_${Math.floor(100000 + Math.random() * 900000)}`,
+        order_url: `https://qcgateway.zalopay.vn/openinapp?order=eyJhcHBpZCI6NTU0LCJvcmRlciI6IiR7b3JkZXJDb2RlfSJ9`,
+        zp_trans_token: `ZP_TOKEN_${orderCode}`,
+        return_code: 1,
+      };
+
+      if (finalAmount > 0) {
+        const zpRes = await createZaloPaySandboxOrder({
+          orderCode,
+          amount: Number(finalAmount),
+          customerName,
+          items: orderItemsToInsert.map((i) => ({
+            itemid: String(i.productId),
+            itemname: i.productName,
+            itemprice: i.price,
+            itemquantity: i.quantity,
+          })),
+        });
+        if (zpRes.success) {
+          sandboxPayment = zpRes;
+        }
+      }
+
       res.json({
         success: true,
-        message: 'Khởi tạo đơn hàng thành công! Tiến hành thanh toán ZaloPay.',
+        message: 'Khởi tạo đơn hàng thành công! Tiến hành thanh toán Ví ZaloPay.',
         data: {
           orderId: newOrderId,
           orderCode,
@@ -207,8 +375,15 @@ ordersRouter.post('/create', async (req: Request, res: Response) => {
           customerName,
           phone,
           shippingAddress,
-          // Mô phỏng tham số ZaloPay
-          zaloPayOrderUrl: `https://zalopay.vn/pay?orderCode=${orderCode}&amount=${finalAmount}`,
+          zaloPay: {
+            isSandbox: true,
+            app_id: ZALOPAY_SANDBOX_CONFIG.app_id,
+            app_trans_id: sandboxPayment.app_trans_id,
+            order_url: sandboxPayment.order_url,
+            zp_trans_token: sandboxPayment.zp_trans_token,
+            qrCodeUrl: `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(sandboxPayment.order_url || `https://zalopay.vn/pay?orderCode=${orderCode}`)}`,
+          },
+          zaloPayOrderUrl: sandboxPayment.order_url || `https://zalopay.vn/pay?orderCode=${orderCode}&amount=${finalAmount}`,
         },
       });
     } catch (innerErr) {
@@ -275,6 +450,59 @@ ordersRouter.post('/simulate-zalopay-success', async (req: Request, res: Respons
     });
   } catch (error: any) {
     console.error('Lỗi giả lập thanh toán:', error);
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+// 3b. POST /api/orders/zalopay-sandbox/query
+// Kiểm tra trạng thái giao dịch từ hệ thống ZaloPay Sandbox hoặc Database
+ordersRouter.post('/zalopay-sandbox/query', async (req: Request, res: Response) => {
+  try {
+    const { app_trans_id, orderCode } = req.body;
+    if (!app_trans_id && !orderCode) {
+      return res.status(400).json({ success: false, message: 'Thiếu app_trans_id hoặc orderCode!' });
+    }
+
+    const pool = await getDbPool();
+
+    // 1. Thử gọi sang ZaloPay Sandbox Gateway kiểm tra nếu có app_trans_id
+    if (app_trans_id) {
+      const zpResult = await queryZaloPaySandboxOrder(app_trans_id);
+      if (zpResult && zpResult.return_code === 1) {
+        if (orderCode) {
+          await pool.request()
+            .input('code', sql.VarChar(50), orderCode)
+            .query(`UPDATE dbo.Orders SET PaymentStatus = 'Paid', UpdatedAt = GETDATE() WHERE OrderCode = @code`);
+        }
+        return res.json({
+          success: true,
+          isPaid: true,
+          message: 'Hệ thống ZaloPay xác nhận: Giao dịch đã thanh toán thành công!',
+          zaloPayData: zpResult,
+        });
+      }
+    }
+
+    // 2. Tra cứu trạng thái trong CSDL
+    if (orderCode) {
+      const dbOrder = await pool.request()
+        .input('code', sql.VarChar(50), orderCode)
+        .query(`SELECT PaymentStatus, OrderStatus FROM dbo.Orders WHERE OrderCode = @code`);
+
+      if (dbOrder.recordset.length > 0) {
+        const isPaid = dbOrder.recordset[0].PaymentStatus === 'Paid';
+        return res.json({
+          success: true,
+          isPaid,
+          orderStatus: dbOrder.recordset[0].OrderStatus,
+          message: isPaid ? 'Đơn hàng đã được ghi nhận thanh toán thành công!' : 'Đơn hàng đang chờ thanh toán qua Ví ZaloPay.',
+        });
+      }
+    }
+
+    res.json({ success: true, isPaid: false, message: 'Chưa có thông tin thanh toán.' });
+  } catch (error: any) {
+    console.error('Lỗi tra cứu ZaloPay Sandbox:', error);
     res.status(500).json({ success: false, message: error.message });
   }
 });

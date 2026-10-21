@@ -3,6 +3,35 @@ import { getDbPool, sql } from '../config/db';
 
 export const adminRouter = Router();
 
+// =========================================================================
+// KHỞI TẠO BẢNG TÀI KHOẢN PHÂN QUYỀN: HỢP TÁC XÃ (COOP) & HUYỆN (DISTRICT)
+// =========================================================================
+export async function ensureAdminUsersTable(pool: any) {
+  try {
+    await pool.request().query(`
+      IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='AdminUsers' and xtype='U')
+      BEGIN
+        CREATE TABLE dbo.AdminUsers (
+          UserId INT IDENTITY(1,1) PRIMARY KEY,
+          Username NVARCHAR(50) UNIQUE NOT NULL,
+          Password NVARCHAR(100) NOT NULL,
+          FullName NVARCHAR(150) NOT NULL,
+          Role NVARCHAR(50) NOT NULL, -- 'COOP' (Hợp tác xã) | 'DISTRICT' (Huyện)
+          AgencyName NVARCHAR(200) NOT NULL,
+          CreatedAt DATETIME DEFAULT GETDATE()
+        );
+
+        INSERT INTO dbo.AdminUsers (Username, Password, FullName, Role, AgencyName)
+        VALUES 
+        (N'htx_daksong', N'123', N'Ban Giám Đốc Hợp Tác Xã', N'COOP', N'Hợp tác xã Nông sản Đắk Song'),
+        (N'huyen_daksong', N'123', N'UBND & Ban Quản Lý Huyện', N'DISTRICT', N'Ủy ban Nhân dân Huyện Đắk Song');
+      END
+    `);
+  } catch (err) {
+    console.warn('Lỗi kiểm tra bảng AdminUsers:', err);
+  }
+}
+
 // Đảm bảo bảng lưu lịch sử chỉnh sửa voucher và hàng hóa luôn tồn tại
 export async function ensureAuditLogTable(pool: any) {
   try {
@@ -55,12 +84,54 @@ export async function recordAuditLog(pool: any, actionType: string, targetType: 
   }
 }
 
+// 0. POST /api/admin/auth/login
+// Xác thực đăng nhập với phân quyền: Hợp tác xã (COOP) và Huyện (DISTRICT)
+adminRouter.post('/auth/login', async (req: Request, res: Response) => {
+  try {
+    const { username, password } = req.body;
+    if (!username || !password) {
+      return res.status(400).json({ success: false, message: 'Vui lòng nhập tài khoản và mật khẩu!' });
+    }
+
+    const pool = await getDbPool();
+    await ensureAdminUsersTable(pool);
+
+    const result = await pool.request()
+      .input('u', sql.NVarChar(50), String(username).trim())
+      .input('p', sql.NVarChar(100), String(password).trim())
+      .query(`SELECT UserId, Username, FullName, Role, AgencyName FROM dbo.AdminUsers WHERE Username = @u AND Password = @p`);
+
+    if (result.recordset.length === 0) {
+      return res.status(401).json({ success: false, message: 'Tên đăng nhập hoặc mật khẩu không chính xác!' });
+    }
+
+    const user = result.recordset[0];
+    const roleLabel = user.Role === 'COOP' ? 'Hợp tác xã Nông sản Đắk Song' : 'Ban Quản lý Huyện Đắk Song';
+
+    res.json({
+      success: true,
+      message: `Đăng nhập thành công với vai trò ${roleLabel}!`,
+      data: {
+        userId: user.UserId,
+        username: user.Username,
+        fullName: user.FullName,
+        role: user.Role,
+        agencyName: user.AgencyName,
+      },
+    });
+  } catch (error: any) {
+    console.error('Lỗi đăng nhập admin:', error);
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
 // 1. GET /api/admin/dashboard/stats
 // Thống kê tổng quan phục vụ Dashboard quản trị
 adminRouter.get('/dashboard/stats', async (_req: Request, res: Response) => {
   try {
     const pool = await getDbPool();
     await ensureAuditLogTable(pool);
+    await ensureAdminUsersTable(pool);
 
     // Thống kê Voucher
     const voucherStats = await pool.request().query(`
@@ -98,11 +169,20 @@ adminRouter.get('/dashboard/stats', async (_req: Request, res: Response) => {
       quizParticipantsCount = qRes.recordset[0]?.TotalQuizParticipants || 0;
     } catch {}
 
+    // Thống kê Sản phẩm kho OCOP
+    const prodStatsRes = await pool.request().query(`
+      SELECT 
+        COUNT(*) AS TotalProducts,
+        COUNT(CASE WHEN InStockQuantity < 20 THEN 1 END) AS LowStockProductsCount
+      FROM dbo.Products
+    `);
+
     res.json({
       success: true,
       data: {
         vouchers: voucherStats.recordset[0],
         orders: orderStats.recordset[0],
+        products: prodStatsRes.recordset[0] || { TotalProducts: 0, LowStockProductsCount: 0 },
         auditLogsCount,
         quizParticipantsCount,
       },
@@ -139,10 +219,25 @@ adminRouter.get('/venues', async (_req: Request, res: Response) => {
 });
 
 // 3. POST /api/admin/venues
-// Admin thêm quán mới hoặc cấu hình hạn mức thỏa thuận ban đầu
+// Admin thêm quán mới hoặc cấu hình hạn mức thỏa thuận ban đầu (Thẩm quyền Huyện)
 adminRouter.post('/venues', async (req: Request, res: Response) => {
   try {
+    const adminRole = (req.headers['x-admin-role'] as string) || '';
+    if (adminRole === 'COOP') {
+      return res.status(403).json({
+        success: false,
+        message: 'Quyền hạn bị từ chối: Hợp tác xã chỉ có thẩm quyền quản lý Sàn TMĐT OCOP và Đơn hàng. Quản lý Quán & Hạn mức Voucher do Ban Quản lý Huyện phụ trách.',
+      });
+    }
+
     const { venueName, category, phone, address, discountPercent = 10, totalLimit = 50 } = req.body;
+    const rawAdminName = (req.headers['x-admin-name'] as string) || '';
+    let adminName = 'Ban Quản lý Huyện';
+    try {
+      adminName = rawAdminName ? decodeURIComponent(rawAdminName) : 'Ban Quản lý Huyện';
+    } catch {
+      adminName = rawAdminName || 'Ban Quản lý Huyện';
+    }
 
     if (!venueName || !category || !address) {
       return res.status(400).json({
@@ -187,9 +282,17 @@ adminRouter.post('/venues', async (req: Request, res: Response) => {
 });
 
 // 4. PUT /api/admin/venues/:id/limit
-// Admin cập nhật thêm hạn mức khi quán đồng ý tài trợ thêm đợt voucher mới
+// Admin cập nhật thêm hạn mức khi quán đồng ý tài trợ thêm đợt voucher mới (Thẩm quyền Huyện)
 adminRouter.put('/venues/:id/limit', async (req: Request, res: Response) => {
   try {
+    const adminRole = (req.headers['x-admin-role'] as string) || '';
+    if (adminRole === 'COOP') {
+      return res.status(403).json({
+        success: false,
+        message: 'Quyền hạn bị từ chối: Hợp tác xã chỉ có thẩm quyền quản lý Sàn TMĐT OCOP và Đơn hàng. Quản lý Quán & Hạn mức Voucher do Ban Quản lý Huyện phụ trách.',
+      });
+    }
+
     const venueId = parseInt(String(req.params.id), 10);
     const { newTotalLimit } = req.body;
 
@@ -247,9 +350,17 @@ adminRouter.put('/venues/:id/limit', async (req: Request, res: Response) => {
 });
 
 // 4b. POST /api/admin/venues/:id/add-vouchers
-// Admin cấp thêm số lượng voucher cho cơ sở (tăng TotalLimit trực tiếp, số voucher còn lại tăng đúng bằng số lượng thêm)
+// Admin cấp thêm số lượng voucher cho cơ sở (Thẩm quyền Huyện)
 adminRouter.post('/venues/:id/add-vouchers', async (req: Request, res: Response) => {
   try {
+    const adminRole = (req.headers['x-admin-role'] as string) || '';
+    if (adminRole === 'COOP') {
+      return res.status(403).json({
+        success: false,
+        message: 'Quyền hạn bị từ chối: Hợp tác xã chỉ có thẩm quyền quản lý Sàn TMĐT OCOP và Đơn hàng. Quản lý Quán & Hạn mức Voucher do Ban Quản lý Huyện phụ trách.',
+      });
+    }
+
     const venueId = parseInt(String(req.params.id), 10);
     const { quantityToAdd } = req.body;
     const qty = parseInt(String(quantityToAdd), 10);
@@ -308,9 +419,17 @@ adminRouter.post('/venues/:id/add-vouchers', async (req: Request, res: Response)
 });
 
 // 5. DELETE /api/admin/venues/:id
-// Admin xóa voucher / cơ sở khỏi hệ thống
+// Admin xóa voucher / cơ sở khỏi hệ thống (Thẩm quyền Huyện)
 adminRouter.delete('/venues/:id', async (req: Request, res: Response) => {
   try {
+    const adminRole = (req.headers['x-admin-role'] as string) || '';
+    if (adminRole === 'COOP') {
+      return res.status(403).json({
+        success: false,
+        message: 'Quyền hạn bị từ chối: Hợp tác xã chỉ có thẩm quyền quản lý Sàn TMĐT OCOP và Đơn hàng. Quản lý Quán & Hạn mức Voucher do Ban Quản lý Huyện phụ trách.',
+      });
+    }
+
     const venueId = parseInt(String(req.params.id), 10);
     const pool = await getDbPool();
 
@@ -369,6 +488,17 @@ adminRouter.get('/orders', async (req: Request, res: Response) => {
         o.OrderId, o.OrderCode, o.UserId, o.CustomerName, o.Phone, o.ShippingAddress, o.Note,
         o.TotalAmount, o.DiscountAmount, o.FinalAmount, o.VoucherCodeApplied,
         o.PaymentMethod, o.PaymentStatus, o.OrderStatus,
+        CASE 
+          WHEN o.OrderStatus = 'Cancelled' AND (
+            LOWER(ISNULL(o.Note, '')) LIKE N'%hợp tác xã%' 
+            OR LOWER(ISNULL(o.Note, '')) LIKE N'%htx%' 
+            OR LOWER(ISNULL(o.Note, '')) LIKE N'%admin%'
+            OR LOWER(ISNULL(o.Note, '')) LIKE N'%chất lượng%'
+            OR LOWER(ISNULL(o.Note, '')) LIKE N'%số lượng%'
+          ) THEN 'HTX'
+          WHEN o.OrderStatus = 'Cancelled' THEN 'USER'
+          ELSE NULL
+        END AS CancelledBy,
         CONVERT(VARCHAR(19), o.AdminConfirmedAt, 120) AS AdminConfirmedAt,
         CONVERT(VARCHAR(19), o.CreatedAt, 120) AS CreatedAt
       FROM dbo.Orders o
@@ -423,11 +553,19 @@ adminRouter.get('/orders/:id/items', async (req: Request, res: Response) => {
 });
 
 // 7. PUT /api/admin/orders/:id/status
-// QUY TRÌNH QUAN TRỌNG:
-// Admin sau khi kiểm tra tiền ZaloPay đã về -> gọi điện cho người dân/nhà vườn xác nhận còn hàng
+// QUY TRÌNH QUAN TRỌNG: (Thẩm quyền Hợp Tác Xã)
+// Hợp tác xã sau khi kiểm tra tiền ZaloPay đã về -> gọi điện cho người dân/nhà vườn xác nhận còn hàng
 // Nếu còn hàng -> đổi sang 'ReadyToShip' và gửi thông tin cho nhà vườn đóng gói gửi bưu điện
 adminRouter.put('/orders/:id/status', async (req: Request, res: Response) => {
   try {
+    const adminRole = (req.headers['x-admin-role'] as string) || '';
+    if (adminRole === 'DISTRICT') {
+      return res.status(403).json({
+        success: false,
+        message: 'Quyền hạn bị từ chối: Điều phối đơn hàng và sàn TMĐT OCOP thuộc thẩm quyền trực tiếp của Hợp tác xã Nông sản Đắk Song.',
+      });
+    }
+
     const orderId = parseInt(String(req.params.id), 10);
     const { newStatus } = req.body;
     // newStatus có thể là: 'PendingConfirm', 'ReadyToShip', 'Shipping', 'Completed', 'Cancelled'
@@ -467,12 +605,36 @@ adminRouter.put('/orders/:id/status', async (req: Request, res: Response) => {
         UPDATE dbo.Orders
         SET 
           OrderStatus = @status,
-          PaymentStatus = CASE WHEN @status = 'Cancelled' THEN 'Refunded' ELSE PaymentStatus END,
-          Note = CASE WHEN @status = 'Cancelled' THEN N'Hiện tại hợp tác xã đang chưa có đủ hàng để bán cho bạn. Mong bạn thông cảm.' ELSE Note END,
+          PaymentStatus = CASE 
+            WHEN @status = 'Cancelled' THEN (CASE WHEN PaymentMethod = 'COD' THEN 'Cancelled' ELSE 'Refunded' END)
+            WHEN @status = 'Completed' AND PaymentMethod = 'COD' THEN 'Paid'
+            ELSE PaymentStatus 
+          END,
+          Note = CASE 
+            WHEN @status = 'Cancelled' THEN N'Đơn hàng do Hợp tác xã hủy do một số vấn đề về chất lượng cũng như số lượng nông sản chưa đảm bảo tại thời điểm này. Hợp tác xã chân thành xin lỗi quý khách!' 
+            ELSE Note 
+          END,
           AdminConfirmedAt = CASE WHEN @status = 'ReadyToShip' AND AdminConfirmedAt IS NULL THEN GETDATE() ELSE AdminConfirmedAt END,
           UpdatedAt = GETDATE()
         WHERE OrderId = @oId
       `);
+
+    // Ghi nhận Audit Log khi Admin / Hợp tác xã hủy đơn
+    if (newStatus === 'Cancelled') {
+      const orderCodeRes = await pool.request()
+        .input('oId', sql.Int, orderId)
+        .query(`SELECT OrderCode FROM dbo.Orders WHERE OrderId = @oId`);
+      const ordCode = orderCodeRes.recordset[0]?.OrderCode || `#${orderId}`;
+
+      await recordAuditLog(
+        pool,
+        'Hủy đơn hàng',
+        'Đơn hàng',
+        ordCode,
+        'Đơn hàng do admin/Hợp tác xã hủy trong tiến độ giao hàng và điều phối đơn do một số vấn đề về chất lượng cũng như số lượng nông sản. Tự động hoàn lại số lượng tồn kho.',
+        'HTX Nông sản Đắk Song'
+      );
+    }
 
     res.json({
       success: true,
@@ -484,9 +646,17 @@ adminRouter.put('/orders/:id/status', async (req: Request, res: Response) => {
   }
 });
 
-// 8. POST /api/admin/products - Thêm sản phẩm đặc sản mới
+// 8. POST /api/admin/products - Thêm sản phẩm đặc sản mới (Thẩm quyền Hợp Tác Xã)
 adminRouter.post('/products', async (req: Request, res: Response) => {
   try {
+    const adminRole = (req.headers['x-admin-role'] as string) || '';
+    if (adminRole === 'DISTRICT') {
+      return res.status(403).json({
+        success: false,
+        message: 'Quyền hạn bị từ chối: Quản lý hàng hóa, cập nhật giá và tồn kho sàn OCOP thuộc thẩm quyền trực tiếp của Hợp tác xã Nông sản Đắk Song.',
+      });
+    }
+
     const { productName, origin, category, price, unit, description, inStockQuantity = 50 } = req.body;
     if (!productName || !category || !price) {
       return res.status(400).json({ success: false, message: 'Thiếu thông tin sản phẩm!' });
@@ -528,9 +698,17 @@ adminRouter.post('/products', async (req: Request, res: Response) => {
   }
 });
 
-// 9. PUT /api/admin/products/:id - Sửa thông tin / giá / tồn kho sản phẩm
+// 9. PUT /api/admin/products/:id - Sửa thông tin / giá / tồn kho sản phẩm (Thẩm quyền Hợp Tác Xã)
 adminRouter.put('/products/:id', async (req: Request, res: Response) => {
   try {
+    const adminRole = (req.headers['x-admin-role'] as string) || '';
+    if (adminRole === 'DISTRICT') {
+      return res.status(403).json({
+        success: false,
+        message: 'Quyền hạn bị từ chối: Quản lý hàng hóa, cập nhật giá và tồn kho sàn OCOP thuộc thẩm quyền trực tiếp của Hợp tác xã Nông sản Đắk Song.',
+      });
+    }
+
     const productId = parseInt(String(req.params.id), 10);
     const { price, inStockQuantity, description } = req.body;
 
@@ -608,9 +786,17 @@ adminRouter.get('/audit-logs', async (_req: Request, res: Response) => {
   }
 });
 
-// 11. DELETE /api/admin/leaderboard/:id - Xóa kết quả thi của người chơi
+// 11. DELETE /api/admin/leaderboard/:id - Xóa kết quả thi của người chơi (Thẩm quyền Huyện)
 adminRouter.delete('/leaderboard/:id', async (req: Request, res: Response) => {
   try {
+    const adminRole = (req.headers['x-admin-role'] as string) || '';
+    if (adminRole === 'COOP') {
+      return res.status(403).json({
+        success: false,
+        message: 'Quyền hạn bị từ chối: Bảng xếp hạng và kết quả thi Quiz do Ban Quản lý Huyện quản lý và phê duyệt.',
+      });
+    }
+
     const attemptId = parseInt(String(req.params.id), 10);
     const pool = await getDbPool();
     const cur = await pool.request()

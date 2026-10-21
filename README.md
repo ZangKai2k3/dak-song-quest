@@ -1,148 +1,154 @@
-# 🌾 ĐẮK SONG QUEST - ZALO MINI APP & ADMIN CMS
+# DAK SONG QUEST - ZALO MINI APP VA ADMIN CMS
 
-> **Nền tảng số hóa du lịch, trò chơi đố vui nhận thưởng và điều phối nông sản OCOP huyện Đắk Song, tỉnh Đắk Nông.**
-
----
-
-## 📌 1. Giới thiệu Dự án
-
-**Đắk Song Quest** là ứng dụng tích hợp đa nền tảng kết hợp giữa **Zalo Mini App** (dành cho du khách trên điện thoại) và **Admin CMS Web** (dành cho cán bộ quản lý / Hợp tác xã/ Nhân viên trên máy tính), vận hành trên nền tảng cơ sở dữ liệu quan hệ **Microsoft SQL Server**.
-
-### Các tính năng nổi bật:
-- 🎯 **Trò chơi Đố vui Du lịch (Quiz Game)**:
-  - 2 chế độ: *Luyện tập* (không giới hạn theo chủ đề) và *Thi chính thức* (25 câu hỏi tính giờ mili-giây).
-  - Bảng xếp hạng tuần thời gian thực, tự động phân biệt thí sinh trùng tên/avatar bằng Tag ID.
-  - Cho phép tùy chỉnh tên và chọn 6 avatar nhân vật.
-- 🎡 **Vòng quay May mắn (Lucky Wheel)**:
-  - Quay trúng voucher thực tế từ các quán ăn, nhà hàng, khách sạn trên địa bàn huyện Đắk Song.
-  - **Liên kết kho thực**: Tự động loại bỏ cơ sở khỏi vòng quay khi quán đã hết hạn mức phát hành trên CSDL.
-- 🛒 **Sàn Nông sản Đặc sản OCOP Đắk Song**:
-  - Xem sản phẩm, tồn kho thực tế, bảo vệ chống tranh chấp mua cùng lúc (Race Conditions).
-  - Áp mã giảm giá OCOP, thanh toán mô phỏng ZaloPay In-App chuẩn quy trình.
-  - Theo dõi tiến độ đơn hàng 4 bước: *Chờ duyệt* -> *Đóng gói* -> *Đang giao* -> *Hoàn tất*.
-  - **Hủy đơn hàng thông minh**: Hiện Popup Modal xác nhận hủy đơn, tự động hoàn trả 100% số lượng tồn kho về SQL Server, trừ bớt doanh thu trên Dashboard; tự động khóa hủy khi đơn đã chuyển sang *Đang giao*.
-- 🌦️ **Thời tiết Đắk Song Thời gian thực**: Tích hợp dữ liệu khí tượng trạm vệ tinh tọa độ Đắk Song (`12.535, 107.692`) qua Open-Meteo API.
-- 🗺️ **Cẩm nang Du lịch & Dịch vụ**: Tra cứu điểm tham quan, lưu trú, ăn uống, hotline đặt bàn và chỉ đường Google Maps một chạm.
-- 🛡️ **Hệ thống Quản trị Admin CMS Web**:
-  - Dashboard thống kê tức thời (Doanh thu ZaloPay, Voucher, Thí sinh).
-  - Quản lý cơ sở và cấp thêm hạn mức voucher (+10, +20, +50, +100...).
-  - Điều phối đơn hàng OCOP: Phân biệt rõ đơn khách tự hủy (`[🔴 Người dùng hủy đơn]`) vs đơn HTX hủy, bộ lọc đơn đa năng.
-  - Quản lý giá bán và tồn kho đặc sản.
-  - Quản lý BXH: Xóa thành tích reset điểm tuần về 0 để thí sinh thi lại.
-  - Lịch sử chỉnh sửa có bộ lọc phân loại: Kết quả thi, Voucher, Hàng hóa OCOP.
-  - Cơ chế Realtime Polling tự động làm mới số liệu mỗi 4 giây.
+> Nen tang so hoa du lich, tro choi do vui nhan thuong va dieu phoi nong san OCOP huyen Dak Song, tinh Dak Nong.
 
 ---
 
-## 🏗️ 2. Ngăn xếp Công nghệ (Tech Stack)
+## 1. Gioi thieu Du an
 
-| Phân hệ | Công nghệ sử dụng |
+Dak Song Quest la ung dung tich hop da nen tang ket hop giua Zalo Mini App (danh cho du khach tren dien thoai) va Admin CMS Web (danh cho can bo quan ly Huyen va Hop tac xa tren may tinh), van hanh tren nen tang co so du lieu quan he Microsoft SQL Server voi kien truc mot may chu may chu backend duy nhat phan quyen nghiem ngat.
+
+### Cac tinh nang noi bat:
+- Tro choi Do vui Du lich (Quiz Game):
+  - 2 che do: Luyen tap (khong gioi han theo chu de) va Thi chinh thuc (25 cau hoi tinh gio mili-giay).
+  - Bang xep hang tuan thoi gian thuc, tu dong phan biet thi sinh trung ten va avatar bang Tag ID.
+  - Cho phep tuy chinh ten va chon bo 8 avatar nhan vat van hoa Dak Song.
+- Vong quay May man (Lucky Wheel):
+  - Quay trung voucher thuc te tu cac quan an, nha hang, khach san tren dia ban huyen Dak Song.
+  - Lien ket kho thuc: Tu dong loai bo co so khoi vong quay khi quan da het han muc phat hanh tren co so du lieu.
+- San Nong san Dac san OCOP Dak Song:
+  - Xem danh muc san pham, ton kho thuc te, co che chong tranh chap mua cung luc (Race Conditions).
+  - Ap dung ma giam gia OCOP, tich hop 2 phuong thuc thanh toan: Vi ZaloPay va Tien mat (COD).
+  - Khong hien thi chu sandbox tren giao dien nguoi dung, mang lai trai nghiem thuc te va chuyen nghiep.
+  - Theo doi tien do don hang 4 buoc: Cho duyet -> Dong goi -> Dang giao -> Hoan tat.
+  - Huy don hang thong minh: Hien cua so popup xac nhan huy don, tu dong hoan tra 100% so luong ton kho ve SQL Server, tru bot doanh thu tren Dashboard; tu dong khoa huy khi don da chuyen sang Dang giao.
+  - Cap nhat thong tin nhan hang: Form cap nhat dia chi voi nut xac nhan mau xanh noi bat va popup thong bao cap nhat thanh cong.
+- Cua so Popup Gioi thieu: Tu dong hien thi banner gioi thieu ve Dak Song Quest moi khi nguoi dung truy cap ung dung.
+- Thoi tiet Dak Song Thoi gian thuc: Tich hop du lieu khi tuong tram ve tinh toa do Dak Song (12.535, 107.692) qua Open-Meteo API.
+- Cam nang Du lich va Dich vu: Tra cuu diem tham quan, luu tru, an uong, hotline dat ban va chi duong Google Maps mot cham.
+- He thong Quan tri Admin CMS Web (Phan quyen 1 Server 2 Giao dien):
+  - Dashboard thong ke chuyen biet theo vai tro dang nhap: Hop tac xa (OCOP Seller Center) va UBND Huyen (IOC Du lich & Dich vu).
+  - Tai khoan Hop tac xa (htx_daksong / 123 - Role COOP): Toan quyen quan ly San TMDT OCOP, kho hang dac san, bang gia, xac nhan con hang, dong goi gui Viettel Post va huy don hang kem ghi chu ro rang.
+  - Tai khoan UBND Huyen (huyen_daksong / 123 - Role DISTRICT): Quan ly co so quan an, nha nghi, cap phat han muc voucher du lich, quan ly BXH Quiz va giam sat kiem toan toan he thong.
+  - Tien ich chuyen doi vai tro 1-click tuc thi khong can nhap lai mat khau.
+  - Phan biet ro rang don hang bi huy: Khach tu huy don vs HTX / Admin huy don (ghi chu xin loi kem ly do chat luong hoac so luong).
+  - Co che Realtime Polling tu dong lam moi so lieu moi 4 giay.
+
+---
+
+## 2. Ngan xep Cong nghe (Tech Stack)
+
+| Phan he | Cong nghe su dung |
 | :--- | :--- |
-| **Frontend Mini App** | React 19, TypeScript, Vite 7, Tailwind CSS v4, Jotai, Lucide React, ZMP SDK (`zmp-sdk`) |
-| **Backend API** | Node.js (v20+), Express, TypeScript, mssql, msnodesqlv8 |
-| **Admin CMS Web** | Single Page Application (HTML5, Tailwind CSS, Lucide Icons, Vanilla JS) |
-| **Cơ sở dữ liệu** | Microsoft SQL Server (SQLEXPRESS) |
-| **Khí tượng** | Open-Meteo Satellite API |
+| Frontend Mini App | React 19, TypeScript, Vite 7, Tailwind CSS v4, Jotai, Lucide React, ZMP SDK |
+| Backend API | Node.js (v20+), Express, TypeScript, mssql, msnodesqlv8 |
+| Admin CMS Web | Single Page Application (HTML5, Tailwind CSS, Lucide Icons, Vanilla JS) |
+| Co so du lieu | Microsoft SQL Server (SQLEXPRESS / LocalDB) |
+| Khi tuong | Open-Meteo Satellite API |
 
 ---
 
-## 📁 3. Cấu trúc Thư mục
+## 3. Cau truc Thu muc
 
 ```text
 dak-song-quest-fixed/
-├── app-config.json              # Cấu hình Zalo Mini App
-├── package.json                 # Cấu hình dependency Frontend
-├── vite.config.ts               # Cấu hình Vite bundler & Proxy
-├── MO_TA_HE_THONG.md            # Tài liệu mô tả hệ thống chi tiết (Kiến trúc & CSDL)
-├── README.md                    # Hướng dẫn cài đặt và vận hành
-├── dist/                        # Gói build thành phẩm sẵn sàng deploy lên Zalo
-├── backend/                     # Mã nguồn Backend Node.js & Admin CMS
-│   ├── .env                     # Cấu hình cổng PORT và chuỗi kết nối SQL Server
-│   ├── package.json             # Dependency backend (express, mssql...)
-│   ├── tsconfig.json            # Cấu hình TypeScript Backend
-│   ├── public/
-│   │   └── admin.html           # Giao diện Admin CMS Dashboard toàn diện
-│   └── src/
-│       ├── index.ts             # Entry point máy chủ Express
-│       ├── config/
-│       │   └── db.ts            # Kết nối Microsoft SQL Server
-│       └── routes/
-│           ├── admin.ts         # API Quản trị CMS & Lịch sử chỉnh sửa
-│           ├── orders.ts        # API Đơn hàng, ZaloPay & Tiến độ vận chuyển
-│           ├── products.ts      # API Danh mục Nông sản OCOP & Tồn kho
-│           ├── vouchers.ts      # API Quản lý Voucher & Vòng quay may mắn
-│           └── leaderboard.ts   # API Bảng xếp hạng Quiz tuần
-└── src/                         # Mã nguồn Frontend Zalo Mini App
-    ├── components/              # Các UI Components (Layout, WeatherCard, LuckyWheelModal...)
-    ├── data/                    # Dữ liệu tĩnh dự phòng (câu hỏi, địa điểm...)
-    ├── pages/                   # Các màn hình chính (Home, Quiz, Store, MapPage, Vouchers...)
-    ├── services/                # API Client config, Weather Service, ZMP SDK Adapter
-    ├── state/                   # Quản lý State bằng Jotai Atoms & LocalStorage
-    └── types/                   # Định nghĩa Interface & TypeScript Types
+|-- app-config.json              # Cau hinh Zalo Mini App
+|-- package.json                 # Cau hinh dependency Frontend
+|-- vite.config.ts               # Cau hinh Vite bundler va Proxy
+|-- MO_TA_HE_THONG.md            # Tai lieu mo ta he thong chi tiet (Kien truc va CSDL)
+|-- README.md                    # Huong dan cai dat va van hanh he thong
+|-- dist/                        # Goi build thanh pham san sang deploy len Zalo
+|-- backend/                     # Ma nguon Backend Node.js va Admin CMS
+|   |-- .env                     # Cau hinh cong PORT va chuoi ket noi SQL Server
+|   |-- package.json             # Dependency backend (express, mssql...)
+|   |-- tsconfig.json            # Cau hinh TypeScript Backend
+|   |-- public/
+|   |   `-- admin.html           # Giao dien Admin CMS Dashboard da phan quyen
+|   `-- src/
+|       |-- index.ts             # Entry point may chu Express
+|       |-- config/
+|       |   `-- db.ts            # Ket noi Microsoft SQL Server
+|       `-- routes/
+|           |-- admin.ts         # API Quan tri CMS, Xac thuc Dang nhap va Audit Logs
+|           |-- orders.ts        # API Don hang, Thanh toan (ZaloPay, COD) va Tien do
+|           |-- products.ts      # API Danh muc Nong san OCOP va Ton kho
+|           |-- vouchers.ts      # API Quan ly Voucher va Vong quay may man
+|           `-- leaderboard.ts   # API Bang xep hang Quiz tuan
+`-- src/                         # Ma nguon Frontend Zalo Mini App
+    |-- components/              # Cac UI Components (Layout, WeatherCard, LuckyWheelModal...)
+    |-- data/                    # Du lieu tinh du phong (cau hoi, dia diem...)
+    |-- pages/                   # Cac man hinh chinh (Home, Quiz, Store, MapPage, Vouchers...)
+    |-- services/                # API Client config, Weather Service, ZMP SDK Adapter
+    |-- state/                   # Quan ly State bang Jotai Atoms va LocalStorage
+    `-- types/                   # Dinh nghia Interface va TypeScript Types
 ```
 
 ---
 
-## 🚀 4. Hướng dẫn Khởi chạy Môi trường Local
+## 4. Huong dan Khoi chay Moi truong Local
 
-### 4.1. Chuẩn bị Cơ sở dữ liệu Microsoft SQL Server
-1. Cài đặt **SQL Server Express** (`.\SQLEXPRESS`) và **ODBC Driver 18 for SQL Server**.
-2. Mở SQL Server Management Studio (SSMS) và tạo database:
+### 4.1. Chuan bi Co so du lieu Microsoft SQL Server
+1. Cai dat SQL Server Express (.\SQLEXPRESS) va ODBC Driver 18 for SQL Server.
+2. Mo SQL Server Management Studio (SSMS) va tao database:
    ```sql
    CREATE DATABASE DakSongQuestDB;
    ```
-3. Kiểm tra file cấu hình kết nối tại `backend/.env`:
+3. Kiem tra file cau hinh ket noi tai backend/.env:
    ```env
    PORT=5000
    DB_SERVER=.\SQLEXPRESS
    DB_DATABASE=DakSongQuestDB
    DB_CONNECTION_STRING=Server=.\SQLEXPRESS;Database=DakSongQuestDB;Trusted_Connection=Yes;Driver={ODBC Driver 18 for SQL Server};TrustServerCertificate=Yes
    ```
-   *(Hệ thống sẽ **tự động tạo toàn bộ các bảng CSDL và nạp dữ liệu mẫu ban đầu** khi backend khởi chạy lần đầu).*
+   (He thong se tu dong khoi tao toan bo cac bang CSDL gom AdminUsers, Venues, Products, Orders, OrderItems, UserVouchers, QuizLeaderboard, AdminAuditLogs va nap du lieu mau khi backend chay lan dau).
 
 ---
 
-### 4.2. Khởi chạy Backend Server & Admin CMS
-Mở Terminal tại thư mục `backend`:
+### 4.2. Khoi chay Backend Server va Admin CMS
+Mo Terminal tai thu muc backend:
 ```bash
 cd backend
 npm install
 npm run build
 node dist/index.js
 ```
-- **Máy chủ Backend API** chạy tại: `http://localhost:5000`
-- **Trang Quản trị Admin CMS** truy cập tại: `http://localhost:5000/admin.html`
+- May chu Backend API chay tai: http://localhost:5000
+- Trang Quan tri Admin CMS truy cap tai: http://localhost:5000/admin.html
+
+Thong tin tai khoan quan tri he thong:
+- Hop tac xa Nong san Dak Song (Quan tri San OCOP): Tai khoan: htx_daksong / Mat khau: 123
+- UBND va Ban Quan ly Huyen (Quan tri Du lich & Voucher): Tai khoan: huyen_daksong / Mat khau: 123
 
 ---
 
-### 4.3. Khởi chạy Frontend Zalo Mini App
-Mở một cửa sổ Terminal mới tại thư mục gốc:
+### 4.3. Khoi chay Frontend Zalo Mini App
+Mo cua so Terminal moi tai thu muc goc:
 ```bash
 npm install
 npm run dev
 ```
-- Mở trình duyệt tại: `http://localhost:5173` để trải nghiệm giao diện Mini App.
+- Mo trinh duyet tai: http://localhost:5173 de trai nghiem giao dien nguoi dung.
 
 ---
 
-## 📱 5. Đóng gói & Triển khai lên Zalo Mini App Thật
+## 5. Dong goi va Trien khai len Zalo Mini App That
 
-### Bước 1: Đăng nhập tài khoản Zalo Developer
+### Buoc 1: Dang nhap tai khoan Zalo Developer
 ```bash
 zmp login
 ```
-- Quét mã QR hiển thị trong terminal bằng ứng dụng Zalo trên điện thoại để xác thực.
+- Quet ma QR hien thi trong terminal bang ung dung Zalo tren dien thoai de xac thuc.
 
-### Bước 2: Deploy lên máy chủ Zalo
+### Buoc 2: Deploy len may chu Zalo
 ```bash
 npm run deploy
 ```
-- Chọn trạng thái phiên bản: `Testing`.
-- Nhập mô tả phiên bản (VD: *Bản kiểm thử nghiệm thu*).
-- Sau khi tải lên thành công, mở [Zalo Mini App Console](https://mini.zalo.me) để lấy mã QR kiểm thử trên điện thoại thật.
+- Chon trang thai phien ban: Testing.
+- Nhap mo ta phien ban (Vi du: Ban nghiem thu he thong).
+- Sau khi tai len thanh cong, mo Zalo Mini App Console (https://mini.zalo.me) de lay ma QR kiem thu tren dien thoai that.
 
 ---
 
-## 📑 6. Tài liệu Kỹ thuật Chi tiết
-Để xem toàn bộ sơ đồ kiến trúc hệ thống (Mermaid Diagram), thiết kế cơ sở dữ liệu chi tiết (ERD), mô tả chi tiết từng API Endpoint và các quy trình nghiệp vụ sâu, vui lòng tham khảo file:
-👉 [MO_TA_HE_THONG.md](file:///d:/test/dak-song-quest-fixed/MO_TA_HE_THONG.md)
+## 6. Tai lieu Ky thuat Chi tiet
+De xem toan bo so do kien truc he thong (Mermaid Diagram), thiet ke co so du lieu chi tiet (ERD), mo ta chi tiet tung API Endpoint va cac quy trinh nghiep vu sau, vui long tham khao file:
+- MO_TA_HE_THONG.md

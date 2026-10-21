@@ -8,7 +8,9 @@ import {
   Clock,
   CreditCard,
   Edit2,
+  ExternalLink,
   Gift,
+  Info,
   Lock,
   MapPin,
   Minus,
@@ -118,12 +120,18 @@ function formatVietnamDateTime(raw: string | undefined): string {
 }
 
 // THANH TIẾN ĐỘ 4 BƯỚC ĐIỀU PHỐI ĐƠN HÀNG THỜI GIAN THỰC
-function OrderProgressTracker({ status }: { status: string }) {
+function OrderProgressTracker({ status, note, paymentMethod }: { status: string; note?: string; paymentMethod?: string }) {
   if (status === "Cancelled") {
+    const isHTXCancelled = note && (note.includes("Hợp tác xã") || note.includes("chất lượng") || note.includes("số lượng"));
     return (
-      <div className="rounded-xl bg-red-50 p-2.5 border border-red-200 text-red-900 text-xs font-bold flex items-center gap-2">
-        <XCircle size={16} className="text-red-600 shrink-0" />
-        <span>Đơn hàng đã được HỦY. Tiền đã được hoàn về ví ZaloPay của bạn.</span>
+      <div className="rounded-xl bg-red-50 p-2.5 border border-red-200 text-red-900 text-xs font-medium space-y-1">
+        <div className="flex items-center gap-1.5 font-bold text-red-800">
+          <XCircle size={15} className="text-red-600 shrink-0" />
+          <span>{isHTXCancelled ? "Đơn hàng do Hợp tác xã hủy điều phối" : "Đơn hàng đã được HỦY"}</span>
+        </div>
+        <p className="text-[11px] text-red-700 leading-relaxed font-semibold">
+          {note || (paymentMethod === "COD" ? "Đơn hàng COD đã hủy, quý khách không phải thanh toán." : "Tiền đã được hoàn về ví ZaloPay của bạn.")}
+        </p>
       </div>
     );
   }
@@ -248,6 +256,38 @@ export function Store() {
     isOpen: boolean;
     message: string;
     hasAdjusted?: boolean;
+  } | null>(null);
+
+  // Phương thức thanh toán được chọn: ZaloPay hoặc Tiền mặt (COD)
+  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<"ZaloPay" | "COD">("ZaloPay");
+
+  // Modal Cổng thanh toán ZaloPay Sandbox
+  const [zaloPaySandboxModal, setZaloPaySandboxModal] = useState<{
+    isOpen: boolean;
+    order: PlacedOrder;
+    appTransId?: string;
+    orderUrl?: string;
+    qrCodeUrl?: string;
+  } | null>(null);
+  const [isCheckingPayment, setIsCheckingPayment] = useState(false);
+
+  // Modal Popup kết quả tra cứu ZaloPay Sandbox
+  const [zaloPayQueryResultModal, setZaloPayQueryResultModal] = useState<{
+    isOpen: boolean;
+    isSuccess: boolean;
+    title: string;
+    message: string;
+    appTransId?: string;
+    orderCode?: string;
+  } | null>(null);
+
+  // Modal Popup thông báo cập nhật thông tin nhận hàng thành công
+  const [editSuccessModal, setEditSuccessModal] = useState<{
+    isOpen: boolean;
+    orderCode: string;
+    customerName: string;
+    phone: string;
+    shippingAddress: string;
   } | null>(null);
 
   // 1. TỰ ĐỘNG TẢI GIÁ VÀ SẢN PHẨM MỚI NHẤT TỪ SQL SERVER BACKEND
@@ -523,8 +563,6 @@ export function Store() {
 
     const dateStr = new Date().toISOString().slice(0, 10).replace(/-/g, "");
     const randomSuffix = Math.floor(1000 + Math.random() * 9000);
-    let assignedOrderCode = `ORD-${dateStr}-${randomSuffix}`;
-    let assignedOrderId = Date.now();
 
     try {
       const res = await apiFetch(`/api/orders/create`, {
@@ -538,20 +576,19 @@ export function Store() {
           note: shippingAddress.note,
           items: cartItems.map((i) => ({ productId: i.product.id, quantity: i.quantity })),
           voucherCode: appliedPromoCode || undefined,
-          paymentMethod: "ZaloPay",
+          paymentMethod: selectedPaymentMethod,
         }),
       });
 
       const resJson = await res.json();
+      let assignedOrderCode = `ORD-${dateStr}-${randomSuffix}`;
+      let assignedOrderId = Date.now();
+      let zaloPayInfo: any = null;
+
       if (resJson.success && resJson.data) {
         assignedOrderCode = resJson.data.orderCode;
         assignedOrderId = resJson.data.orderId;
-
-        await apiFetch(`/api/orders/simulate-zalopay-success`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ orderCode: assignedOrderCode }),
-        });
+        zaloPayInfo = resJson.data.zaloPay;
       } else {
         // XỬ LÝ KHI KHO KHÔNG ĐỦ HÀNG (Ví dụ có người khác vừa đặt trước 0.005s)
         setIsSubmitting(false);
@@ -584,46 +621,164 @@ export function Store() {
         });
         return; // DỪNG LẠI NGAY, TUYỆT ĐỐI KHÔNG TẠO ĐƠN
       }
+
+      // XỬ LÝ 1: NẾU CHỌN THANH TOÁN TIỀN MẶT KHI NHẬN HÀNG (COD)
+      if (selectedPaymentMethod === "COD") {
+        const codOrder: PlacedOrder = {
+          orderId: assignedOrderId,
+          orderCode: assignedOrderCode,
+          customerName: shippingAddress.customerName.trim(),
+          phone: cleanPhone,
+          shippingAddress: fullShippingAddress,
+          items: cartItems.map((item) => ({
+            productId: item.product.id,
+            productName: item.product.name,
+            price: item.product.price,
+            quantity: item.quantity,
+            subtotal: item.product.price * item.quantity,
+          })),
+          totalAmount: cartTotal,
+          discountAmount,
+          finalAmount: finalTotal,
+          voucherCodeApplied: appliedPromoCode || undefined,
+          paymentMethod: "COD",
+          paymentStatus: "Unpaid",
+          orderStatus: "PendingConfirm",
+          createdAt: new Date().toISOString(),
+        };
+
+        setPlacedOrders((curr) => [codOrder, ...curr]);
+        setCartItems([]);
+        setAppliedPromoCode("");
+        setPromoCodeInput("");
+        setPromoMessage(null);
+        setIsSubmitting(false);
+        setIsCartOpen(false);
+        setSuccessOrder(codOrder);
+        loadLiveProducts();
+        return;
+      }
+
+      // XỬ LÝ 2: NẾU CHỌN ZALOPAY SANDBOX
+      const pendingOrder: PlacedOrder = {
+        orderId: assignedOrderId,
+        orderCode: assignedOrderCode,
+        customerName: shippingAddress.customerName.trim(),
+        phone: cleanPhone,
+        shippingAddress: fullShippingAddress,
+        items: cartItems.map((item) => ({
+          productId: item.product.id,
+          productName: item.product.name,
+          price: item.product.price,
+          quantity: item.quantity,
+          subtotal: item.product.price * item.quantity,
+        })),
+        totalAmount: cartTotal,
+        discountAmount,
+        finalAmount: finalTotal,
+        voucherCodeApplied: appliedPromoCode || undefined,
+        paymentMethod: "ZaloPay",
+        paymentStatus: "Pending",
+        orderStatus: "PendingConfirm",
+        createdAt: new Date().toISOString(),
+      };
+
+      // Mở modal cổng thanh toán ZaloPay Sandbox
+      setZaloPaySandboxModal({
+        isOpen: true,
+        order: pendingOrder,
+        appTransId: zaloPayInfo?.app_trans_id,
+        orderUrl: zaloPayInfo?.order_url || resJson.data?.zaloPayOrderUrl,
+        qrCodeUrl: zaloPayInfo?.qrCodeUrl,
+      });
+
+      setIsSubmitting(false);
+      setIsCartOpen(false);
     } catch (err) {
       console.warn("Chưa thể kết nối tới Backend SQL Server:", err);
       setIsSubmitting(false);
       alert("Không thể kết nối đến máy chủ để xác nhận tồn kho. Vui lòng kiểm tra lại kết nối mạng!");
       return;
     }
+  };
 
-    const newOrder: PlacedOrder = {
-      orderId: assignedOrderId,
-      orderCode: assignedOrderCode,
-      customerName: shippingAddress.customerName.trim(),
-      phone: cleanPhone,
-      shippingAddress: fullShippingAddress,
-      items: cartItems.map((item) => ({
-        productId: item.product.id,
-        productName: item.product.name,
-        price: item.product.price,
-        quantity: item.quantity,
-        subtotal: item.product.price * item.quantity,
-      })),
-      totalAmount: cartTotal,
-      discountAmount,
-      finalAmount: finalTotal,
-      voucherCodeApplied: appliedPromoCode || undefined,
-      paymentMethod: "ZaloPay",
+  // XÁC NHẬN THANH TOÁN ZALOPAY SANDBOX THÀNH CÔNG
+  const handleConfirmSandboxPaymentSuccess = async (order: PlacedOrder) => {
+    try {
+      await apiFetch(`/api/orders/simulate-zalopay-success`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ orderCode: order.orderCode }),
+      });
+    } catch (e) {
+      console.warn("Lỗi xác nhận ZaloPay:", e);
+    }
+
+    const paidOrder: PlacedOrder = {
+      ...order,
       paymentStatus: "Paid",
       orderStatus: "PendingConfirm",
-      createdAt: new Date().toISOString(),
     };
 
-    // Lưu đơn hàng & dọn sạch giỏ (Voucher cơ sở quán ăn/lưu trú được giữ nguyên vẹn để dùng trực tiếp tại Đắk Song)
-    setPlacedOrders((curr) => [newOrder, ...curr]);
+    setPlacedOrders((curr) => {
+      const exists = curr.some((o) => o.orderCode === order.orderCode);
+      if (exists) {
+        return curr.map((o) => (o.orderCode === order.orderCode ? paidOrder : o));
+      }
+      return [paidOrder, ...curr];
+    });
+
     setCartItems([]);
     setAppliedPromoCode("");
     setPromoCodeInput("");
     setPromoMessage(null);
-    setIsSubmitting(false);
-    setIsCartOpen(false);
-    setSuccessOrder(newOrder);
+    setZaloPaySandboxModal(null);
+    setSuccessOrder(paidOrder);
     loadLiveProducts();
+  };
+
+  // KIỂM TRA TRẠNG THÁI THANH TOÁN TRỰC TIẾP TỪ ZALOPAY SANDBOX GATEWAY
+  const handleQueryZaloPayStatus = async (appTransId?: string, orderCode?: string) => {
+    setIsCheckingPayment(true);
+    try {
+      const res = await apiFetch(`/api/orders/zalopay-sandbox/query`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ app_trans_id: appTransId, orderCode }),
+      });
+      const json = await res.json();
+      if (json.isPaid && zaloPaySandboxModal?.order) {
+        await handleConfirmSandboxPaymentSuccess(zaloPaySandboxModal.order);
+        setZaloPayQueryResultModal({
+          isOpen: true,
+          isSuccess: true,
+          title: "Thanh toán thành công!",
+          message: json.message || "Giao dịch đã được hệ thống ZaloPay xác nhận thành công. Đơn hàng đang được Hợp tác xã chuẩn bị!",
+          appTransId,
+          orderCode,
+        });
+      } else {
+        setZaloPayQueryResultModal({
+          isOpen: true,
+          isSuccess: false,
+          title: "Kết quả kiểm tra thanh toán ZaloPay",
+          message: json.message || "Giao dịch đang chờ thanh toán trên cổng ZaloPay. Quý khách vui lòng quét mã QR hoặc mở liên kết thanh toán, hoặc bấm 'Xác nhận đã thanh toán' để tiếp tục!",
+          appTransId,
+          orderCode,
+        });
+      }
+    } catch (err: any) {
+      setZaloPayQueryResultModal({
+        isOpen: true,
+        isSuccess: false,
+        title: "Lỗi kết nối cổng thanh toán",
+        message: "Chưa thể kết nối tới ZaloPay Gateway: " + (err.message || "Lỗi đường truyền mạng"),
+        appTransId,
+        orderCode,
+      });
+    } finally {
+      setIsCheckingPayment(false);
+    }
   };
 
   // MỞ POPUP XÁC NHẬN HỦY ĐƠN HÀNG
@@ -715,8 +870,18 @@ export function Store() {
       ),
     );
 
+    const savedCode = editingOrder.orderCode;
+    const savedName = editName.trim();
+    const savedAddress = editAddress.trim();
+
     setEditingOrder(null);
-    alert("✅ Cập nhật thông tin nhận hàng thành công!");
+    setEditSuccessModal({
+      isOpen: true,
+      orderCode: savedCode,
+      customerName: savedName,
+      phone: cleanPhone,
+      shippingAddress: savedAddress,
+    });
   };
 
 
@@ -1221,6 +1386,50 @@ export function Store() {
                     />
                   </div>
 
+                  {/* CHỌN HÌNH THỨC THANH TOÁN (VÍ ZALOPAY HOẶC TIỀN MẶT COD) */}
+                  <div className="pt-2 border-t border-stone-200 space-y-2">
+                    <div className="flex items-center justify-between">
+                      <label className="text-[11px] font-black text-stone-900 uppercase tracking-wide flex items-center gap-1.5">
+                        <CreditCard size={13} className="text-emerald-700" /> Phương thức thanh toán
+                      </label>
+                      <span className="text-[10px] text-emerald-800 font-bold bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200">
+                        {selectedPaymentMethod === "COD" ? "💵 Tiền mặt (COD)" : "💳 Ví ZaloPay"}
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-2 text-xs">
+                      <button
+                        type="button"
+                        onClick={() => setSelectedPaymentMethod("ZaloPay")}
+                        className={`p-2.5 rounded-xl border-2 text-left transition cursor-pointer flex flex-col justify-between ${
+                          selectedPaymentMethod === "ZaloPay"
+                            ? "border-blue-500 bg-blue-50/70 text-blue-950 shadow-2xs"
+                            : "border-stone-200 bg-white hover:bg-stone-50 text-stone-700"
+                        }`}
+                      >
+                        <div className="flex items-center justify-between mb-1">
+                          <span className="font-black text-xs text-blue-700">Ví ZaloPay</span>
+                        </div>
+                        <p className="text-[10px] text-stone-500 leading-tight">Thanh toán qua mã QR / App ZaloPay</p>
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => setSelectedPaymentMethod("COD")}
+                        className={`p-2.5 rounded-xl border-2 text-left transition cursor-pointer flex flex-col justify-between ${
+                          selectedPaymentMethod === "COD"
+                            ? "border-emerald-600 bg-emerald-50/70 text-emerald-950 shadow-2xs"
+                            : "border-stone-200 bg-white hover:bg-stone-50 text-stone-700"
+                        }`}
+                      >
+                        <div className="flex items-center justify-between mb-1">
+                          <span className="font-black text-xs text-emerald-800">Tiền mặt (COD)</span>
+                        </div>
+                        <p className="text-[10px] text-stone-500 leading-tight">Giao hàng tận nơi mới thanh toán</p>
+                      </button>
+                    </div>
+                  </div>
+
                   <div className="border-t border-stone-200 pt-3 space-y-1.5">
                     <div className="flex justify-between text-stone-600">
                       <span>Tạm tính:</span>
@@ -1247,10 +1456,20 @@ export function Store() {
                   <button
                     type="submit"
                     disabled={isSubmitting}
-                    className="w-full flex items-center justify-center gap-2 rounded-2xl bg-blue-700 hover:bg-blue-800 py-3.5 px-4 text-xs font-black text-white shadow-md active:scale-98 transition cursor-pointer disabled:opacity-60"
+                    className={`w-full flex items-center justify-center gap-2 rounded-2xl py-3.5 px-4 text-xs font-black text-white shadow-md active:scale-98 transition cursor-pointer disabled:opacity-60 ${
+                      selectedPaymentMethod === "COD"
+                        ? "bg-emerald-700 hover:bg-emerald-800"
+                        : "bg-blue-700 hover:bg-blue-800"
+                    }`}
                   >
-                    <CreditCard size={16} />
-                    <span>{isSubmitting ? "Đang xử lý ZaloPay..." : `Thanh toán ZaloPay (${finalTotal.toLocaleString("vi-VN")}₫)`}</span>
+                    {selectedPaymentMethod === "COD" ? <Truck size={16} /> : <CreditCard size={16} />}
+                    <span>
+                      {isSubmitting
+                        ? "Đang xử lý đơn hàng..."
+                        : selectedPaymentMethod === "COD"
+                        ? `Đặt hàng giao tận nơi - COD (${finalTotal.toLocaleString("vi-VN")}₫)`
+                        : `Thanh toán Ví ZaloPay (${finalTotal.toLocaleString("vi-VN")}₫)`}
+                    </span>
                   </button>
                 </form>
               </div>
@@ -1327,7 +1546,7 @@ export function Store() {
                   </div>
 
                   {/* TIẾN ĐỘ THỜI GIAN THỰC */}
-                  <OrderProgressTracker status={order.orderStatus} />
+                  <OrderProgressTracker status={order.orderStatus} note={order.note} paymentMethod={order.paymentMethod} />
 
                   {/* DANH SÁCH MÓN */}
                   <div className="space-y-1 bg-stone-50 p-2.5 rounded-xl border border-stone-100">
@@ -1347,9 +1566,16 @@ export function Store() {
                       <div className="text-[11px] text-stone-500 truncate">{order.shippingAddress}</div>
                     </div>
                     <div className="text-right">
-                      <div className="text-[10px] text-stone-400 uppercase font-bold">ZaloPay</div>
+                      <div className="text-[10px] text-stone-400 uppercase font-bold">
+                        {order.paymentMethod === "COD" ? "💵 COD Tiền mặt" : "💳 ZaloPay"}
+                      </div>
                       <div className="text-sm font-black text-[#ee4d2d]">
                         {order.finalAmount.toLocaleString("vi-VN")}₫
+                      </div>
+                      <div className="text-[10px] font-bold text-stone-500">
+                        {order.paymentMethod === "COD"
+                          ? (order.paymentStatus === "Paid" ? "Đã thu tiền" : "Thu khi giao")
+                          : (order.paymentStatus === "Paid" ? "Đã thanh toán" : "Chờ ZaloPay")}
                       </div>
                     </div>
                   </div>
@@ -1359,7 +1585,7 @@ export function Store() {
                     {order.orderStatus === "PendingConfirm" && (
                       <button
                         onClick={() => openEditModal(order)}
-                        className="px-3 py-1.5 rounded-xl border border-stone-300 hover:bg-stone-50 text-stone-800 font-bold text-xs flex items-center gap-1 transition cursor-pointer"
+                        className="px-3 py-1.5 rounded-xl border border-emerald-500 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 font-bold text-xs flex items-center gap-1 transition cursor-pointer shadow-2xs active:scale-95"
                       >
                         <Edit2 size={13} /> Sửa thông tin nhận
                       </button>
@@ -1787,15 +2013,15 @@ export function Store() {
                 <button
                   type="button"
                   onClick={() => setEditingOrder(null)}
-                  className="px-3.5 py-2 rounded-xl text-stone-600 font-bold cursor-pointer"
+                  className="px-3.5 py-2 rounded-xl text-stone-600 hover:bg-stone-100 font-bold cursor-pointer transition text-xs"
                 >
                   Hủy
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 rounded-xl bg-emerald-850 text-white font-black shadow-xs cursor-pointer"
+                  className="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white font-black shadow-md cursor-pointer flex items-center gap-1.5 transition text-xs"
                 >
-                  Lưu thay đổi
+                  <CheckCircle2 size={14} /> Xác nhận cập nhật
                 </button>
               </div>
             </form>
@@ -2060,6 +2286,50 @@ export function Store() {
                         className="mt-0.5 w-full rounded-xl border border-stone-300 p-2 text-xs font-medium text-stone-900"
                       />
                     </div>
+
+                    {/* CHỌN HÌNH THỨC THANH TOÁN (VÍ ZALOPAY HOẶC TIỀN MẶT COD) */}
+                    <div className="pt-2 border-t border-stone-200 space-y-2">
+                      <div className="flex items-center justify-between">
+                        <label className="text-[11px] font-black text-stone-900 uppercase tracking-wide flex items-center gap-1.5">
+                          <CreditCard size={13} className="text-emerald-700" /> Phương thức thanh toán
+                        </label>
+                        <span className="text-[10px] text-emerald-800 font-bold bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200">
+                          {selectedPaymentMethod === "COD" ? "💵 Tiền mặt (COD)" : "💳 Ví ZaloPay"}
+                        </span>
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-2 text-xs">
+                        <button
+                          type="button"
+                          onClick={() => setSelectedPaymentMethod("ZaloPay")}
+                          className={`p-2.5 rounded-xl border-2 text-left transition cursor-pointer flex flex-col justify-between ${
+                            selectedPaymentMethod === "ZaloPay"
+                              ? "border-blue-500 bg-blue-50/70 text-blue-950 shadow-2xs"
+                              : "border-stone-200 bg-white hover:bg-stone-50 text-stone-700"
+                          }`}
+                        >
+                          <div className="flex items-center justify-between mb-1">
+                            <span className="font-black text-xs text-blue-700">Ví ZaloPay</span>
+                          </div>
+                          <p className="text-[10px] text-stone-500 leading-tight">Thanh toán qua mã QR / App ZaloPay</p>
+                        </button>
+
+                        <button
+                          type="button"
+                          onClick={() => setSelectedPaymentMethod("COD")}
+                          className={`p-2.5 rounded-xl border-2 text-left transition cursor-pointer flex flex-col justify-between ${
+                            selectedPaymentMethod === "COD"
+                              ? "border-emerald-600 bg-emerald-50/70 text-emerald-950 shadow-2xs"
+                              : "border-stone-200 bg-white hover:bg-stone-50 text-stone-700"
+                          }`}
+                        >
+                          <div className="flex items-center justify-between mb-1">
+                            <span className="font-black text-xs text-emerald-800">Tiền mặt (COD)</span>
+                          </div>
+                          <p className="text-[10px] text-stone-500 leading-tight">Giao hàng tận nơi mới thanh toán</p>
+                        </button>
+                      </div>
+                    </div>
                   </form>
                 </>
               )}
@@ -2095,10 +2365,20 @@ export function Store() {
                   type="submit"
                   form="checkout-form"
                   disabled={isSubmitting}
-                  className="w-full flex items-center justify-center gap-2 rounded-2xl bg-blue-700 hover:bg-blue-800 py-3.5 px-4 text-xs font-black text-white shadow-md active:scale-98 transition cursor-pointer disabled:opacity-60"
+                  className={`w-full flex items-center justify-center gap-2 rounded-2xl py-3.5 px-4 text-xs font-black text-white shadow-md active:scale-98 transition cursor-pointer disabled:opacity-60 ${
+                    selectedPaymentMethod === "COD"
+                      ? "bg-emerald-700 hover:bg-emerald-800"
+                      : "bg-blue-700 hover:bg-blue-800"
+                  }`}
                 >
-                  <CreditCard size={16} />
-                  <span>{isSubmitting ? "Đang xử lý ZaloPay..." : `Thanh toán ZaloPay (${finalTotal.toLocaleString("vi-VN")}₫)`}</span>
+                  {selectedPaymentMethod === "COD" ? <Truck size={16} /> : <CreditCard size={16} />}
+                  <span>
+                    {isSubmitting
+                      ? "Đang xử lý đơn hàng..."
+                      : selectedPaymentMethod === "COD"
+                      ? `Đặt hàng giao tận nơi - COD (${finalTotal.toLocaleString("vi-VN")}₫)`
+                      : `Thanh toán Ví ZaloPay (${finalTotal.toLocaleString("vi-VN")}₫)`}
+                  </span>
                 </button>
               </div>
             )}
@@ -2267,6 +2547,219 @@ export function Store() {
                 )}
               </button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* ===== MODAL CỔNG THANH TOÁN ZALOPAY SANDBOX ===== */}
+      {zaloPaySandboxModal?.isOpen && (
+        <div className="fixed inset-0 z-[155] flex items-center justify-center bg-stone-950/80 p-4 backdrop-blur-xs animate-in fade-in duration-200">
+          <div className="w-full max-w-sm overflow-hidden rounded-3xl bg-white shadow-2xl border border-blue-200 animate-in zoom-in-95 duration-200">
+            <div className="bg-gradient-to-r from-blue-700 via-blue-600 to-indigo-700 p-4 text-white">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <div className="h-8 w-8 rounded-xl bg-white text-blue-700 flex items-center justify-center font-black shadow-xs">
+                    <CreditCard size={18} />
+                  </div>
+                  <div>
+                    <h3 className="font-black text-sm leading-tight">Cổng thanh toán Ví ZaloPay</h3>
+                    <span className="text-[10px] text-blue-200 font-bold bg-blue-800/80 px-2 py-0.5 rounded-full inline-block mt-0.5">
+                      Thanh toán trực tuyến an toàn
+                    </span>
+                  </div>
+                </div>
+                <button
+                  onClick={() => setZaloPaySandboxModal(null)}
+                  className="rounded-full p-1 text-blue-200 hover:text-white hover:bg-blue-800/50 transition cursor-pointer"
+                >
+                  <X size={18} />
+                </button>
+              </div>
+            </div>
+
+            <div className="p-4 space-y-3.5 text-center">
+              <div>
+                <div className="text-[11px] text-stone-500 font-bold uppercase tracking-wider">
+                  Mã đơn hàng
+                </div>
+                <div className="font-mono text-sm font-black text-stone-900 mt-0.5">
+                  #{zaloPaySandboxModal.order.orderCode}
+                </div>
+                {zaloPaySandboxModal.appTransId && (
+                  <div className="text-[10px] text-stone-400 mt-0.5">
+                    Mã GD ZaloPay:{" "}
+                    <span className="font-mono text-blue-800 font-bold">{zaloPaySandboxModal.appTransId}</span>
+                  </div>
+                )}
+              </div>
+
+              <div className="rounded-2xl bg-blue-50/80 border border-blue-200/80 p-3">
+                <div className="text-xs text-blue-900 font-medium">Số tiền thanh toán</div>
+                <div className="text-xl font-black text-blue-700 mt-0.5">
+                  {zaloPaySandboxModal.order.finalAmount.toLocaleString("vi-VN")}₫
+                </div>
+              </div>
+
+              {/* KHUNG MÃ QR CODE THANH TOÁN */}
+              <div className="flex flex-col items-center justify-center p-3 rounded-2xl bg-stone-50 border border-stone-200">
+                <div className="bg-white p-2 rounded-xl shadow-xs border border-stone-200">
+                  <img
+                    src={zaloPaySandboxModal.qrCodeUrl || `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(zaloPaySandboxModal.orderUrl || 'https://zalopay.vn')}`}
+                    alt="Mã QR ZaloPay"
+                    className="w-40 h-40 object-contain mx-auto rounded-lg"
+                  />
+                </div>
+                <p className="text-[10px] text-stone-500 mt-2 font-medium">
+                  Quét mã QR bằng ứng dụng Zalo / ZaloPay để thanh toán
+                </p>
+              </div>
+
+              {/* CÁC NÚT THAO TÁC CỔNG THANH TOÁN */}
+              <div className="space-y-2 pt-1">
+                {/* 1. Mở Cổng ZaloPay Web */}
+                {zaloPaySandboxModal.orderUrl && (
+                  <a
+                    href={zaloPaySandboxModal.orderUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-full flex items-center justify-center gap-1.5 rounded-xl bg-blue-600 hover:bg-blue-700 py-2.5 px-3 text-xs font-black text-white shadow-xs transition cursor-pointer"
+                  >
+                    <ExternalLink size={14} /> Mở Cổng Ví ZaloPay (Webview)
+                  </a>
+                )}
+
+                {/* 2. Kiểm tra trạng thái giao dịch */}
+                <button
+                  onClick={() => handleQueryZaloPayStatus(zaloPaySandboxModal.appTransId, zaloPaySandboxModal.order.orderCode)}
+                  disabled={isCheckingPayment}
+                  className="w-full flex items-center justify-center gap-1.5 rounded-xl border border-blue-400 bg-white hover:bg-blue-50 py-2 px-3 text-xs font-bold text-blue-900 shadow-xs transition cursor-pointer disabled:opacity-60"
+                >
+                  <RefreshCw size={13} className={isCheckingPayment ? "animate-spin" : ""} />
+                  <span>{isCheckingPayment ? "Đang tra cứu ZaloPay..." : "Kiểm tra kết quả thanh toán"}</span>
+                </button>
+
+                {/* 3. Nút giả lập 1-click thành công để demo thuận tiện */}
+                <button
+                  onClick={() => handleConfirmSandboxPaymentSuccess(zaloPaySandboxModal.order)}
+                  className="w-full flex items-center justify-center gap-1.5 rounded-xl bg-emerald-700 hover:bg-emerald-800 py-2.5 px-3 text-xs font-black text-white shadow-xs transition cursor-pointer"
+                >
+                  <CheckCircle2 size={14} /> Xác nhận đã thanh toán ZaloPay
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ===== POPUP KẾT QUẢ KIỂM TRA ZALOPAY SANDBOX ===== */}
+      {zaloPayQueryResultModal?.isOpen && (
+        <div className="fixed inset-0 z-[160] flex items-center justify-center bg-stone-950/80 p-4 backdrop-blur-xs animate-in fade-in duration-200">
+          <div className="w-full max-w-sm overflow-hidden rounded-3xl bg-white shadow-2xl border border-blue-200 text-center animate-in zoom-in-95 duration-200 p-5 space-y-3.5">
+            <div
+              className={`inline-flex h-14 w-14 items-center justify-center rounded-2xl mx-auto shadow-xs border ${
+                zaloPayQueryResultModal.isSuccess
+                  ? "bg-emerald-100 text-emerald-700 border-emerald-200"
+                  : "bg-blue-100 text-blue-700 border-blue-200"
+              }`}
+            >
+              {zaloPayQueryResultModal.isSuccess ? (
+                <CheckCircle2 size={30} />
+              ) : (
+                <Info size={30} />
+              )}
+            </div>
+
+            <div>
+              <span
+                className={`inline-block rounded-full px-3 py-0.5 text-[10px] font-black uppercase tracking-wider ${
+                  zaloPayQueryResultModal.isSuccess
+                    ? "bg-emerald-100 text-emerald-900 border border-emerald-300"
+                    : "bg-blue-100 text-blue-900 border border-blue-300"
+                }`}
+              >
+                {zaloPayQueryResultModal.isSuccess ? "Thanh toán thành công" : "Cổng thanh toán ZaloPay"}
+              </span>
+              <h3 className="mt-1 text-base font-black text-stone-900 leading-tight">
+                {zaloPayQueryResultModal.title}
+              </h3>
+              {zaloPayQueryResultModal.orderCode && (
+                <p className="font-mono text-xs font-black text-stone-600 mt-0.5">
+                  Mã đơn: #{zaloPayQueryResultModal.orderCode}
+                </p>
+              )}
+            </div>
+
+            <div className="rounded-2xl bg-stone-50 border border-stone-200 p-3 text-left space-y-2 text-xs">
+              <p className="text-stone-700 leading-relaxed font-medium">
+                {zaloPayQueryResultModal.message}
+              </p>
+              {zaloPayQueryResultModal.appTransId && (
+                <div className="text-[11px] text-stone-500 pt-1 border-t border-stone-200">
+                  <span>Mã giao dịch ZaloPay: </span>
+                  <span className="font-mono font-bold text-blue-800">
+                    {zaloPayQueryResultModal.appTransId}
+                  </span>
+                </div>
+              )}
+            </div>
+
+            <button
+              type="button"
+              onClick={() => setZaloPayQueryResultModal(null)}
+              className="w-full py-2.5 px-4 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-black text-xs shadow-md transition cursor-pointer"
+            >
+              Đã hiểu & Đóng
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* ===== POPUP CẬP NHẬT THÔNG TIN NHẬN HÀNG THÀNH CÔNG ===== */}
+      {editSuccessModal?.isOpen && (
+        <div className="fixed inset-0 z-[160] flex items-center justify-center bg-stone-950/80 p-4 backdrop-blur-xs animate-in fade-in duration-200">
+          <div className="w-full max-w-sm overflow-hidden rounded-3xl bg-white shadow-2xl border border-emerald-200 text-center animate-in zoom-in-95 duration-200 p-5 space-y-3.5">
+            <div className="inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-emerald-100 text-emerald-700 border border-emerald-200 mx-auto shadow-xs">
+              <CheckCircle2 size={30} />
+            </div>
+
+            <div>
+              <span className="inline-block rounded-full bg-emerald-100 border border-emerald-300 px-3 py-0.5 text-[10px] font-black uppercase text-emerald-900 tracking-wider">
+                Đã lưu thay đổi
+              </span>
+              <h3 className="mt-1 text-base font-black text-stone-900 leading-tight">
+                Cập nhật thông tin nhận hàng thành công!
+              </h3>
+              <p className="font-mono text-xs font-black text-emerald-800 mt-0.5">
+                Mã đơn: #{editSuccessModal.orderCode}
+              </p>
+            </div>
+
+            <div className="rounded-2xl bg-emerald-50/50 border border-emerald-200/80 p-3 text-left space-y-1.5 text-xs">
+              <div className="flex justify-between items-center text-stone-700">
+                <span className="text-stone-500 font-medium">Người nhận mới:</span>
+                <span className="font-bold text-stone-900">{editSuccessModal.customerName}</span>
+              </div>
+              <div className="flex justify-between items-center text-stone-700">
+                <span className="text-stone-500 font-medium">Số điện thoại:</span>
+                <span className="font-bold text-emerald-800">{editSuccessModal.phone}</span>
+              </div>
+              <div className="pt-1 border-t border-emerald-100 text-[11px] text-stone-600">
+                <span className="font-medium text-stone-500">Địa chỉ giao: </span>
+                <span className="font-medium text-stone-800">{editSuccessModal.shippingAddress}</span>
+              </div>
+            </div>
+
+            <div className="text-[11px] text-stone-500 font-medium">
+              💡 Hợp tác xã sẽ chuẩn bị và giao hàng theo địa chỉ mới được cập nhật này.
+            </div>
+
+            <button
+              type="button"
+              onClick={() => setEditSuccessModal(null)}
+              className="w-full py-2.5 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white font-black text-xs shadow-md transition cursor-pointer"
+            >
+              Xác nhận & Hoàn tất
+            </button>
           </div>
         </div>
       )}

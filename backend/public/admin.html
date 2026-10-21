@@ -12,55 +12,149 @@
   </style>
 </head>
 <body class="bg-slate-100 text-slate-950 min-h-screen">
-  <!-- TOP HEADER ĐẬM NÉT, TƯƠNG PHẢN CAO -->
-  <header class="bg-slate-950 text-white shadow-xl sticky top-0 z-50 border-b border-slate-800">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3.5 flex flex-wrap items-center justify-between gap-4">
+
+  <!-- ==================== MÀN HÌNH ĐĂNG NHẬP PHÂN QUYỀN (LOGIN OVERLAY) ==================== -->
+  <div id="modal-login" class="fixed inset-0 z-[120] flex items-center justify-center bg-slate-950/85 backdrop-blur-md p-4">
+    <div class="bg-white rounded-3xl shadow-2xl border-2 border-slate-300 max-w-md w-full p-6 sm:p-8 space-y-5 animate-in zoom-in-95 duration-200">
+      <div class="text-center space-y-2">
+        <div class="w-14 h-14 mx-auto rounded-2xl bg-amber-400 text-slate-950 flex items-center justify-center font-black shadow-md">
+          <i data-lucide="shield-check" class="w-8 h-8"></i>
+        </div>
+        <h2 class="text-xl font-black text-slate-950 tracking-tight">HỆ THỐNG QUẢN TRỊ ĐẮK SONG QUEST</h2>
+        <p class="text-xs text-slate-600 font-semibold">Đăng nhập phân quyền quản trị theo đơn vị phụ trách</p>
+      </div>
+
+      <div class="space-y-3.5 pt-1">
+        <div>
+          <label class="block text-xs font-black uppercase text-slate-700 mb-1">Tên tài khoản</label>
+          <input type="text" id="login-username" placeholder="Nhập tài khoản (vd: htx_daksong, huyen_daksong)..." class="w-full px-4 py-2.5 rounded-xl border-2 border-slate-300 text-xs font-bold text-slate-900 focus:border-amber-500 focus:outline-none" />
+        </div>
+        <div>
+          <label class="block text-xs font-black uppercase text-slate-700 mb-1">Mật khẩu</label>
+          <input type="password" id="login-password" placeholder="Nhập mật khẩu (mặc định: 123)..." class="w-full px-4 py-2.5 rounded-xl border-2 border-slate-300 text-xs font-bold text-slate-900 focus:border-amber-500 focus:outline-none" onkeydown="if(event.key==='Enter') handleManualLogin();" />
+        </div>
+        <button onclick="handleManualLogin()" class="w-full py-3 bg-slate-950 hover:bg-slate-800 text-white rounded-xl text-xs font-black transition cursor-pointer shadow-md flex items-center justify-center gap-2">
+          <i data-lucide="log-in" class="w-4 h-4"></i> Đăng nhập hệ thống
+        </button>
+      </div>
+
+      <div class="relative flex py-1 items-center">
+        <div class="flex-grow border-t border-slate-200"></div>
+        <span class="flex-shrink mx-3 text-slate-500 text-[10px] font-black uppercase tracking-wider">Đăng nhập nhanh 1-Click Demo</span>
+        <div class="flex-grow border-t border-slate-200"></div>
+      </div>
+
+      <div class="space-y-2.5">
+        <!-- Nút Demo HTX -->
+        <button onclick="quickLogin('htx_daksong', '123')" class="w-full text-left p-3.5 rounded-2xl border-2 border-emerald-300 bg-emerald-50 hover:bg-emerald-100 transition cursor-pointer flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-emerald-700 text-white flex items-center justify-center text-lg font-black shrink-0 shadow-xs">
+            🌾
+          </div>
+          <div class="flex-1">
+            <div class="text-xs font-black text-emerald-950 flex items-center justify-between">
+              <span>HỢP TÁC XÃ NÔNG SẢN ĐẮK SONG</span>
+              <span class="text-[10px] bg-emerald-200 text-emerald-900 px-2 py-0.5 rounded-md font-black">ROLE: COOP</span>
+            </div>
+            <div class="text-[11px] text-emerald-800 font-medium mt-0.5">Phụ trách: Quản lý Sàn TMĐT OCOP, Kho hàng & Đơn hàng nông sản</div>
+          </div>
+        </button>
+
+        <!-- Nút Demo Huyện -->
+        <button onclick="quickLogin('huyen_daksong', '123')" class="w-full text-left p-3.5 rounded-2xl border-2 border-amber-300 bg-amber-50 hover:bg-amber-100 transition cursor-pointer flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-amber-500 text-slate-950 flex items-center justify-center text-lg font-black shrink-0 shadow-xs">
+            🏛️
+          </div>
+          <div class="flex-1">
+            <div class="text-xs font-black text-slate-950 flex items-center justify-between">
+              <span>UBND & BAN QUẢN LÝ HUYỆN</span>
+              <span class="text-[10px] bg-amber-200 text-amber-950 px-2 py-0.5 rounded-md font-black">ROLE: DISTRICT</span>
+            </div>
+            <div class="text-[11px] text-slate-700 font-medium mt-0.5">Phụ trách: Quán Voucher, Bảng xếp hạng Quiz, Giám sát hệ thống</div>
+          </div>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOP HEADER ĐẬM NÉT, TƯƠNG PHẢN CAO VỚI BỘ NHẬN DIỆN THƯƠNG HIỆU THEO VAI TRÒ -->
+  <header id="main-header" class="bg-slate-950 text-white shadow-xl sticky top-0 z-50 border-b border-slate-800 transition-colors duration-300">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex flex-wrap items-center justify-between gap-3">
       <div class="flex items-center gap-3">
-        <div class="h-11 w-11 rounded-2xl bg-amber-400 text-slate-950 flex items-center justify-center text-xl shadow-md font-black">
-          <i data-lucide="shield-check" class="w-6 h-6"></i>
+        <div id="brand-icon-box" class="h-10 w-10 rounded-2xl bg-amber-400 text-slate-950 flex items-center justify-center text-xl shadow-md font-black transition-all duration-300">
+          <i data-lucide="shield-check" class="w-5 h-5"></i>
         </div>
         <div>
           <h1 class="text-base sm:text-lg font-black tracking-tight text-white flex items-center gap-2">
-            ĐẮK SONG QUEST <span class="bg-amber-400 text-slate-950 text-[11px] font-black px-2.5 py-0.5 rounded-full uppercase shadow-xs">Admin CMS</span>
+            <span id="brand-title">ĐẮK SONG QUEST</span>
+            <span id="brand-tag" class="bg-amber-400 text-slate-950 text-[11px] font-black px-2.5 py-0.5 rounded-full uppercase shadow-xs transition-colors duration-300">
+              Admin CMS
+            </span>
           </h1>
-          <p class="text-xs text-slate-300 font-medium">Hệ thống Quản lý Voucher & Điều phối Nông sản OCOP Đắk Song</p>
+          <p id="brand-subtitle" class="text-xs text-slate-300 font-medium">Hệ thống Quản lý Voucher & Điều phối Nông sản OCOP Đắk Song</p>
         </div>
       </div>
 
-      <div class="flex items-center gap-3">
-        <span class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-black bg-emerald-950 text-emerald-300 border border-emerald-500/50 shadow-xs">
-          <span class="h-2.5 w-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
-          SQL Server: Đang kết nối
+      <div class="flex items-center flex-wrap gap-2 sm:gap-3">
+        <!-- Huy hiệu Tài khoản Đang Đăng Nhập -->
+        <div id="role-badge-container" class="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-700 shadow-xs transition-colors duration-300">
+          <span id="role-icon-display" class="text-base">🏛️</span>
+          <div class="text-left">
+            <div class="text-[11px] font-black text-white" id="role-agency-display">UBND & BQL Huyện</div>
+            <div class="text-[9px] font-bold text-amber-400 uppercase tracking-wider" id="role-name-display">Toàn quyền Huyện</div>
+          </div>
+        </div>
+
+        <span class="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-full text-[11px] font-black bg-emerald-950 text-emerald-300 border border-emerald-500/50 shadow-xs">
+          <span class="h-2 w-2 rounded-full bg-emerald-400 animate-pulse"></span>
+          SQL Server
         </span>
-        <button onclick="loadAllData()" class="bg-slate-800 hover:bg-slate-700 text-white px-3.5 py-1.5 rounded-xl text-xs font-black transition flex items-center gap-1.5 border border-slate-700 cursor-pointer shadow-xs">
-          <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i> Làm mới dữ liệu
+
+        <button onclick="loadAllData()" class="bg-slate-800 hover:bg-slate-700 text-white px-3 py-1.5 rounded-xl text-xs font-black transition flex items-center gap-1.5 border border-slate-700 cursor-pointer shadow-xs" title="Làm mới">
+          <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
+        </button>
+
+        <button onclick="logoutAdmin()" class="bg-red-950/80 hover:bg-red-900 text-red-200 border border-red-700/60 px-3 py-1.5 rounded-xl text-xs font-black transition flex items-center gap-1.5 cursor-pointer shadow-xs" title="Đăng xuất / Chuyển tài khoản">
+          <i data-lucide="log-out" class="w-3.5 h-3.5"></i> <span class="hidden sm:inline">Đăng xuất</span>
         </button>
       </div>
     </div>
   </header>
 
+  <!-- BANNER THÔNG BÁO VAI TRÒ ĐƯỢC ỦY QUYỀN -->
+  <div id="role-banner" class="bg-amber-500 text-slate-950 font-black text-xs py-2 px-4 shadow-sm border-b border-amber-600 flex items-center justify-between transition-colors duration-300">
+    <div class="max-w-7xl mx-auto w-full flex items-center justify-between gap-2">
+      <div class="flex items-center gap-2">
+        <i data-lucide="info" class="w-4 h-4 shrink-0"></i>
+        <span id="role-banner-text">Khu vực điều hành cấp Huyện: Quản lý Quán Voucher, Bảng xếp hạng và Giám sát toàn hệ thống.</span>
+      </div>
+      <button onclick="switchRoleFast()" class="underline text-[11px] hover:text-white cursor-pointer font-extrabold shrink-0">
+        ⇄ Chuyển đổi vai trò quản trị
+      </button>
+    </div>
+  </div>
+
   <!-- NAVIGATION TABS -->
-  <div class="bg-white border-b border-slate-300 shadow-sm sticky top-[68px] z-40">
+  <div id="nav-tabs-bar" class="bg-white border-b border-slate-300 shadow-sm sticky top-[68px] z-40 transition-colors duration-300">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 flex gap-2 overflow-x-auto py-2.5">
       <button onclick="switchTab('dashboard')" id="tab-dashboard" class="tab-btn px-4 py-2.5 rounded-xl text-xs font-black transition flex items-center gap-2 bg-slate-950 text-white shadow-xs">
-        <i data-lucide="layout-dashboard" class="w-4 h-4"></i> Tổng quan
+        <i data-lucide="layout-dashboard" class="w-4 h-4"></i> <span id="tab-dashboard-label">Tổng quan</span>
       </button>
       <button onclick="switchTab('venues')" id="tab-venues" class="tab-btn px-4 py-2.5 rounded-xl text-xs font-bold transition flex items-center gap-2 text-slate-700 hover:bg-slate-100 hover:text-slate-950">
-        <i data-lucide="ticket" class="w-4 h-4"></i> Quán & Hạn mức Voucher
+        <i data-lucide="ticket" class="w-4 h-4"></i> <span id="tab-venues-label">Quán & Hạn mức Voucher</span>
       </button>
       <button onclick="switchTab('orders')" id="tab-orders" class="tab-btn px-4 py-2.5 rounded-xl text-xs font-bold transition flex items-center gap-2 text-slate-700 hover:bg-slate-100 hover:text-slate-950">
-        <i data-lucide="shopping-cart" class="w-4 h-4"></i> Đơn hàng Nông sản OCOP
+        <i data-lucide="shopping-cart" class="w-4 h-4"></i> <span id="tab-orders-label">Đơn hàng Nông sản OCOP</span>
         <span id="pending-badge" class="hidden bg-amber-500 text-slate-950 px-2 py-0.5 rounded-full text-[10px] font-black shadow-xs">0</span>
       </button>
       <button onclick="switchTab('products')" id="tab-products" class="tab-btn px-4 py-2.5 rounded-xl text-xs font-bold transition flex items-center gap-2 text-slate-700 hover:bg-slate-100 hover:text-slate-950">
-        <i data-lucide="package" class="w-4 h-4"></i> Sản phẩm Đặc sản OCOP
+        <i data-lucide="package" class="w-4 h-4"></i> <span id="tab-products-label">Sản phẩm Đặc sản OCOP</span>
       </button>
       <button onclick="switchTab('leaderboard')" id="tab-leaderboard" class="tab-btn px-4 py-2.5 rounded-xl text-xs font-bold transition flex items-center gap-2 text-slate-700 hover:bg-slate-100 hover:text-slate-950">
-        <i data-lucide="trophy" class="w-4 h-4 text-amber-500"></i> BXH Người chơi Quiz
+        <i data-lucide="trophy" class="w-4 h-4 text-amber-500"></i> <span id="tab-leaderboard-label">BXH Người chơi Quiz</span>
         <span id="quiz-count-badge" class="bg-amber-100 text-amber-950 border border-amber-300 px-2 py-0.5 rounded-full text-[10px] font-black">0</span>
       </button>
       <button onclick="switchTab('audit-logs')" id="tab-audit-logs" class="tab-btn px-4 py-2.5 rounded-xl text-xs font-bold transition flex items-center gap-2 text-slate-700 hover:bg-slate-100 hover:text-slate-950">
-        <i data-lucide="history" class="w-4 h-4"></i> Lịch sử chỉnh sửa
+        <i data-lucide="history" class="w-4 h-4"></i> <span id="tab-audit-logs-label">Lịch sử chỉnh sửa</span>
       </button>
     </div>
   </div>
@@ -70,92 +164,251 @@
 
     <!-- ==================== TAB 1: TỔNG QUAN (DASHBOARD) ==================== -->
     <div id="content-dashboard" class="space-y-6">
-      <!-- 5 THẺ THỐNG KÊ TƯƠNG PHẢN CAO -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
-        <!-- Card 1: Tổng quán -->
-        <div class="bg-white p-5 rounded-2xl border-2 border-slate-200 shadow-sm">
-          <div class="flex items-center justify-between">
-            <span class="text-xs font-black uppercase tracking-wider text-slate-600">Cơ sở hợp tác</span>
-            <div class="p-2.5 rounded-xl bg-blue-100 text-blue-950 font-black"><i data-lucide="store" class="w-5 h-5"></i></div>
+
+      <!-- ==================== DASHBOARD SECTION DÀNH CHO HỢP TÁC XÃ (COOP) ==================== -->
+      <div id="dashboard-coop-section" class="space-y-6">
+        <!-- Banner chào mừng & vai trò của HTX -->
+        <div class="bg-gradient-to-r from-emerald-900 via-emerald-800 to-teal-900 rounded-3xl p-6 sm:p-7 text-white shadow-lg border border-emerald-700/60 relative overflow-hidden">
+          <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div class="space-y-2">
+              <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 text-[11px] font-black uppercase tracking-wider">
+                <i data-lucide="sprout" class="w-3.5 h-3.5"></i> Cổng Điều Hành Sàn TMĐT OCOP Đắk Song
+              </div>
+              <h2 class="text-xl sm:text-2xl font-black text-white tracking-tight">Khu vực Quản trị & Điều phối Hợp Tác Xã</h2>
+              <p class="text-xs sm:text-sm text-emerald-100 max-w-2xl leading-relaxed font-medium">
+                Hợp tác xã nông sản Đắk Song chịu trách nhiệm trực tiếp kiểm duyệt đơn hàng, xác nhận nguồn hàng nhà vườn, đóng gói đặc sản OCOP và bàn giao vận chuyển đến tay người tiêu dùng.
+              </p>
+            </div>
+            <div class="flex flex-wrap items-center gap-2.5">
+              <button onclick="openModal('modal-add-product')" class="px-4 py-2.5 rounded-xl bg-emerald-400 hover:bg-emerald-300 text-slate-950 font-black text-xs transition shadow-md flex items-center gap-1.5 cursor-pointer">
+                <i data-lucide="plus-circle" class="w-4 h-4"></i> Thêm nông sản OCOP
+              </button>
+              <button onclick="switchTab('orders')" class="px-4 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white font-black text-xs transition border border-white/20 flex items-center gap-1.5 cursor-pointer">
+                <i data-lucide="shopping-bag" class="w-4 h-4"></i> Điều phối đơn hàng
+              </button>
+            </div>
           </div>
-          <div class="mt-2 text-3xl font-black text-slate-950" id="stat-total-venues">0</div>
-          <p class="mt-1 text-xs text-slate-600 font-semibold">Tổng hạn mức: <b class="text-slate-950 font-black" id="stat-total-limit">0</b> voucher</p>
         </div>
 
-        <!-- Card 2: Voucher đã dùng -->
-        <div class="bg-white p-5 rounded-2xl border-2 border-slate-200 shadow-sm">
-          <div class="flex items-center justify-between">
-            <span class="text-xs font-black uppercase tracking-wider text-slate-600">Voucher dùng tại quán</span>
-            <div class="p-2.5 rounded-xl bg-emerald-100 text-emerald-950 font-black"><i data-lucide="check-circle" class="w-5 h-5"></i></div>
+        <!-- 5 THẺ THỐNG KÊ SÀN OCOP DÀNH CHO HTX -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+          <!-- Card 1: Doanh thu sàn OCOP -->
+          <div class="bg-white p-5 rounded-2xl border-2 border-emerald-200 shadow-sm hover:border-emerald-400 transition">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-black uppercase tracking-wider text-slate-600">Doanh thu Sàn OCOP</span>
+              <div class="p-2.5 rounded-xl bg-emerald-100 text-emerald-950 font-black"><i data-lucide="wallet" class="w-5 h-5 text-emerald-700"></i></div>
+            </div>
+            <div class="mt-2 text-2xl sm:text-3xl font-black text-emerald-900" id="coop-stat-revenue">0 đ</div>
+            <p class="mt-1 text-xs text-slate-600 font-semibold">Đã thanh toán: <b class="text-slate-950 font-black" id="coop-stat-paid-count">0</b> đơn</p>
           </div>
-          <div class="mt-2 text-3xl font-black text-emerald-800" id="stat-used-vouchers">0</div>
-          <p class="mt-1 text-xs text-slate-600 font-semibold">Đã phát cho khách: <b class="text-slate-950 font-black" id="stat-issued-vouchers">0</b></p>
+
+          <!-- Card 2: Đơn chờ duyệt gói -->
+          <div class="bg-white p-5 rounded-2xl border-2 border-amber-300 shadow-sm hover:border-amber-400 transition cursor-pointer" onclick="switchTab('orders')">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-black uppercase tracking-wider text-amber-800">Đơn chờ duyệt kho</span>
+              <div class="p-2.5 rounded-xl bg-amber-100 text-amber-950 font-black"><i data-lucide="clock" class="w-5 h-5 text-amber-700"></i></div>
+            </div>
+            <div class="mt-2 text-2xl sm:text-3xl font-black text-amber-700" id="coop-stat-pending">0</div>
+            <p class="mt-1 text-xs text-amber-700 font-bold">Cần kiểm kho & xác nhận ➔</p>
+          </div>
+
+          <!-- Card 3: Sẵn sàng đóng gói & Đang giao -->
+          <div class="bg-white p-5 rounded-2xl border-2 border-blue-200 shadow-sm hover:border-blue-400 transition cursor-pointer" onclick="switchTab('orders')">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-black uppercase tracking-wider text-slate-600">Đóng gói & Vận chuyển</span>
+              <div class="p-2.5 rounded-xl bg-blue-100 text-blue-950 font-black"><i data-lucide="truck" class="w-5 h-5 text-blue-700"></i></div>
+            </div>
+            <div class="mt-2 text-2xl sm:text-3xl font-black text-blue-800" id="coop-stat-ready">0</div>
+            <p class="mt-1 text-xs text-slate-600 font-semibold">Chờ giao Viettel Post</p>
+          </div>
+
+          <!-- Card 4: Kho nông sản OCOP -->
+          <div class="bg-white p-5 rounded-2xl border-2 border-purple-200 shadow-sm hover:border-purple-400 transition cursor-pointer" onclick="switchTab('products')">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-black uppercase tracking-wider text-slate-600">Mặt hàng Nông sản</span>
+              <div class="p-2.5 rounded-xl bg-purple-100 text-purple-950 font-black"><i data-lucide="package" class="w-5 h-5 text-purple-700"></i></div>
+            </div>
+            <div class="mt-2 text-2xl sm:text-3xl font-black text-purple-900" id="coop-stat-products">0</div>
+            <p class="mt-1 text-xs text-slate-600 font-semibold">Cảnh báo tồn ít: <b class="text-red-700 font-black" id="coop-stat-low-stock">0</b></p>
+          </div>
+
+          <!-- Card 5: Giao thành công -->
+          <div class="bg-white p-5 rounded-2xl border-2 border-slate-200 shadow-sm">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-black uppercase tracking-wider text-slate-600">Đơn hoàn tất</span>
+              <div class="p-2.5 rounded-xl bg-emerald-100 text-emerald-950 font-black"><i data-lucide="check-circle" class="w-5 h-5 text-emerald-700"></i></div>
+            </div>
+            <div class="mt-2 text-2xl sm:text-3xl font-black text-slate-900" id="coop-stat-completed">0</div>
+            <p class="mt-1 text-xs text-slate-600 font-semibold">Tổng số đơn nhận: <b class="text-slate-950 font-black" id="coop-stat-total-orders">0</b></p>
+          </div>
         </div>
 
-        <!-- Card 3: Doanh thu ZaloPay -->
-        <div class="bg-white p-5 rounded-2xl border-2 border-slate-200 shadow-sm">
-          <div class="flex items-center justify-between">
-            <span class="text-xs font-black uppercase tracking-wider text-slate-600">Doanh thu ZaloPay</span>
-            <div class="p-2.5 rounded-xl bg-amber-100 text-amber-950 font-black"><i data-lucide="wallet" class="w-5 h-5"></i></div>
+        <!-- 3 KHỐI QUY TRÌNH ĐIỀU PHỐI ĐẶC TRƯNG HTX -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div class="bg-white p-5 rounded-2xl border-2 border-slate-200 shadow-sm space-y-2">
+            <div class="flex items-center gap-2 text-emerald-800 font-black text-sm">
+              <span class="w-6 h-6 rounded-full bg-emerald-100 text-emerald-900 text-xs flex items-center justify-center font-black">1</span>
+              <span>Kiểm tra & Xác nhận còn hàng</span>
+            </div>
+            <p class="text-xs text-slate-600 leading-relaxed font-medium">
+              Khi khách đặt đơn qua ZaloPay hoặc Tiền mặt COD, HTX kiểm tra số lượng nông sản thực tế tại kho hoặc vườn. Bấm <b>"Xác nhận còn hàng"</b> để chuyển sang khâu đóng gói.
+            </p>
           </div>
-          <div class="mt-2 text-3xl font-black text-slate-950" id="stat-total-revenue">0 đ</div>
-          <p class="mt-1 text-xs text-slate-600 font-semibold">Đơn đã trả tiền: <b class="text-slate-950 font-black" id="stat-paid-orders">0</b></p>
+          <div class="bg-white p-5 rounded-2xl border-2 border-slate-200 shadow-sm space-y-2">
+            <div class="flex items-center gap-2 text-blue-800 font-black text-sm">
+              <span class="w-6 h-6 rounded-full bg-blue-100 text-blue-900 text-xs flex items-center justify-center font-black">2</span>
+              <span>Đóng gói & Bàn giao Shipper</span>
+            </div>
+            <p class="text-xs text-slate-600 leading-relaxed font-medium">
+              HTX dán tem truy xuất nguồn gốc OCOP Đắk Song, đóng gói chống ẩm và chuyển cho Viettel Post / đơn vị vận chuyển. Bấm <b>"Giao Viettel Post"</b> để cập nhật tiến độ.
+            </p>
+          </div>
+          <div class="bg-white p-5 rounded-2xl border-2 border-slate-200 shadow-sm space-y-2">
+            <div class="flex items-center gap-2 text-amber-800 font-black text-sm">
+              <span class="w-6 h-6 rounded-full bg-amber-100 text-amber-900 text-xs flex items-center justify-center font-black">3</span>
+              <span>Quy trình Hủy đơn & Đổi trả</span>
+            </div>
+            <p class="text-xs text-slate-600 leading-relaxed font-medium">
+              Trường hợp sản phẩm thu hoạch chưa đạt phẩm cấp OCOP hoặc thiếu hàng cục bộ, HTX bấm <b>"Hủy"</b>. Hệ thống tự động gắn nhãn <b>"HTX Hủy đơn"</b>, hoàn lại tồn kho và xin lỗi khách.
+            </p>
+          </div>
         </div>
 
-        <!-- Card 4: Thí sinh thi Quiz -->
-        <div class="bg-white p-5 rounded-2xl border-2 border-slate-200 shadow-sm cursor-pointer hover:border-slate-400 transition" onclick="switchTab('leaderboard')">
-          <div class="flex items-center justify-between">
-            <span class="text-xs font-black uppercase tracking-wider text-slate-600">Thí sinh thi Quiz</span>
-            <div class="p-2.5 rounded-xl bg-amber-100 text-amber-950 font-black"><i data-lucide="trophy" class="w-5 h-5 text-amber-600"></i></div>
+        <!-- BẢNG LỐI TẮT TRUY CẬP ĐƠN HÀNG OCOP CẦN XỬ LÝ -->
+        <div class="bg-white rounded-3xl p-6 border-2 border-emerald-200 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div class="space-y-1">
+            <h3 class="text-base font-black text-slate-950 flex items-center gap-2">
+              <i data-lucide="package-check" class="w-5 h-5 text-emerald-700"></i>
+              <span>Quản lý Đơn hàng & Kho Nông Sản OCOP</span>
+            </h3>
+            <p class="text-xs text-slate-600 font-medium">
+              Truy cập toàn bộ danh sách đơn hàng để kiểm duyệt, in phiếu gửi bưu điện và cập nhật bảng giá đặc sản.
+            </p>
           </div>
-          <div class="mt-2 text-3xl font-black text-amber-900" id="stat-quiz-participants">0</div>
-          <p class="mt-1 text-xs text-slate-600 font-semibold">Nhấn xem chi tiết BXH tuần</p>
-        </div>
-
-        <!-- Card 5: Lịch sử chỉnh sửa voucher & hàng hóa -->
-        <div class="bg-white p-5 rounded-2xl border-2 border-slate-200 shadow-sm cursor-pointer hover:border-slate-400 transition" onclick="switchTab('audit-logs')">
-          <div class="flex items-center justify-between">
-            <span class="text-xs font-black uppercase tracking-wider text-slate-600">Lịch sử chỉnh sửa</span>
-            <div class="p-2.5 rounded-xl bg-purple-100 text-purple-950 font-black"><i data-lucide="history" class="w-5 h-5"></i></div>
+          <div class="flex items-center gap-2 shrink-0">
+            <button onclick="switchTab('orders')" class="px-5 py-2.5 rounded-xl bg-emerald-800 hover:bg-emerald-900 text-white font-black text-xs transition shadow-xs flex items-center gap-1.5 cursor-pointer">
+              <span>Đến trang Đơn Hàng</span> <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+            </button>
+            <button onclick="switchTab('products')" class="px-5 py-2.5 rounded-xl border border-slate-300 hover:bg-slate-50 text-slate-800 font-black text-xs transition shadow-xs flex items-center gap-1.5 cursor-pointer">
+              <span>Kho Hàng & Giá OCOP</span>
+            </button>
           </div>
-          <div class="mt-2 text-3xl font-black text-purple-800" id="stat-audit-count">0</div>
-          <p class="mt-1 text-xs text-slate-600 font-semibold">Nhấn xem chi tiết lịch sử sửa đổi</p>
         </div>
       </div>
 
-      <!-- LỊCH SỬ CHỈNH SỬA VOUCHER VÀ HÀNG HÓA GẦN ĐÂY -->
-      <div class="bg-white rounded-3xl p-6 border-2 border-slate-300 shadow-sm space-y-4">
-        <div class="flex items-center justify-between border-b border-slate-200 pb-3">
-          <div>
-            <h2 class="text-base font-black text-slate-950 flex items-center gap-2">
-              <i data-lucide="history" class="w-5 h-5 text-purple-700"></i>
-              <span>LỊCH SỬ CHỈNH SỬA VOUCHER VÀ HÀNG HÓA GẦN ĐÂY</span>
-            </h2>
-            <p class="text-xs text-slate-600 mt-0.5 font-medium">Lưu trữ các thao tác điều chỉnh hạn mức voucher, số lượng tồn kho và giá cả</p>
+      <!-- ==================== DASHBOARD SECTION DÀNH CHO HUYỆN (DISTRICT) ==================== -->
+      <div id="dashboard-district-section" class="space-y-6">
+        <!-- Banner chào mừng Huyện -->
+        <div class="bg-gradient-to-r from-slate-950 via-slate-900 to-indigo-950 rounded-3xl p-6 sm:p-7 text-white shadow-lg border border-slate-800 relative overflow-hidden">
+          <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div class="space-y-2">
+              <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-400/20 text-amber-300 border border-amber-400/30 text-[11px] font-black uppercase tracking-wider">
+                <i data-lucide="landmark" class="w-3.5 h-3.5"></i> Trung Tâm Điều Hành Du Lịch Đắk Song
+              </div>
+              <h2 class="text-xl sm:text-2xl font-black text-white tracking-tight">Khu vực Ủy Ban Nhân Dân & Ban Quản Lý Huyện</h2>
+              <p class="text-xs sm:text-sm text-slate-300 max-w-2xl leading-relaxed font-medium">
+                Quản lý các cơ sở quán ăn, khách sạn hợp tác phát hành voucher kích cầu du lịch, thẩm định hạn mức, giám sát bảng xếp hạng thí sinh thi Quiz và kiểm toán toàn hệ thống.
+              </p>
+            </div>
+            <div class="flex flex-wrap items-center gap-2.5">
+              <button onclick="openModal('modal-add-venue')" class="px-4 py-2.5 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 font-black text-xs transition shadow-md flex items-center gap-1.5 cursor-pointer">
+                <i data-lucide="plus-circle" class="w-4 h-4"></i> Thêm cơ sở du lịch
+              </button>
+              <button onclick="switchTab('venues')" class="px-4 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white font-black text-xs transition border border-white/20 flex items-center gap-1.5 cursor-pointer">
+                <i data-lucide="ticket" class="w-4 h-4"></i> Hạn mức Voucher
+              </button>
+            </div>
           </div>
-          <button onclick="switchTab('audit-logs')" class="bg-slate-950 hover:bg-slate-800 text-white font-black text-xs px-4 py-2 rounded-xl transition shadow-xs cursor-pointer flex items-center gap-1.5">
-            <span>Xem toàn bộ lịch sử</span>
-            <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
-          </button>
         </div>
 
-        <div class="overflow-x-auto">
-          <table class="w-full text-left text-xs">
-            <thead class="bg-slate-100 text-slate-900 uppercase font-black tracking-wider text-[11px] border-b border-slate-300">
-              <tr>
-                <th class="p-3">Thời gian</th>
-                <th class="p-3">Phân loại</th>
-                <th class="p-3">Đối tượng</th>
-                <th class="p-3">Nội dung thay đổi</th>
-                <th class="p-3">Người thực hiện</th>
-              </tr>
-            </thead>
-            <tbody id="dashboard-audit-tbody" class="divide-y divide-slate-200 font-medium">
-              <tr><td colspan="5" class="p-4 text-center text-slate-500">Đang tải lịch sử...</td></tr>
-            </tbody>
-          </table>
+        <!-- 5 THẺ THỐNG KÊ HUYỆN (GIỮ NGUYÊN IDS ĐỂ TƯƠNG THÍCH HOÀN TOÀN) -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+          <!-- Card 1: Tổng quán -->
+          <div class="bg-white p-5 rounded-2xl border-2 border-slate-200 shadow-sm hover:border-slate-400 transition cursor-pointer" onclick="switchTab('venues')">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-black uppercase tracking-wider text-slate-600">Cơ sở hợp tác</span>
+              <div class="p-2.5 rounded-xl bg-blue-100 text-blue-950 font-black"><i data-lucide="store" class="w-5 h-5"></i></div>
+            </div>
+            <div class="mt-2 text-3xl font-black text-slate-950" id="stat-total-venues">0</div>
+            <p class="mt-1 text-xs text-slate-600 font-semibold">Tổng hạn mức: <b class="text-slate-950 font-black" id="stat-total-limit">0</b> voucher</p>
+          </div>
+
+          <!-- Card 2: Voucher đã dùng -->
+          <div class="bg-white p-5 rounded-2xl border-2 border-slate-200 shadow-sm">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-black uppercase tracking-wider text-slate-600">Voucher dùng tại quán</span>
+              <div class="p-2.5 rounded-xl bg-emerald-100 text-emerald-950 font-black"><i data-lucide="check-circle" class="w-5 h-5"></i></div>
+            </div>
+            <div class="mt-2 text-3xl font-black text-emerald-800" id="stat-used-vouchers">0</div>
+            <p class="mt-1 text-xs text-slate-600 font-semibold">Đã phát cho khách: <b class="text-slate-950 font-black" id="stat-issued-vouchers">0</b></p>
+          </div>
+
+          <!-- Card 3: Doanh thu sàn OCOP -->
+          <div class="bg-white p-5 rounded-2xl border-2 border-slate-200 shadow-sm">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-black uppercase tracking-wider text-slate-600">Doanh thu Sàn Nông Sản</span>
+              <div class="p-2.5 rounded-xl bg-amber-100 text-amber-950 font-black"><i data-lucide="wallet" class="w-5 h-5"></i></div>
+            </div>
+            <div class="mt-2 text-3xl font-black text-slate-950" id="stat-total-revenue">0 đ</div>
+            <p class="mt-1 text-xs text-slate-600 font-semibold">Đơn đã trả tiền: <b class="text-slate-950 font-black" id="stat-paid-orders">0</b></p>
+          </div>
+
+          <!-- Card 4: Thí sinh thi Quiz -->
+          <div class="bg-white p-5 rounded-2xl border-2 border-slate-200 shadow-sm cursor-pointer hover:border-slate-400 transition" onclick="switchTab('leaderboard')">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-black uppercase tracking-wider text-slate-600">Thí sinh thi Quiz</span>
+              <div class="p-2.5 rounded-xl bg-amber-100 text-amber-950 font-black"><i data-lucide="trophy" class="w-5 h-5 text-amber-600"></i></div>
+            </div>
+            <div class="mt-2 text-3xl font-black text-amber-900" id="stat-quiz-participants">0</div>
+            <p class="mt-1 text-xs text-slate-600 font-semibold">Nhấn xem chi tiết BXH tuần</p>
+          </div>
+
+          <!-- Card 5: Lịch sử chỉnh sửa voucher & hàng hóa -->
+          <div class="bg-white p-5 rounded-2xl border-2 border-slate-200 shadow-sm cursor-pointer hover:border-slate-400 transition" onclick="switchTab('audit-logs')">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-black uppercase tracking-wider text-slate-600">Lịch sử chỉnh sửa</span>
+              <div class="p-2.5 rounded-xl bg-purple-100 text-purple-950 font-black"><i data-lucide="history" class="w-5 h-5"></i></div>
+            </div>
+            <div class="mt-2 text-3xl font-black text-purple-800" id="stat-audit-count">0</div>
+            <p class="mt-1 text-xs text-slate-600 font-semibold">Nhấn xem chi tiết lịch sử sửa đổi</p>
+          </div>
+        </div>
+
+        <!-- LỊCH SỬ CHỈNH SỬA VOUCHER VÀ HÀNG HÓA GẦN ĐÂY CỦA HUYỆN -->
+        <div class="bg-white rounded-3xl p-6 border-2 border-slate-300 shadow-sm space-y-4">
+          <div class="flex items-center justify-between border-b border-slate-200 pb-3">
+            <div>
+              <h2 class="text-base font-black text-slate-950 flex items-center gap-2">
+                <i data-lucide="history" class="w-5 h-5 text-purple-700"></i>
+                <span>LỊCH SỬ KIỂM TOÁN VÀ THAY ĐỔI HẠN MỨC GẦN ĐÂY</span>
+              </h2>
+              <p class="text-xs text-slate-600 mt-0.5 font-medium">Lưu trữ các thao tác điều chỉnh hạn mức voucher cơ sở du lịch và các biến động hệ thống</p>
+            </div>
+            <button onclick="switchTab('audit-logs')" class="bg-slate-950 hover:bg-slate-800 text-white font-black text-xs px-4 py-2 rounded-xl transition shadow-xs cursor-pointer flex items-center gap-1.5">
+              <span>Xem toàn bộ lịch sử</span>
+              <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+            </button>
+          </div>
+
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs">
+              <thead class="bg-slate-100 text-slate-900 uppercase font-black tracking-wider text-[11px] border-b border-slate-300">
+                <tr>
+                  <th class="p-3">Thời gian</th>
+                  <th class="p-3">Phân loại</th>
+                  <th class="p-3">Đối tượng</th>
+                  <th class="p-3">Nội dung thay đổi</th>
+                  <th class="p-3">Người thực hiện</th>
+                </tr>
+              </thead>
+              <tbody id="dashboard-audit-tbody" class="divide-y divide-slate-200 font-medium">
+                <tr><td colspan="5" class="p-4 text-center text-slate-500">Đang tải lịch sử...</td></tr>
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
+
     </div>
 
     <!-- ==================== TAB 2: QUẢN LÝ VOUCHER & HẠN MỨC QUÁN ==================== -->
@@ -676,20 +929,234 @@
     }
     const API_BASE = getAdminApiBase();
 
+    const ADMIN_AUTH_KEY = 'dak_song_admin_logged_user';
+    let currentActiveTab = 'dashboard';
+
+    function getLoggedInAdmin() {
+      try {
+        const saved = localStorage.getItem(ADMIN_AUTH_KEY);
+        if (saved) return JSON.parse(saved);
+      } catch (e) {}
+      return null;
+    }
+
+    function setLoggedInAdmin(user) {
+      if (!user) {
+        localStorage.removeItem(ADMIN_AUTH_KEY);
+      } else {
+        localStorage.setItem(ADMIN_AUTH_KEY, JSON.stringify(user));
+      }
+      applyRoleUI(user);
+    }
+
+    async function quickLogin(username, password) {
+      try {
+        const res = await fetch(`${API_BASE}/api/admin/auth/login`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, password })
+        });
+        const json = await res.json();
+        if (json.success && json.data) {
+          setLoggedInAdmin(json.data);
+          loadAllData();
+          showNotice('Đăng nhập thành công', `Xin chào: ${json.data.agencyName} (${json.data.role === 'COOP' ? 'Hợp tác xã' : 'Ban Quản lý Huyện'})!`);
+        } else {
+          showNotice('Đăng nhập thất bại', json.message || 'Sai thông tin!', true);
+        }
+      } catch (e) {
+        // Fallback offline / local state if backend is starting
+        const role = username.includes('htx') ? 'COOP' : 'DISTRICT';
+        const user = {
+          username,
+          fullName: role === 'COOP' ? 'Ban Giám Đốc Hợp Tác Xã' : 'UBND & Ban Quản Lý Huyện',
+          role,
+          agencyName: role === 'COOP' ? 'Hợp tác xã Nông sản Đắk Song' : 'Ủy ban Nhân dân Huyện Đắk Song'
+        };
+        setLoggedInAdmin(user);
+        loadAllData();
+        showNotice('Đăng nhập thành công (Demo)', `Đang chạy với vai trò: ${user.agencyName}`);
+      }
+    }
+
+    async function handleManualLogin() {
+      const u = document.getElementById('login-username').value.trim();
+      const p = document.getElementById('login-password').value.trim();
+      if (!u || !p) {
+        showNotice('Thông báo', 'Vui lòng nhập tên tài khoản và mật khẩu!', true);
+        return;
+      }
+      await quickLogin(u, p);
+    }
+
+    function logoutAdmin() {
+      setLoggedInAdmin(null);
+      showNotice('Đã đăng xuất', 'Vui lòng chọn hoặc nhập tài khoản để tiếp tục.');
+    }
+
+    function switchRoleFast() {
+      const cur = getLoggedInAdmin();
+      if (cur && cur.role === 'COOP') {
+        quickLogin('huyen_daksong', '123');
+      } else {
+        quickLogin('htx_daksong', '123');
+      }
+    }
+
+    function applyRoleUI(user) {
+      const modal = document.getElementById('modal-login');
+      if (!user) {
+        if (modal) modal.classList.remove('hidden');
+        return;
+      }
+      if (modal) modal.classList.add('hidden');
+
+      const isCoop = user.role === 'COOP';
+      const mainHeader = document.getElementById('main-header');
+      const iconBox = document.getElementById('brand-icon-box');
+      const bTitle = document.getElementById('brand-title');
+      const bTag = document.getElementById('brand-tag');
+      const bSub = document.getElementById('brand-subtitle');
+      const roleIcon = document.getElementById('role-icon-display');
+      const agencyDisplay = document.getElementById('role-agency-display');
+      const roleNameDisplay = document.getElementById('role-name-display');
+      const rBanner = document.getElementById('role-banner');
+      const bannerText = document.getElementById('role-banner-text');
+
+      const tabDashLabel = document.getElementById('tab-dashboard-label');
+      const tabOrdersLabel = document.getElementById('tab-orders-label');
+      const tabProdsLabel = document.getElementById('tab-products-label');
+      const tabVenues = document.getElementById('tab-venues');
+      const tabOrders = document.getElementById('tab-orders');
+      const tabProducts = document.getElementById('tab-products');
+      const tabLeaderboard = document.getElementById('tab-leaderboard');
+      const tabAudit = document.getElementById('tab-audit-logs');
+
+      const coopSec = document.getElementById('dashboard-coop-section');
+      const distSec = document.getElementById('dashboard-district-section');
+
+      if (isCoop) {
+        // Giao diện Thương hiệu HỢP TÁC XÃ (Màu xanh ngọc Emerald)
+        if (mainHeader) mainHeader.className = 'bg-gradient-to-r from-emerald-950 via-emerald-900 to-teal-950 text-white shadow-xl sticky top-0 z-50 border-b border-emerald-800 transition-colors duration-300';
+        if (iconBox) {
+          iconBox.className = 'h-10 w-10 rounded-2xl bg-emerald-400 text-emerald-950 flex items-center justify-center text-xl shadow-md font-black transition-all duration-300';
+          iconBox.innerHTML = '<i data-lucide="sprout" class="w-5 h-5"></i>';
+        }
+        if (bTitle) bTitle.innerText = 'SÀN NÔNG SẢN OCOP ĐẮK SONG';
+        if (bTag) {
+          bTag.innerText = 'HỢP TÁC XÃ (COOP)';
+          bTag.className = 'bg-emerald-400 text-emerald-950 text-[11px] font-black px-2.5 py-0.5 rounded-full uppercase shadow-xs transition-colors duration-300';
+        }
+        if (bSub) bSub.innerText = 'Cổng Điều phối Nông sản & Quản lý Đơn hàng - Hợp tác xã Nông sản Đắk Song';
+
+        if (roleIcon) roleIcon.innerText = '🌾';
+        if (agencyDisplay) agencyDisplay.innerText = 'Hợp tác xã Nông sản';
+        if (roleNameDisplay) roleNameDisplay.innerText = 'Quản trị Sàn OCOP';
+        if (rBanner) rBanner.className = 'bg-emerald-700 text-white font-black text-xs py-2 px-4 shadow-sm border-b border-emerald-800 flex items-center justify-between transition-colors duration-300';
+        if (bannerText) bannerText.innerHTML = '🌾 <b>Khu vực Hợp tác xã Đắk Song:</b> Toàn quyền quản trị Sàn thương mại điện tử OCOP, kho hàng và điều phối đơn hàng nông sản.';
+
+        if (tabDashLabel) tabDashLabel.innerText = 'Tổng quan Sàn OCOP';
+        if (tabOrdersLabel) tabOrdersLabel.innerText = 'Điều phối Đơn hàng OCOP';
+        if (tabProdsLabel) tabProdsLabel.innerText = 'Kho Hàng & Giá OCOP';
+
+        // Tách biệt Tab: Ẩn các chức năng cấp Huyện
+        if (tabVenues) tabVenues.classList.add('hidden');
+        if (tabLeaderboard) tabLeaderboard.classList.add('hidden');
+        if (tabAudit) tabAudit.classList.add('hidden');
+
+        // Hiện các chức năng cấp HTX
+        if (tabOrders) tabOrders.classList.remove('hidden');
+        if (tabProducts) tabProducts.classList.remove('hidden');
+
+        // Dashboard hiển thị section HTX, ẩn section Huyện
+        if (coopSec) coopSec.classList.remove('hidden');
+        if (distSec) distSec.classList.add('hidden');
+
+        // Nếu đang ở tab của Huyện -> chuyển ngay sang dashboard hoặc orders
+        if (currentActiveTab === 'venues' || currentActiveTab === 'leaderboard' || currentActiveTab === 'audit-logs') {
+          switchTab('dashboard');
+        } else {
+          switchTab(currentActiveTab);
+        }
+      } else {
+        // Giao diện Thương hiệu UBND & BQL HUYỆN (Màu Slate / Indigo / Vàng Amber)
+        if (mainHeader) mainHeader.className = 'bg-slate-950 text-white shadow-xl sticky top-0 z-50 border-b border-slate-800 transition-colors duration-300';
+        if (iconBox) {
+          iconBox.className = 'h-10 w-10 rounded-2xl bg-amber-400 text-slate-950 flex items-center justify-center text-xl shadow-md font-black transition-all duration-300';
+          iconBox.innerHTML = '<i data-lucide="landmark" class="w-5 h-5"></i>';
+        }
+        if (bTitle) bTitle.innerText = 'ĐẮK SONG QUEST';
+        if (bTag) {
+          bTag.innerText = 'UBND HUYỆN (DISTRICT)';
+          bTag.className = 'bg-amber-400 text-slate-950 text-[11px] font-black px-2.5 py-0.5 rounded-full uppercase shadow-xs transition-colors duration-300';
+        }
+        if (bSub) bSub.innerText = 'Hệ thống Quản lý Voucher & Giám sát Toàn Huyện Đắk Song';
+
+        if (roleIcon) roleIcon.innerText = '🏛️';
+        if (agencyDisplay) agencyDisplay.innerText = 'UBND & BQL Huyện';
+        if (roleNameDisplay) roleNameDisplay.innerText = 'Quản trị Huyện & Voucher';
+        if (rBanner) rBanner.className = 'bg-amber-500 text-slate-950 font-black text-xs py-2 px-4 shadow-sm border-b border-amber-600 flex items-center justify-between transition-colors duration-300';
+        if (bannerText) bannerText.innerHTML = '🏛️ <b>Khu vực Ủy ban Nhân dân / Ban Quản lý Huyện:</b> Thẩm định và thỏa thuận hạn mức Voucher quán ăn, khách sạn; Quản lý BXH Quiz và Giám sát kiểm toán.';
+
+        if (tabDashLabel) tabDashLabel.innerText = 'Trung tâm Điều hành Du lịch';
+        if (tabOrdersLabel) tabOrdersLabel.innerText = 'Giám sát Đơn hàng OCOP';
+
+        // Tách biệt Tab: Hiện các chức năng cấp Huyện
+        if (tabVenues) tabVenues.classList.remove('hidden');
+        if (tabLeaderboard) tabLeaderboard.classList.remove('hidden');
+        if (tabAudit) tabAudit.classList.remove('hidden');
+        if (tabOrders) tabOrders.classList.remove('hidden');
+
+        // Ẩn tab sửa sản phẩm OCOP (thuộc tài sản HTX)
+        if (tabProducts) tabProducts.classList.add('hidden');
+
+        // Dashboard hiển thị section Huyện, ẩn section HTX
+        if (coopSec) coopSec.classList.add('hidden');
+        if (distSec) distSec.classList.remove('hidden');
+
+        if (currentActiveTab === 'products') {
+          switchTab('dashboard');
+        } else {
+          switchTab(currentActiveTab);
+        }
+      }
+      lucide.createIcons();
+    }
+
     async function adminFetch(endpoint, options = {}) {
       const url = endpoint.startsWith('http') ? endpoint : `${API_BASE}${endpoint.startsWith('/') ? '' : '/'}${endpoint}`;
       const headers = new Headers(options.headers || {});
       headers.set('ngrok-skip-browser-warning', 'true');
+
+      // Tự động đính kèm Role và Thông tin đơn vị quản lý vào header API (dùng encodeURIComponent để an toàn HTTP Header)
+      const currentUser = getLoggedInAdmin();
+      if (currentUser) {
+        if (currentUser.role) headers.set('x-admin-role', currentUser.role);
+        if (currentUser.username) headers.set('x-admin-username', currentUser.username);
+        if (currentUser.agencyName) {
+          headers.set('x-admin-name', encodeURIComponent(currentUser.agencyName));
+        }
+      }
+
       const fetchOpts = { ...options, headers };
       try {
         const res = await fetch(url, fetchOpts);
+        if (res.status === 403) {
+          const errJson = await res.clone().json().catch(() => ({}));
+          showNotice('Từ chối truy cập (403)', errJson.message || 'Bạn không có quyền thực hiện thao tác này với vai trò hiện tại!', true);
+        }
         return res;
       } catch (err) {
         // Tự động thử lại cổng localhost:5000 nếu URL ban đầu không phải localhost:5000
         if (!url.startsWith('http://localhost:5000')) {
           try {
             const fallbackUrl = `http://localhost:5000${endpoint.startsWith('/') ? '' : '/'}${endpoint}`;
-            return await fetch(fallbackUrl, fetchOpts);
+            const fbRes = await fetch(fallbackUrl, fetchOpts);
+            if (fbRes.status === 403) {
+              const errJson = await fbRes.clone().json().catch(() => ({}));
+              showNotice('Từ chối truy cập (403)', errJson.message || 'Bạn không có quyền thực hiện thao tác này!', true);
+            }
+            return fbRes;
           } catch {}
         }
         throw err;
@@ -749,6 +1216,11 @@
     }
 
     function switchTab(tab) {
+      currentActiveTab = tab;
+      const curUser = getLoggedInAdmin();
+      const isCoop = curUser && curUser.role === 'COOP';
+      const activeTabClass = isCoop ? 'bg-emerald-800 text-white shadow-xs' : 'bg-slate-950 text-white shadow-xs';
+
       ['dashboard', 'venues', 'orders', 'products', 'audit-logs', 'leaderboard'].forEach(t => {
         const c = document.getElementById(`content-${t}`);
         if (c) c.classList.add('hidden');
@@ -758,7 +1230,7 @@
       const targetContent = document.getElementById(`content-${tab}`);
       if (targetContent) targetContent.classList.remove('hidden');
       const targetTab = document.getElementById(`tab-${tab}`);
-      if (targetTab) targetTab.className = 'tab-btn px-4 py-2.5 rounded-xl text-xs font-black transition flex items-center gap-2 bg-slate-950 text-white shadow-xs';
+      if (targetTab) targetTab.className = `tab-btn px-4 py-2.5 rounded-xl text-xs font-black transition flex items-center gap-2 ${activeTabClass}`;
       if (tab === 'audit-logs') loadAuditLogs();
       if (tab === 'leaderboard') loadAdminLeaderboard();
       lucide.createIcons();
@@ -774,28 +1246,42 @@
         if (json.success) {
           const v = json.data.vouchers;
           const o = json.data.orders;
-          document.getElementById('stat-total-venues').innerText = v.TotalVenues;
-          document.getElementById('stat-total-limit').innerText = v.TotalVoucherLimit;
-          document.getElementById('stat-issued-vouchers').innerText = v.TotalIssuedVouchers;
-          document.getElementById('stat-used-vouchers').innerText = v.TotalUsedVouchers;
-          document.getElementById('stat-total-revenue').innerText = Number(o.TotalRevenue).toLocaleString('vi-VN') + ' đ';
-          document.getElementById('stat-paid-orders').innerText = o.PaidOrdersCount;
-          if (document.getElementById('stat-audit-count')) {
-            document.getElementById('stat-audit-count').innerText = json.data.auditLogsCount || 0;
-          }
-          if (document.getElementById('stat-quiz-participants')) {
-            document.getElementById('stat-quiz-participants').innerText = json.data.quizParticipantsCount || 0;
-          }
-          if (document.getElementById('quiz-count-badge')) {
-            document.getElementById('quiz-count-badge').innerText = json.data.quizParticipantsCount || 0;
-          }
+          const p = json.data.products || { TotalProducts: 0, LowStockProductsCount: 0 };
+
+          const setTxt = (id, val) => {
+            const el = document.getElementById(id);
+            if (el) el.innerText = val;
+          };
+
+          // Thống kê phân hệ Cấp Huyện
+          setTxt('stat-total-venues', v.TotalVenues);
+          setTxt('stat-total-limit', v.TotalVoucherLimit);
+          setTxt('stat-issued-vouchers', v.TotalIssuedVouchers);
+          setTxt('stat-used-vouchers', v.TotalUsedVouchers);
+          setTxt('stat-total-revenue', Number(o.TotalRevenue).toLocaleString('vi-VN') + ' đ');
+          setTxt('stat-paid-orders', o.PaidOrdersCount);
+          setTxt('stat-audit-count', json.data.auditLogsCount || 0);
+          setTxt('stat-quiz-participants', json.data.quizParticipantsCount || 0);
+          setTxt('quiz-count-badge', json.data.quizParticipantsCount || 0);
+
+          // Thống kê phân hệ Hợp Tác Xã (OCOP Store)
+          setTxt('coop-stat-revenue', Number(o.TotalRevenue).toLocaleString('vi-VN') + ' đ');
+          setTxt('coop-stat-paid-count', o.PaidOrdersCount);
+          setTxt('coop-stat-pending', o.PendingConfirmOrdersCount);
+          setTxt('coop-stat-ready', o.ReadyToShipOrdersCount);
+          setTxt('coop-stat-completed', o.CompletedOrdersCount);
+          setTxt('coop-stat-total-orders', o.TotalOrders);
+          setTxt('coop-stat-products', p.TotalProducts);
+          setTxt('coop-stat-low-stock', p.LowStockProductsCount);
 
           const pendingBadge = document.getElementById('pending-badge');
-          if (o.PendingConfirmOrdersCount > 0) {
-            pendingBadge.innerText = o.PendingConfirmOrdersCount;
-            pendingBadge.classList.remove('hidden');
-          } else {
-            pendingBadge.classList.add('hidden');
+          if (pendingBadge) {
+            if (o.PendingConfirmOrdersCount > 0) {
+              pendingBadge.innerText = o.PendingConfirmOrdersCount;
+              pendingBadge.classList.remove('hidden');
+            } else {
+              pendingBadge.classList.add('hidden');
+            }
           }
         }
       } catch (e) { console.error('Lỗi load stats:', e); }
@@ -845,10 +1331,17 @@
         return;
       }
       tbody.innerHTML = data.map(o => {
-        const isUserCancelled = o.OrderStatus === 'Cancelled' && (
-          o.Note ? (o.Note.includes('Khách') || o.Note.includes('Người dùng') || o.Note.includes('chủ động') || !o.Note.includes('hợp tác xã')) : true
+        const noteLower = (o.Note || '').toLowerCase();
+        const isAdminCancelled = o.OrderStatus === 'Cancelled' && (
+          o.CancelledBy === 'HTX' ||
+          noteLower.includes('hợp tác xã') ||
+          noteLower.includes('htx') ||
+          noteLower.includes('admin') ||
+          noteLower.includes('chất lượng') ||
+          noteLower.includes('số lượng') ||
+          noteLower.includes('chân thành xin lỗi')
         );
-        const isAdminCancelled = o.OrderStatus === 'Cancelled' && !isUserCancelled;
+        const isUserCancelled = o.OrderStatus === 'Cancelled' && !isAdminCancelled;
 
         const statusBadge = 
           o.OrderStatus === 'PendingConfirm' ? '<span class="px-2.5 py-1 rounded-full bg-amber-100 text-amber-950 border border-amber-300 font-black text-[10px] inline-flex items-center gap-1"><i data-lucide="clock" class="w-3.5 h-3.5 text-amber-700"></i> Chờ xác nhận</span>' :
@@ -856,10 +1349,22 @@
           o.OrderStatus === 'Shipping' ? '<span class="px-2.5 py-1 rounded-full bg-purple-100 text-purple-950 border border-purple-300 font-black text-[10px] inline-flex items-center gap-1"><i data-lucide="truck" class="w-3.5 h-3.5 text-purple-700"></i> Đang vận chuyển</span>' :
           o.OrderStatus === 'Completed' ? '<span class="px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-950 border border-emerald-300 font-black text-[10px] inline-flex items-center gap-1"><i data-lucide="check-circle" class="w-3.5 h-3.5 text-emerald-700"></i> Đã giao thành công</span>' :
           isUserCancelled ? '<span class="px-2.5 py-1 rounded-full bg-red-100 text-red-900 border border-red-300 font-black text-[10px] inline-flex items-center gap-1 shadow-2xs"><i data-lucide="user-x" class="w-3.5 h-3.5 text-red-600"></i> Người dùng hủy đơn</span>' :
-          '<span class="px-2.5 py-1 rounded-full bg-slate-200 text-slate-800 border border-slate-300 font-black text-[10px] inline-flex items-center gap-1"><i data-lucide="ban" class="w-3.5 h-3.5 text-slate-600"></i> HTX / Admin hủy</span>';
+          isAdminCancelled ? '<span class="px-2.5 py-1 rounded-full bg-amber-100 text-amber-950 border border-amber-300 font-black text-[10px] inline-flex items-center gap-1 shadow-2xs"><i data-lucide="alert-triangle" class="w-3.5 h-3.5 text-amber-700"></i> HTX / Admin hủy đơn</span>' :
+          '<span class="px-2.5 py-1 rounded-full bg-slate-200 text-slate-800 border border-slate-300 font-black text-[10px] inline-flex items-center gap-1"><i data-lucide="ban" class="w-3.5 h-3.5 text-slate-600"></i> Đã hủy</span>';
+
+        const curUser = getLoggedInAdmin();
+        const isCoopUser = curUser && curUser.role === 'COOP';
 
         const actionButtons = 
-          o.OrderStatus === 'PendingConfirm' ? `
+          !isCoopUser ? (
+            o.OrderStatus === 'PendingConfirm' ? '<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-amber-50 text-amber-800 border border-amber-200 font-bold text-[11px]"><i data-lucide="clock" class="w-3 h-3"></i> Chờ HTX duyệt</span>' :
+            o.OrderStatus === 'ReadyToShip' ? '<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-blue-50 text-blue-800 border border-blue-200 font-bold text-[11px]"><i data-lucide="package" class="w-3 h-3"></i> HTX đang gói</span>' :
+            o.OrderStatus === 'Shipping' ? '<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-indigo-50 text-indigo-800 border border-indigo-200 font-bold text-[11px]"><i data-lucide="truck" class="w-3 h-3"></i> Đang vận chuyển</span>' :
+            isUserCancelled ? '<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-red-50 text-red-700 border border-red-200 font-black text-[11px]"><i data-lucide="user-x" class="w-3 h-3"></i> Khách đã hủy</span>' :
+            isAdminCancelled ? '<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-amber-100 text-amber-950 border border-amber-300 font-black text-[11px] shadow-2xs"><i data-lucide="ban" class="w-3 h-3 text-amber-700"></i> HTX đã hủy</span>' :
+            '<span class="text-slate-400 font-bold text-[11px]">Đã hoàn tất</span>'
+          ) :
+          (o.OrderStatus === 'PendingConfirm' ? `
             <div class="flex items-center justify-end gap-1.5">
               <button onclick="updateOrderStatus(${o.OrderId}, 'ReadyToShip')" class="px-3 py-1.5 rounded-xl bg-emerald-800 hover:bg-emerald-900 text-white font-black text-[11px] shadow-xs cursor-pointer">
                 Xác nhận còn hàng
@@ -888,12 +1393,12 @@
           ` :
           isAdminCancelled ? `
             <div class="text-right">
-              <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-100 text-slate-600 border border-slate-200 font-bold text-[11px]">
-                <i data-lucide="ban" class="w-3 h-3"></i> HTX đã hủy
+              <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-amber-100 text-amber-950 border border-amber-300 font-black text-[11px] shadow-2xs">
+                <i data-lucide="ban" class="w-3 h-3 text-amber-700"></i> HTX / Admin hủy
               </span>
             </div>
           ` :
-          '<span class="text-slate-400 font-bold text-[11px]">Đã hoàn tất</span>';
+          '<span class="text-slate-400 font-bold text-[11px]">Đã hoàn tất</span>');
 
         return `
           <tr class="hover:bg-slate-50 transition border-b border-slate-200">
@@ -901,16 +1406,24 @@
             <td class="p-3.5">
               <div class="font-black text-slate-950">${o.CustomerName}</div>
               ${isUserCancelled ? '<div class="text-[10px] text-red-600 font-bold mt-0.5 inline-flex items-center gap-0.5"><i data-lucide="user-x" class="w-3 h-3"></i> Khách tự hủy đơn</div>' : ''}
+              ${isAdminCancelled ? '<div class="text-[10px] text-amber-800 font-bold mt-0.5 inline-flex items-center gap-0.5"><i data-lucide="alert-triangle" class="w-3 h-3 text-amber-600"></i> HTX / Admin hủy đơn</div>' : ''}
             </td>
             <td class="p-3.5">
               <div class="font-black text-emerald-900">${o.Phone}</div>
               <div class="text-[11px] text-slate-600 font-medium max-w-xs truncate">${o.ShippingAddress}</div>
-              ${o.Note ? `<div class="text-[10px] ${isUserCancelled ? 'text-red-700 font-bold' : 'text-slate-500 font-medium'} italic mt-0.5">Ghi chú: ${o.Note}</div>` : ''}
+              ${o.Note ? `<div class="text-[10px] ${isUserCancelled ? 'text-red-700 font-bold' : isAdminCancelled ? 'text-amber-900 font-bold' : 'text-slate-500 font-medium'} italic mt-0.5">Ghi chú: ${o.Note}</div>` : ''}
             </td>
-            <td class="p-3.5 font-black text-emerald-950 text-sm">${Number(o.FinalAmount).toLocaleString('vi-VN')} đ</td>
+            <td class="p-3.5 font-black text-emerald-950 text-sm">
+              <div>${Number(o.FinalAmount).toLocaleString('vi-VN')} đ</div>
+              <div class="mt-1">
+                ${o.PaymentMethod === 'COD' 
+                  ? '<span class="px-2 py-0.5 rounded-md bg-amber-100 text-amber-950 border border-amber-300 text-[10px] font-black inline-flex items-center gap-1">💵 COD Tiền mặt</span>' 
+                  : '<span class="px-2 py-0.5 rounded-md bg-blue-100 text-blue-950 border border-blue-300 text-[10px] font-black inline-flex items-center gap-1">💳 ZaloPay</span>'}
+              </div>
+            </td>
             <td class="p-3.5">
-              <span class="px-2.5 py-1 rounded-lg ${o.PaymentStatus === 'Paid' ? 'bg-emerald-100 text-emerald-950 border border-emerald-300' : o.PaymentStatus === 'Refunded' ? 'bg-red-100 text-red-950 border border-red-300' : 'bg-slate-200 text-slate-800'} font-black text-[10px]">
-                ${o.PaymentStatus === 'Paid' ? 'Đã trả ZaloPay' : o.PaymentStatus === 'Refunded' ? 'Đã hoàn tiền' : 'Chờ trả tiền'}
+              <span class="px-2.5 py-1 rounded-lg ${o.PaymentStatus === 'Paid' ? 'bg-emerald-100 text-emerald-950 border border-emerald-300' : o.PaymentStatus === 'Refunded' ? 'bg-red-100 text-red-950 border border-red-300' : o.PaymentMethod === 'COD' ? 'bg-amber-50 text-amber-900 border border-amber-200' : 'bg-slate-200 text-slate-800'} font-black text-[10px]">
+                ${o.PaymentStatus === 'Paid' ? 'Đã thu tiền' : o.PaymentStatus === 'Refunded' ? 'Đã hoàn tiền' : o.PaymentMethod === 'COD' ? 'Chưa thu (Chờ giao)' : 'Chờ trả ZaloPay'}
               </span>
             </td>
             <td class="p-3.5">${statusBadge}</td>
@@ -938,15 +1451,17 @@
       if (filter === 'ALL') {
         renderOrdersTable(allOrdersData);
       } else if (filter === 'UserCancelled') {
-        renderOrdersTable(allOrdersData.filter(o => 
-          o.OrderStatus === 'Cancelled' && (
-            o.Note ? (o.Note.includes('Khách') || o.Note.includes('Người dùng') || o.Note.includes('chủ động') || !o.Note.includes('hợp tác xã')) : true
-          )
-        ));
+        renderOrdersTable(allOrdersData.filter(o => {
+          const noteLower = (o.Note || '').toLowerCase();
+          const isAdmin = o.CancelledBy === 'HTX' || noteLower.includes('hợp tác xã') || noteLower.includes('htx') || noteLower.includes('admin') || noteLower.includes('chất lượng') || noteLower.includes('số lượng');
+          return o.OrderStatus === 'Cancelled' && !isAdmin;
+        }));
       } else if (filter === 'AdminCancelled') {
-        renderOrdersTable(allOrdersData.filter(o => 
-          o.OrderStatus === 'Cancelled' && o.Note && o.Note.includes('hợp tác xã')
-        ));
+        renderOrdersTable(allOrdersData.filter(o => {
+          const noteLower = (o.Note || '').toLowerCase();
+          const isAdmin = o.CancelledBy === 'HTX' || noteLower.includes('hợp tác xã') || noteLower.includes('htx') || noteLower.includes('admin') || noteLower.includes('chất lượng') || noteLower.includes('số lượng');
+          return o.OrderStatus === 'Cancelled' && isAdmin;
+        }));
       } else {
         renderOrdersTable(allOrdersData.filter(o => o.OrderStatus === filter));
       }
@@ -1181,11 +1696,17 @@
       let confirmTitle = 'Xác nhận trạng thái đơn';
       let confirmMsg = 'Bạn có chắc chắn muốn chuyển trạng thái đơn hàng này?';
       if (newStatus === 'ReadyToShip') {
-        confirmTitle = 'Xác nhận còn hàng';
-        confirmMsg = 'Bạn có chắc chắn đã xác nhận còn hàng?';
+        confirmTitle = 'HTX Xác nhận còn hàng';
+        confirmMsg = 'Xác nhận số lượng nông sản tại vườn đủ tiêu chuẩn OCOP và chuyển sang khâu đóng gói?';
+      } else if (newStatus === 'Shipping') {
+        confirmTitle = 'Bàn giao Viettel Post';
+        confirmMsg = 'Xác nhận kiện hàng nông sản OCOP đã được bàn giao cho đơn vị vận chuyển Viettel Post?';
+      } else if (newStatus === 'Completed') {
+        confirmTitle = 'Xác nhận giao thành công';
+        confirmMsg = 'Xác nhận khách hàng đã nhận đầy đủ nông sản và hoàn tất đơn hàng?';
       } else if (newStatus === 'Cancelled') {
-        confirmTitle = 'Hủy đơn hàng';
-        confirmMsg = 'Bạn có chắc chắn muốn hủy đơn hàng này không?';
+        confirmTitle = 'Hợp tác xã Hủy đơn hàng';
+        confirmMsg = 'Bạn có chắc chắn muốn hủy đơn do vấn đề phẩm cấp hoặc số lượng nông sản? Hệ thống sẽ ghi nhận "HTX hủy đơn", hoàn lại tồn kho và gửi lời xin lỗi đến khách hàng.';
       }
 
       showConfirm(confirmTitle, confirmMsg, async () => {
@@ -1197,7 +1718,7 @@
           });
           const json = await res.json();
           if (json.success) {
-            showNotice('Thành công', 'Đã cập nhật trạng thái đơn hàng!');
+            showNotice('Thành công', json.message || 'Đã cập nhật trạng thái đơn hàng!');
             loadOrders();
             loadStats();
           } else {
@@ -1526,6 +2047,18 @@
     }
 
     window.onload = () => {
+      const user = getLoggedInAdmin();
+      if (!user) {
+        // Tự động gán mặc định là Ban Quản Lý Huyện nếu là lần đầu mở
+        applyRoleUI({
+          username: 'huyen_daksong',
+          fullName: 'UBND & Ban Quản Lý Huyện',
+          role: 'DISTRICT',
+          agencyName: 'Ủy ban Nhân dân Huyện Đắk Song'
+        });
+      } else {
+        applyRoleUI(user);
+      }
       loadAllData();
       setInterval(() => {
         loadStats();

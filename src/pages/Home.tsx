@@ -4,6 +4,7 @@ import {
   Clock,
   ExternalLink,
   Gift,
+  Globe,
   Hotel,
   MapPin,
   Phone,
@@ -19,35 +20,22 @@ import { zmpSdk } from "../services/zmp-sdk";
 import { accommodations, diningPlaces, accommodationPriceOverview } from "../data/dakSongGuide";
 import bgHeroHome from "../assets/bg-hero-home.jpg";
 
-const SESSION_INTRO_KEY = "dak-song-session-intro-seen";
-
 export function Home() {
   const [weather, setWeather] = useAtom(weatherAtom);
   const completed = useAtomValue(completedTaskIdsAtom);
   const currentDailyTasks = useMemo(() => getDailyTasksForDate(), []);
   const [loadingWeather, setLoadingWeather] = useState(false);
   const [weatherError, setWeatherError] = useState<string | null>(null);
-  const [showIntro, setShowIntro] = useState(() => {
-    try {
-      return !window.sessionStorage.getItem(SESSION_INTRO_KEY);
-    } catch {
-      return false;
-    }
-  });
+  // Luôn hiển thị thanh popup giới thiệu web Đắk Song khi người dùng mở vào app
+  const [showIntro, setShowIntro] = useState(true);
   const [serviceTab, setServiceTab] = useState<"all" | "stay" | "dine">("all");
   const navigate = useNavigate();
 
   const dismissIntro = () => {
-    try {
-      window.sessionStorage.setItem(SESSION_INTRO_KEY, "1");
-    } catch {}
     setShowIntro(false);
   };
 
   const exploreDakSong = async () => {
-    try {
-      window.sessionStorage.setItem(SESSION_INTRO_KEY, "1");
-    } catch {}
     setShowIntro(false);
     await zmpSdk.openWebview("https://dulichdaksong.vnasw.vn/");
   };
@@ -85,6 +73,26 @@ export function Home() {
   return (
     <>
       <div className="space-y-4">
+        {/* ===== THANH GIỚI THIỆU CỔNG THÔNG TIN WEB DU LỊCH ĐẮK SONG ===== */}
+        <div className="flex items-center justify-between gap-2.5 px-3.5 py-2.5 rounded-2xl bg-gradient-to-r from-emerald-950 via-emerald-900 to-amber-950 text-white shadow-sm border border-emerald-700/60">
+          <div className="flex items-center gap-2.5 min-w-0">
+            <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-xl bg-emerald-800 text-amber-300 border border-emerald-600/50 shadow-2xs">
+              <Globe size={15} />
+            </span>
+            <div className="truncate text-xs leading-tight">
+              <div className="font-bold text-amber-200">Cổng thông tin du lịch Đắk Song</div>
+              <div className="font-mono text-[11px] text-emerald-200/90 truncate">dulichdaksong.vnasw.vn</div>
+            </div>
+          </div>
+          <button
+            onClick={() => void exploreDakSong()}
+            className="shrink-0 flex items-center gap-1.5 rounded-xl bg-amber-400 hover:bg-amber-300 text-stone-950 px-3 py-1.5 text-xs font-black transition cursor-pointer shadow-xs active:scale-95"
+          >
+            <span>Khám phá Web</span>
+            <ExternalLink size={13} />
+          </button>
+        </div>
+
         {/* ===== HERO BANNER ĐẮK SONG - THIẾT KẾ ĐƠN GIẢN NATIVE MINI APP ===== */}
         <section
           className="overflow-hidden rounded-2xl p-4 min-[375px]:p-5 text-white shadow-sm border border-emerald-950/20"
@@ -386,42 +394,50 @@ export function Home() {
 
       {/* ===== POPUP GIỚI THIỆU (LUÔN HIỆN KHI VÀO TRANG CHỦ) ===== */}
       {showIntro && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-stone-950/70 p-4 backdrop-blur-xs animate-in fade-in duration-200">
-          <div className="w-full max-w-md overflow-hidden rounded-2xl bg-white shadow-2xl border border-stone-200 animate-in zoom-in-95 duration-200">
-            <div className="bg-gradient-to-br from-emerald-800 to-amber-900 p-5 text-white text-center sm:text-left">
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-stone-950/75 p-4 backdrop-blur-xs animate-in fade-in duration-200">
+          <div className="w-full max-w-md overflow-hidden rounded-3xl bg-white shadow-2xl border border-stone-200 animate-in zoom-in-95 duration-200">
+            <div className="bg-gradient-to-br from-emerald-900 via-emerald-800 to-amber-950 p-5 text-white text-center sm:text-left">
               <div className="flex justify-center sm:justify-start">
                 <img
                   src="./logo-dak-song.png"
                   alt="Logo Đắk Song"
-                  className="h-14 w-14 rounded-full bg-white p-0.5 shadow-sm"
+                  className="h-16 w-16 rounded-full bg-white p-1 shadow-md border-2 border-white/60"
                 />
               </div>
-              <div className="mt-2.5 text-xs font-bold text-amber-200 uppercase tracking-wide">
-                Chào mừng đến Đắk Song Quest
+              <div className="mt-3 text-xs font-black text-amber-300 uppercase tracking-wide">
+                Chào mừng đến với Đắk Song
               </div>
-              <h2 className="mt-1 text-xl font-bold text-white">Khám phá trước khi chơi!</h2>
-              <p className="mt-1.5 text-xs text-emerald-50 leading-relaxed">
-                Tìm hiểu thiên nhiên, văn hóa M’Nông, danh bạ khách sạn, quán ăn và săn voucher trải nghiệm Đắk Song.
+              <h2 className="mt-1 text-lg sm:text-xl font-black text-white leading-tight">
+                Cổng thông tin du lịch Đắk Song
+              </h2>
+              <p className="mt-1.5 text-xs text-emerald-100/90 leading-relaxed font-medium">
+                Tìm hiểu cảnh đẹp thác nước, rừng thông, cắm trại, văn hóa bản địa, ẩm thực đặc sản và săn voucher du lịch độc quyền.
               </p>
+              <div className="mt-2.5 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-emerald-950/60 border border-emerald-500/40 text-[11px] font-mono text-emerald-200">
+                <Globe size={12} className="text-amber-400" /> dulichdaksong.vnasw.vn
+              </div>
             </div>
-            <div className="space-y-2 p-4">
+
+            <div className="space-y-2.5 p-4 bg-stone-50/50">
               <button
                 onClick={() => void exploreDakSong()}
-                className="flex w-full items-center justify-center gap-2 rounded-xl border border-stone-200 bg-stone-50 px-4 py-3 text-sm font-bold text-stone-900 transition hover:bg-stone-100 cursor-pointer"
+                className="flex w-full items-center justify-center gap-2 rounded-2xl bg-emerald-700 hover:bg-emerald-800 px-4 py-3 text-xs font-black text-white shadow-md transition cursor-pointer active:scale-98"
               >
-                <ExternalLink size={16} /> Cổng thông tin du lịch Đắk Song
+                <ExternalLink size={15} /> Khám phá Website Du Lịch Đắk Song
               </button>
+
               <button
                 onClick={huntVoucher}
-                className="flex w-full items-center justify-center gap-2 rounded-xl bg-emerald-800 px-4 py-3 text-sm font-bold text-white shadow-xs transition hover:bg-emerald-900 cursor-pointer"
+                className="flex w-full items-center justify-center gap-2 rounded-2xl border-2 border-amber-400 bg-amber-50 hover:bg-amber-100 px-4 py-2.5 text-xs font-black text-amber-950 transition cursor-pointer active:scale-98"
               >
-                <Gift size={16} /> Săn Voucher ngay
+                <Gift size={15} className="text-amber-600" /> Săn Voucher & Chơi Mini Game
               </button>
+
               <button
                 onClick={dismissIntro}
-                className="w-full rounded-xl py-2 text-xs font-medium text-stone-500 hover:text-stone-800 transition cursor-pointer"
+                className="w-full rounded-xl py-2 text-xs font-bold text-stone-500 hover:text-stone-800 transition cursor-pointer"
               >
-                Bỏ qua
+                Vào ứng dụng (Bỏ qua)
               </button>
             </div>
           </div>
