@@ -142,11 +142,11 @@
       <button onclick="switchTab('venues')" id="tab-venues" class="tab-btn px-4 py-2.5 rounded-xl text-xs font-bold transition flex items-center gap-2 text-slate-700 hover:bg-slate-100 hover:text-slate-950">
         <i data-lucide="ticket" class="w-4 h-4"></i> <span id="tab-venues-label">Quán & Hạn mức Voucher</span>
       </button>
-      <button onclick="switchTab('orders')" id="tab-orders" class="tab-btn px-4 py-2.5 rounded-xl text-xs font-bold transition flex items-center gap-2 text-slate-700 hover:bg-slate-100 hover:text-slate-950">
+      <button onclick="switchTab('orders')" id="tab-orders" class="tab-btn px-4 py-2.5 rounded-xl text-xs font-bold transition flex items-center gap-2 text-slate-700 hover:bg-slate-100 hover:text-slate-950 hidden" style="display: none !important;">
         <i data-lucide="shopping-cart" class="w-4 h-4"></i> <span id="tab-orders-label">Đơn hàng Nông sản OCOP</span>
         <span id="pending-badge" class="hidden bg-amber-500 text-slate-950 px-2 py-0.5 rounded-full text-[10px] font-black shadow-xs">0</span>
       </button>
-      <button onclick="switchTab('products')" id="tab-products" class="tab-btn px-4 py-2.5 rounded-xl text-xs font-bold transition flex items-center gap-2 text-slate-700 hover:bg-slate-100 hover:text-slate-950">
+      <button onclick="switchTab('products')" id="tab-products" class="tab-btn px-4 py-2.5 rounded-xl text-xs font-bold transition flex items-center gap-2 text-slate-700 hover:bg-slate-100 hover:text-slate-950 hidden" style="display: none !important;">
         <i data-lucide="package" class="w-4 h-4"></i> <span id="tab-products-label">Sản phẩm Đặc sản OCOP</span>
       </button>
       <button onclick="switchTab('leaderboard')" id="tab-leaderboard" class="tab-btn px-4 py-2.5 rounded-xl text-xs font-bold transition flex items-center gap-2 text-slate-700 hover:bg-slate-100 hover:text-slate-950">
@@ -992,6 +992,40 @@
       }
     }
 
+    function syncTabVisibility() {
+      const curUser = getLoggedInAdmin();
+      const isCoop = curUser && curUser.role === 'COOP';
+      
+      const toggle = (id, show) => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        if (show) {
+          el.classList.remove('hidden');
+          el.style.removeProperty('display');
+        } else {
+          el.classList.add('hidden');
+          el.style.setProperty('display', 'none', 'important');
+        }
+      };
+
+      if (isCoop) {
+        toggle('tab-dashboard', true);
+        toggle('tab-orders', true);
+        toggle('tab-products', true);
+        toggle('tab-venues', false);
+        toggle('tab-leaderboard', false);
+        toggle('tab-audit-logs', false);
+      } else {
+        // UBND & BQL Huyện: Chỉ thấy đúng 4 tab nghiệp vụ: Dashboard, Venues, Leaderboard, AuditLogs
+        toggle('tab-dashboard', true);
+        toggle('tab-venues', true);
+        toggle('tab-leaderboard', true);
+        toggle('tab-audit-logs', true);
+        toggle('tab-orders', false); // Ẩn hoàn toàn Đơn hàng OCOP
+        toggle('tab-products', false); // Ẩn hoàn toàn Kho Hàng & Giá OCOP
+      }
+    }
+
     function applyRoleUI(user) {
       const modal = document.getElementById('modal-login');
       if (!user) {
@@ -1015,11 +1049,6 @@
       const tabDashLabel = document.getElementById('tab-dashboard-label');
       const tabOrdersLabel = document.getElementById('tab-orders-label');
       const tabProdsLabel = document.getElementById('tab-products-label');
-      const tabVenues = document.getElementById('tab-venues');
-      const tabOrders = document.getElementById('tab-orders');
-      const tabProducts = document.getElementById('tab-products');
-      const tabLeaderboard = document.getElementById('tab-leaderboard');
-      const tabAudit = document.getElementById('tab-audit-logs');
 
       const coopSec = document.getElementById('dashboard-coop-section');
       const distSec = document.getElementById('dashboard-district-section');
@@ -1048,20 +1077,13 @@
         if (tabOrdersLabel) tabOrdersLabel.innerText = 'Điều phối Đơn hàng OCOP';
         if (tabProdsLabel) tabProdsLabel.innerText = 'Kho Hàng & Giá OCOP';
 
-        // Tách biệt Tab: Ẩn các chức năng cấp Huyện
-        if (tabVenues) tabVenues.classList.add('hidden');
-        if (tabLeaderboard) tabLeaderboard.classList.add('hidden');
-        if (tabAudit) tabAudit.classList.add('hidden');
-
-        // Hiện các chức năng cấp HTX
-        if (tabOrders) tabOrders.classList.remove('hidden');
-        if (tabProducts) tabProducts.classList.remove('hidden');
-
         // Dashboard hiển thị section HTX, ẩn section Huyện
         if (coopSec) coopSec.classList.remove('hidden');
         if (distSec) distSec.classList.add('hidden');
 
-        // Nếu đang ở tab của Huyện -> chuyển ngay sang dashboard hoặc orders
+        syncTabVisibility();
+
+        // Nếu đang ở tab của Huyện -> chuyển ngay sang dashboard
         if (currentActiveTab === 'venues' || currentActiveTab === 'leaderboard' || currentActiveTab === 'audit-logs') {
           switchTab('dashboard');
         } else {
@@ -1091,18 +1113,11 @@
         const tabAuditLabel = document.getElementById('tab-audit-logs-label');
         if (tabAuditLabel) tabAuditLabel.innerText = 'Lịch sử kiểm toán';
 
-        // Tách biệt Tab: Hiện các chức năng cấp Huyện (Chỉ Voucher, BXH và Kiểm toán)
-        if (tabVenues) tabVenues.classList.remove('hidden');
-        if (tabLeaderboard) tabLeaderboard.classList.remove('hidden');
-        if (tabAudit) tabAudit.classList.remove('hidden');
-
-        // Ẩn phần giám sát đơn hàng OCOP và kho hàng & giá OCOP (vì UBND & BQL Huyện không dùng được tính năng này)
-        if (tabOrders) tabOrders.classList.add('hidden');
-        if (tabProducts) tabProducts.classList.add('hidden');
-
         // Dashboard hiển thị section Huyện, ẩn section HTX
         if (coopSec) coopSec.classList.add('hidden');
         if (distSec) distSec.classList.remove('hidden');
+
+        syncTabVisibility();
 
         // Nếu đang ở tab của OCOP -> chuyển ngay về dashboard
         if (currentActiveTab === 'products' || currentActiveTab === 'orders') {
@@ -1207,21 +1222,38 @@
     }
 
     function switchTab(tab) {
-      currentActiveTab = tab;
       const curUser = getLoggedInAdmin();
       const isCoop = curUser && curUser.role === 'COOP';
+
+      // Chặn ngay lập tức nếu vai trò hiện tại không có thẩm quyền truy cập tab này
+      if (!isCoop && (tab === 'orders' || tab === 'products')) {
+        tab = 'dashboard';
+      }
+      if (isCoop && (tab === 'venues' || tab === 'leaderboard' || tab === 'audit-logs')) {
+        tab = 'dashboard';
+      }
+      currentActiveTab = tab;
+
       const activeTabClass = isCoop ? 'bg-emerald-800 text-white shadow-xs' : 'bg-slate-950 text-white shadow-xs';
 
       ['dashboard', 'venues', 'orders', 'products', 'audit-logs', 'leaderboard'].forEach(t => {
         const c = document.getElementById(`content-${t}`);
         if (c) c.classList.add('hidden');
         const tb = document.getElementById(`tab-${t}`);
-        if (tb) tb.className = 'tab-btn px-4 py-2.5 rounded-xl text-xs font-bold transition flex items-center gap-2 text-slate-700 hover:bg-slate-100 hover:text-slate-950';
+        if (tb) {
+          tb.className = 'tab-btn px-4 py-2.5 rounded-xl text-xs font-bold transition flex items-center gap-2 text-slate-700 hover:bg-slate-100 hover:text-slate-950';
+        }
       });
       const targetContent = document.getElementById(`content-${tab}`);
       if (targetContent) targetContent.classList.remove('hidden');
       const targetTab = document.getElementById(`tab-${tab}`);
-      if (targetTab) targetTab.className = `tab-btn px-4 py-2.5 rounded-xl text-xs font-black transition flex items-center gap-2 ${activeTabClass}`;
+      if (targetTab) {
+        targetTab.className = `tab-btn px-4 py-2.5 rounded-xl text-xs font-black transition flex items-center gap-2 ${activeTabClass}`;
+      }
+
+      // Luôn đồng bộ và khóa cứng trạng thái ẩn/hiện của các tab theo vai trò
+      syncTabVisibility();
+
       if (tab === 'audit-logs') loadAuditLogs();
       if (tab === 'leaderboard') loadAdminLeaderboard();
       lucide.createIcons();
