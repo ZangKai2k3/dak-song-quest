@@ -127,8 +127,9 @@ adminRouter.post('/auth/login', async (req: Request, res: Response) => {
 
 // 1. GET /api/admin/dashboard/stats
 // Thống kê tổng quan phục vụ Dashboard quản trị
-adminRouter.get('/dashboard/stats', async (_req: Request, res: Response) => {
+adminRouter.get('/dashboard/stats', async (req: Request, res: Response) => {
   try {
+    const adminRole = (req.headers['x-admin-role'] as string) || '';
     const pool = await getDbPool();
     await ensureAuditLogTable(pool);
     await ensureAdminUsersTable(pool);
@@ -158,8 +159,16 @@ adminRouter.get('/dashboard/stats', async (_req: Request, res: Response) => {
       FROM dbo.Orders
     `);
 
-    // Thống kê tổng số lượt chỉnh sửa
-    const auditCountRes = await pool.request().query(`SELECT COUNT(*) AS TotalAuditLogs FROM dbo.AdminAuditLogs`);
+    // Thống kê tổng số lượt chỉnh sửa (Nếu là Huyện: chỉ đếm các mục Voucher và Kết quả thi)
+    let auditLogsQuery = `SELECT COUNT(*) AS TotalAuditLogs FROM dbo.AdminAuditLogs`;
+    if (adminRole === 'DISTRICT') {
+      auditLogsQuery = `
+        SELECT COUNT(*) AS TotalAuditLogs FROM dbo.AdminAuditLogs
+        WHERE TargetType IN ('Voucher', N'Voucher', 'Kết quả', N'Kết quả', 'BXH Quiz', N'BXH Quiz')
+           OR ActionType LIKE N'%voucher%' OR ActionType LIKE N'%Voucher%' OR ActionType LIKE N'%kết quả%'
+      `;
+    }
+    const auditCountRes = await pool.request().query(auditLogsQuery);
     const auditLogsCount = auditCountRes.recordset[0]?.TotalAuditLogs || 0;
 
     // Thống kê Thí sinh thi Quiz
@@ -764,17 +773,29 @@ adminRouter.put('/products/:id', async (req: Request, res: Response) => {
 });
 
 // 10. GET /api/admin/audit-logs - Xem lịch sử chỉnh sửa voucher và hàng hóa
-adminRouter.get('/audit-logs', async (_req: Request, res: Response) => {
+adminRouter.get('/audit-logs', async (req: Request, res: Response) => {
   try {
+    const adminRole = (req.headers['x-admin-role'] as string) || '';
     const pool = await getDbPool();
     await ensureAuditLogTable(pool);
 
-    const result = await pool.request().query(`
+    let query = `
       SELECT LogId, ActionType, TargetType, TargetName, Details, AdminName,
         CONVERT(VARCHAR(19), CreatedAt, 120) AS CreatedAt
       FROM dbo.AdminAuditLogs
-      ORDER BY LogId DESC
-    `);
+    `;
+
+    // Nếu là UBND & BQL Huyện (DISTRICT) -> chỉ trả về nhật ký liên quan đến Voucher và Kết quả thi Quiz
+    if (adminRole === 'DISTRICT') {
+      query += `
+        WHERE TargetType IN ('Voucher', N'Voucher', 'Kết quả', N'Kết quả', 'BXH Quiz', N'BXH Quiz')
+           OR ActionType LIKE N'%voucher%' OR ActionType LIKE N'%Voucher%' OR ActionType LIKE N'%kết quả%'
+      `;
+    }
+
+    query += ` ORDER BY LogId DESC`;
+
+    const result = await pool.request().query(query);
 
     res.json({
       success: true,

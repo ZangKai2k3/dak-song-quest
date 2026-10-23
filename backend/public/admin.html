@@ -321,8 +321,8 @@
           </div>
         </div>
 
-        <!-- 5 THẺ THỐNG KÊ HUYỆN (GIỮ NGUYÊN IDS ĐỂ TƯƠNG THÍCH HOÀN TOÀN) -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+        <!-- 4 THẺ THỐNG KÊ DU LỊCH & VOUCHER DÀNH CHO HUYỆN (KHÔNG HIỆN DOANH THU SÀN OCOP) -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <!-- Card 1: Tổng quán -->
           <div class="bg-white p-5 rounded-2xl border-2 border-slate-200 shadow-sm hover:border-slate-400 transition cursor-pointer" onclick="switchTab('venues')">
             <div class="flex items-center justify-between">
@@ -343,17 +343,7 @@
             <p class="mt-1 text-xs text-slate-600 font-semibold">Đã phát cho khách: <b class="text-slate-950 font-black" id="stat-issued-vouchers">0</b></p>
           </div>
 
-          <!-- Card 3: Doanh thu sàn OCOP -->
-          <div class="bg-white p-5 rounded-2xl border-2 border-slate-200 shadow-sm">
-            <div class="flex items-center justify-between">
-              <span class="text-xs font-black uppercase tracking-wider text-slate-600">Doanh thu Sàn Nông Sản</span>
-              <div class="p-2.5 rounded-xl bg-amber-100 text-amber-950 font-black"><i data-lucide="wallet" class="w-5 h-5"></i></div>
-            </div>
-            <div class="mt-2 text-3xl font-black text-slate-950" id="stat-total-revenue">0 đ</div>
-            <p class="mt-1 text-xs text-slate-600 font-semibold">Đơn đã trả tiền: <b class="text-slate-950 font-black" id="stat-paid-orders">0</b></p>
-          </div>
-
-          <!-- Card 4: Thí sinh thi Quiz -->
+          <!-- Card 3: Thí sinh thi Quiz -->
           <div class="bg-white p-5 rounded-2xl border-2 border-slate-200 shadow-sm cursor-pointer hover:border-slate-400 transition" onclick="switchTab('leaderboard')">
             <div class="flex items-center justify-between">
               <span class="text-xs font-black uppercase tracking-wider text-slate-600">Thí sinh thi Quiz</span>
@@ -363,18 +353,18 @@
             <p class="mt-1 text-xs text-slate-600 font-semibold">Nhấn xem chi tiết BXH tuần</p>
           </div>
 
-          <!-- Card 5: Lịch sử chỉnh sửa voucher & hàng hóa -->
+          <!-- Card 4: Lịch sử chỉnh sửa voucher & kết quả thi -->
           <div class="bg-white p-5 rounded-2xl border-2 border-slate-200 shadow-sm cursor-pointer hover:border-slate-400 transition" onclick="switchTab('audit-logs')">
             <div class="flex items-center justify-between">
-              <span class="text-xs font-black uppercase tracking-wider text-slate-600">Lịch sử chỉnh sửa</span>
+              <span class="text-xs font-black uppercase tracking-wider text-slate-600">Lịch sử kiểm toán</span>
               <div class="p-2.5 rounded-xl bg-purple-100 text-purple-950 font-black"><i data-lucide="history" class="w-5 h-5"></i></div>
             </div>
             <div class="mt-2 text-3xl font-black text-purple-800" id="stat-audit-count">0</div>
-            <p class="mt-1 text-xs text-slate-600 font-semibold">Nhấn xem chi tiết lịch sử sửa đổi</p>
+            <p class="mt-1 text-xs text-slate-600 font-semibold">Nhấn xem lịch sử voucher & BXH</p>
           </div>
         </div>
 
-        <!-- LỊCH SỬ CHỈNH SỬA VOUCHER VÀ HÀNG HÓA GẦN ĐÂY CỦA HUYỆN -->
+        <!-- LỊCH SỬ CHỈNH SỬA VOUCHER VÀ KẾT QUẢ THI GẦN ĐÂY CỦA HUYỆN -->
         <div class="bg-white rounded-3xl p-6 border-2 border-slate-300 shadow-sm space-y-4">
           <div class="flex items-center justify-between border-b border-slate-200 pb-3">
             <div>
@@ -382,7 +372,7 @@
                 <i data-lucide="history" class="w-5 h-5 text-purple-700"></i>
                 <span>LỊCH SỬ KIỂM TOÁN VÀ THAY ĐỔI HẠN MỨC GẦN ĐÂY</span>
               </h2>
-              <p class="text-xs text-slate-600 mt-0.5 font-medium">Lưu trữ các thao tác điều chỉnh hạn mức voucher cơ sở du lịch và các biến động hệ thống</p>
+              <p class="text-xs text-slate-600 mt-0.5 font-medium">Lưu trữ các thao tác điều chỉnh hạn mức voucher cơ sở du lịch và kết quả thi Quiz</p>
             </div>
             <button onclick="switchTab('audit-logs')" class="bg-slate-950 hover:bg-slate-800 text-white font-black text-xs px-4 py-2 rounded-xl transition shadow-xs cursor-pointer flex items-center gap-1.5">
               <span>Xem toàn bộ lịch sử</span>
@@ -527,23 +517,22 @@
       </div>
     </div>
 
-    <!-- ==================== TAB 5: LỊCH SỬ CHỈNH SỬA VOUCHER VÀ HÀNG HÓA ==================== -->
+    <!-- ==================== TAB 5: LỊCH SỬ CHỈNH SỬA VOUCHER VÀ KẾT QUẢ THI ==================== -->
     <div id="content-audit-logs" class="hidden space-y-4">
       <div class="flex flex-wrap items-center justify-between gap-3 bg-white p-4 rounded-2xl border-2 border-slate-200">
         <div>
           <h2 class="text-base font-black text-slate-950 flex items-center gap-2">
             <i data-lucide="history" class="w-5 h-5 text-purple-700"></i>
-            <span>Lịch sử Chỉnh sửa & Điều phối</span>
+            <span>Lịch sử Kiểm toán & Hạn mức Voucher</span>
           </h2>
-          <p class="text-xs text-slate-600">Lưu lại chi tiết các lần thay đổi hạn mức voucher, giá bán/kho hàng và kết quả thi</p>
+          <p class="text-xs text-slate-600">Lưu lại chi tiết các lần điều chỉnh hạn mức voucher cơ sở du lịch và kết quả thi Quiz</p>
         </div>
         <div class="flex items-center gap-2">
           <span class="text-xs font-bold text-slate-600">Phân loại:</span>
           <select id="audit-filter-type" onchange="filterAuditLogs()" class="text-xs p-2 rounded-xl border-2 border-slate-300 bg-white font-bold text-slate-900 cursor-pointer">
-            <option value="ALL">Tất cả phân loại</option>
-            <option value="RESULT">🏆 Kết quả (BXH Quiz)</option>
-            <option value="VOUCHER">🎟️ Voucher cơ sở</option>
-            <option value="PRODUCT">📦 Hàng hóa OCOP</option>
+            <option value="ALL">Tất cả (Voucher & BXH)</option>
+            <option value="VOUCHER">Voucher cơ sở</option>
+            <option value="RESULT">Kết quả thi (BXH Quiz)</option>
           </select>
           <button onclick="loadAuditLogs()" class="bg-slate-950 hover:bg-slate-800 text-white px-3.5 py-2 rounded-xl text-xs font-black transition flex items-center gap-1.5 cursor-pointer shadow-xs">
             <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i> Làm mới lịch sử
@@ -1099,22 +1088,24 @@
         if (bannerText) bannerText.innerHTML = '🏛️ <b>Khu vực Ủy ban Nhân dân / Ban Quản lý Huyện:</b> Thẩm định và thỏa thuận hạn mức Voucher quán ăn, khách sạn; Quản lý BXH Quiz và Giám sát kiểm toán.';
 
         if (tabDashLabel) tabDashLabel.innerText = 'Trung tâm Điều hành Du lịch';
-        if (tabOrdersLabel) tabOrdersLabel.innerText = 'Giám sát Đơn hàng OCOP';
+        const tabAuditLabel = document.getElementById('tab-audit-logs-label');
+        if (tabAuditLabel) tabAuditLabel.innerText = 'Lịch sử kiểm toán';
 
-        // Tách biệt Tab: Hiện các chức năng cấp Huyện
+        // Tách biệt Tab: Hiện các chức năng cấp Huyện (Chỉ Voucher, BXH và Kiểm toán)
         if (tabVenues) tabVenues.classList.remove('hidden');
         if (tabLeaderboard) tabLeaderboard.classList.remove('hidden');
         if (tabAudit) tabAudit.classList.remove('hidden');
-        if (tabOrders) tabOrders.classList.remove('hidden');
 
-        // Ẩn tab sửa sản phẩm OCOP (thuộc tài sản HTX)
+        // Ẩn phần giám sát đơn hàng OCOP và kho hàng & giá OCOP (vì UBND & BQL Huyện không dùng được tính năng này)
+        if (tabOrders) tabOrders.classList.add('hidden');
         if (tabProducts) tabProducts.classList.add('hidden');
 
         // Dashboard hiển thị section Huyện, ẩn section HTX
         if (coopSec) coopSec.classList.add('hidden');
         if (distSec) distSec.classList.remove('hidden');
 
-        if (currentActiveTab === 'products') {
+        // Nếu đang ở tab của OCOP -> chuyển ngay về dashboard
+        if (currentActiveTab === 'products' || currentActiveTab === 'orders') {
           switchTab('dashboard');
         } else {
           switchTab(currentActiveTab);
@@ -1778,6 +1769,14 @@
       lucide.createIcons();
     }
 
+    function isDistrictAuditLog(l) {
+      const tt = (l.TargetType || '').toLowerCase();
+      const act = (l.ActionType || '').toLowerCase();
+      const isQuiz = tt.includes('kết quả') || tt.includes('bxh') || tt.includes('quiz') || act.includes('kết quả') || act.includes('thí sinh') || act.includes('bxh');
+      const isVoucher = tt.includes('voucher') || act.includes('voucher');
+      return isQuiz || isVoucher;
+    }
+
     function filterAuditLogs() {
       const filter = document.getElementById('audit-filter-type')?.value || 'ALL';
       let filtered = allAuditLogsData;
@@ -1793,13 +1792,6 @@
           const act = (l.ActionType || '').toLowerCase();
           return (tt.includes('voucher') || act.includes('voucher'));
         });
-      } else if (filter === 'PRODUCT') {
-        filtered = allAuditLogsData.filter(l => {
-          const tt = (l.TargetType || '').toLowerCase();
-          const act = (l.ActionType || '').toLowerCase();
-          return !tt.includes('kết quả') && !tt.includes('bxh') && !tt.includes('quiz') && !act.includes('kết quả') &&
-                 !tt.includes('voucher') && !act.includes('voucher');
-        });
       }
       renderAuditLogsTable(filtered);
     }
@@ -1809,13 +1801,14 @@
         const res = await adminFetch('/api/admin/audit-logs');
         const json = await res.json();
         if (json.success) {
-          allAuditLogsData = json.data || [];
+          // Chỉ lấy các phân loại về voucher cũng như kết quả thi cho UBND & BQL Huyện
+          allAuditLogsData = (json.data || []).filter(isDistrictAuditLog);
           filterAuditLogs();
 
           const dashTbody = document.getElementById('dashboard-audit-tbody');
           if (dashTbody) {
             if (allAuditLogsData.length === 0) {
-              dashTbody.innerHTML = '<tr><td colspan="5" class="p-4 text-center text-slate-500 font-bold">Chưa có lịch sử chỉnh sửa nào</td></tr>';
+              dashTbody.innerHTML = '<tr><td colspan="5" class="p-4 text-center text-slate-500 font-bold">Chưa có lịch sử thay đổi hạn mức voucher hoặc kết quả thi nào</td></tr>';
             } else {
               dashTbody.innerHTML = allAuditLogsData.slice(0, 5).map(l => {
                 const isOutOfStock = (l.ActionType || '') === 'Hết voucher';

@@ -384,14 +384,12 @@ He thong hoat dong tai dia chi http://localhost:5000/admin.html, tu dong nhan di
 - Trung tam Dieu hanh IOC Du lich va Dich vu:
   - The 1: Co so hop tac (Tong quan an, khach san va tong han muc voucher phat hanh).
   - The 2: Voucher dung tai quan (So voucher khach da den su dung thuc te).
-  - The 3: Doanh thu San Nong san (Giam sat hoat dong kinh te so nong nghiep toan huyen).
-  - The 4: Thi sinh thi Quiz (Luong du khach tham gia tim hieu van hoa Dak Song).
-  - The 5: Lich su kiem toan (Tong so luot can thiep va dieu chinh he thong).
-  - Bang nhat ky kiem toan: Theo doi nguoi thuc hien, thoi gian va chi tiet thay doi han muc.
+  - The 3: Thi sinh thi Quiz (Luong du khach tham gia tim hieu van hoa Dak Song).
+  - The 4: Lich su kiem toan (Tong so luot dieu chinh han muc voucher va ket qua thi).
+  - Bang nhat ky kiem toan gan day: Chi hien thi cac thao tac lien quan den voucher va ket qua thi Quiz.
 - Tab nghiep vu:
-  - Mo toan quyen: Quan & Han muc Voucher (Them co so, Cap them voucher, Sua han muc, Xoa co so), BXH Nguoi choi Quiz (Xoa ket qua gian lan, reset ve 0 de thi lai), va Lich su kiem toan.
-  - Tab Don hang OCOP hoat dong o Che do Giam sat (Monitoring Mode): Huyen theo doi duoc tien do va doanh thu ma khong can thiep sua don cua HTX (tranh phat sinh loi 403).
-  - An tab Kho Nong san & Gia OCOP vi thuoc tai san va tham quyen rieng cua Hop tac xa.
+  - Mo toan quyen: Quan & Han muc Voucher (Them co so, Cap them voucher, Sua han muc, Xoa co so), BXH Nguoi choi Quiz (Xoa ket qua gian lan, reset ve 0 de thi lai), va Lich su kiem toan (chi xem va loc the BXH va Voucher).
+  - An hoan toan: Tab Don hang OCOP va tab Kho Nong san & Gia OCOP vi UBND & BQL Huyen khong su dung cac tinh nang nay.
   - Bao ve API: Neu tai khoan Huyen co tinh gui request sua gia hoac kho hang nong san cua HTX, backend tu dong tra ma loi 403 Forbidden.
 
 #### 3. Tien ich Chuyen doi Vai tro 1-Click

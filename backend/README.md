@@ -4,7 +4,7 @@ He thong Backend duoc xay dung bang Node.js, TypeScript va Express ket noi truc 
 
 1. Phan quyen tai khoan Backend:
    - Hop tac xa Nong san Dak Song (Tai khoan: htx_daksong / Mat khau: 123 - Role: COOP): Toan quyen quan tri San TMDT OCOP, kho hang dac san, bang gia, xac nhan con hang, dong goi gui Viettel Post, hoan tat don hoac huy don kem ghi chu ro rang.
-   - UBND va Ban Quan ly Huyen (Tai khoan: huyen_daksong / Mat khau: 123 - Role: DISTRICT): Tham dinh, thoa thuan va cap phat han muc voucher quan an, khach san; quan tri BXH Quiz va nhat ky kiem toan toan he thong.
+   - UBND va Ban Quan ly Huyen (Tai khoan: huyen_daksong / Mat khau: 123 - Role: DISTRICT): Tham dinh, thoa thuan va cap phat han muc voucher quan an, khach san; quan tri BXH Quiz va nhat ky kiem toan toan he thong (chi xem va kiem toan voucher va BXH, an tinh nang don hang va kho hang OCOP).
 2. Quan ly han muc Voucher cho tung co so: Cung cap han muc voucher theo thoa thuan voi quan (TotalLimit), kiem soat so luong da phat ra (IssuedCount) va so luong khach da den dung thuc te (UsedCount).
 3. San Dac san OCOP Dak Song: Quan ly danh muc dac san nong nghiep Dak Song (Hat tieu huu co Dak Song, Ca phe Robusta dac san, Hat Mac ca say nut, Mang le rung kho).
 4. Dieu phoi don hang va Thanh toan da kenh: Nguoi dung dat hang, luu dia chi giao hang, thanh toan linh hoat qua Vi ZaloPay hoac Tien mat (COD). HTX kiem tra don hang, goi dien xac nhan voi nha vuon con hang va chuyen trang thai sang san sang giao (ReadyToShip).

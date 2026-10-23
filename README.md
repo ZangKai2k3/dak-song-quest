@@ -29,7 +29,7 @@ Dak Song Quest la ung dung tich hop da nen tang ket hop giua Zalo Mini App (danh
 - He thong Quan tri Admin CMS Web (Phan quyen 1 Server 2 Giao dien):
   - Dashboard thong ke chuyen biet theo vai tro dang nhap: Hop tac xa (OCOP Seller Center) va UBND Huyen (IOC Du lich & Dich vu).
   - Tai khoan Hop tac xa (htx_daksong / 123 - Role COOP): Toan quyen quan ly San TMDT OCOP, kho hang dac san, bang gia, xac nhan con hang, dong goi gui Viettel Post va huy don hang kem ghi chu ro rang.
-  - Tai khoan UBND Huyen (huyen_daksong / 123 - Role DISTRICT): Quan ly co so quan an, nha nghi, cap phat han muc voucher du lich, quan ly BXH Quiz va giam sat kiem toan toan he thong.
+  - Tai khoan UBND Huyen (huyen_daksong / 123 - Role DISTRICT): Quan ly co so quan an, nha nghi, cap phat han muc voucher du lich, quan ly BXH Quiz va kiem toan he thong (chi xem va kiem toan cac thao tac voucher va BXH; an hoan toan cac tinh nang don hang va kho hang OCOP).
   - Tien ich chuyen doi vai tro 1-click tuc thi khong can nhap lai mat khau.
   - Phan biet ro rang don hang bi huy: Khach tu huy don vs HTX / Admin huy don (ghi chu xin loi kem ly do chat luong hoac so luong).
   - Co che Realtime Polling tu dong lam moi so lieu moi 4 giay.
