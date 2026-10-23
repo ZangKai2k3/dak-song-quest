@@ -37,7 +37,7 @@ import { ProgressBar } from "../components/ProgressBar";
 import { zmpSdk, type ZaloUserProfile } from "../services/zmp-sdk";
 import { formatDuration, getPlayerTag, getWeekId, prepareQuizSession } from "../utils/quiz";
 import { apiFetch } from "../services/apiConfig";
-import { UserProfileModal } from "../components/UserProfileModal";
+import { UserProfileModal, DEFAULT_AVATAR } from "../components/UserProfileModal";
 import bgQuiz from "../assets/bg-quiz.png";
 
 const categories: QuizCategory[] = ["Thiên nhiên", "Văn hóa M’Nông", "Ẩm thực", "Hidden Gems", "Tổng hợp"];
@@ -863,7 +863,7 @@ export function Quiz() {
 
                   <div className="flex items-center gap-3">
                     <img
-                      src={currentUserProfile?.avatar || "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80"}
+                      src={currentUserProfile?.avatar || DEFAULT_AVATAR}
                       alt=""
                       className="w-11 h-11 rounded-full object-cover border-2 border-amber-400 shrink-0 shadow-xs"
                     />

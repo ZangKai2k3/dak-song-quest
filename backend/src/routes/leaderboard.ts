@@ -44,11 +44,11 @@ async function ensureLeaderboardTable(pool: any) {
         -- Dữ liệu mẫu khởi đầu sinh động cho tuần hiện tại
         INSERT INTO dbo.QuizLeaderboard (ZaloUserId, DisplayName, AvatarUrl, WeekId, Score, TotalQuestions, TimeMs, CreatedAt, UpdatedAt)
         VALUES
-        ('demo-1', N'M’Nông Explorer', 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80', '${curWeek}', 24, 25, 68300, DATEADD(DAY, -2, GETDATE()), GETDATE()),
-        ('demo-2', N'Cà Phê Tây Nguyên', 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=150&q=80', '${curWeek}', 23, 25, 71500, DATEADD(DAY, -1, GETDATE()), GETDATE()),
-        ('demo-3', N'Green Traveler', 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=150&q=80', '${curWeek}', 23, 25, 82400, DATEADD(HOUR, -14, GETDATE()), GETDATE()),
-        ('demo-4', N'Dak Song Fan', 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=150&q=80', '${curWeek}', 22, 25, 90100, DATEADD(HOUR, -7, GETDATE()), GETDATE()),
-        ('demo-5', N'Hidden Gem Hunter', 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=150&q=80', '${curWeek}', 21, 25, 88700, DATEADD(HOUR, -3, GETDATE()), GETDATE());
+        ('demo-1', N'M’Nông Explorer', '/avatars/avatar-3.png', '${curWeek}', 24, 25, 68300, DATEADD(DAY, -2, GETDATE()), GETDATE()),
+        ('demo-2', N'Cà Phê Tây Nguyên', '/avatars/avatar-2.png', '${curWeek}', 23, 25, 71500, DATEADD(DAY, -1, GETDATE()), GETDATE()),
+        ('demo-3', N'Green Traveler', '/avatars/avatar-5.png', '${curWeek}', 23, 25, 82400, DATEADD(HOUR, -14, GETDATE()), GETDATE()),
+        ('demo-4', N'Dak Song Fan', '/avatars/avatar-4.png', '${curWeek}', 22, 25, 90100, DATEADD(HOUR, -7, GETDATE()), GETDATE()),
+        ('demo-5', N'Hidden Gem Hunter', '/avatars/avatar-1.png', '${curWeek}', 21, 25, 88700, DATEADD(HOUR, -3, GETDATE()), GETDATE());
       END
     `);
     isTableEnsured = true;
@@ -97,7 +97,7 @@ leaderboardRouter.get('/', async (req: Request, res: Response) => {
       attemptId: row.AttemptId,
       zaloUserId: row.ZaloUserId,
       name: row.DisplayName,
-      avatar: row.AvatarUrl || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80',
+      avatar: row.AvatarUrl || '/avatars/avatar-1.png',
       score: row.Score,
       totalQuestions: row.TotalQuestions,
       timeMs: row.TimeMs,

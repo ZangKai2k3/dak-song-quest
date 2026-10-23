@@ -6,6 +6,7 @@ import {
   getUserInfo as zmpGetUserInfo,
   authorize as zmpAuthorize,
 } from "zmp-sdk";
+import defaultAvatar from "../assets/avatars/avatar-1.png";
 
 export interface LocationResult {
   latitude: number;
@@ -127,7 +128,7 @@ export const zmpSdk: ZmpSdkAdapter = {
   setUserProfile(profile: Partial<ZaloUserProfile>): ZaloUserProfile {
     const stableId = getStableUserId();
     let currentName = "Thí sinh Zalo";
-    let currentAvatar = "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80";
+    let currentAvatar = defaultAvatar;
 
     try {
       const saved = localStorage.getItem(USER_PROFILE_KEY);
@@ -162,7 +163,7 @@ export const zmpSdk: ZmpSdkAdapter = {
           cachedProfile = {
             id: parsed.id || stableId,
             name: parsed.name,
-            avatar: parsed.avatar || "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80",
+            avatar: parsed.avatar || defaultAvatar,
           };
         }
       }
@@ -195,7 +196,7 @@ export const zmpSdk: ZmpSdkAdapter = {
         const profile: ZaloUserProfile = {
           id: u.id || stableId,
           name: u.name,
-          avatar: u.avatar || cachedProfile?.avatar || "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80",
+          avatar: u.avatar || cachedProfile?.avatar || defaultAvatar,
         };
         try {
           localStorage.setItem(USER_PROFILE_KEY, JSON.stringify(profile));
@@ -216,7 +217,7 @@ export const zmpSdk: ZmpSdkAdapter = {
     const defaultProfile: ZaloUserProfile = {
       id: stableId,
       name: "Tài khoản Zalo của bạn",
-      avatar: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80",
+      avatar: defaultAvatar,
     };
     try {
       localStorage.setItem(USER_PROFILE_KEY, JSON.stringify(defaultProfile));

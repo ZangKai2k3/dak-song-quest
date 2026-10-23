@@ -2,37 +2,39 @@ import { useEffect, useState } from "react";
 import { Check, RefreshCw, User, X } from "lucide-react";
 import { apiFetch } from "../services/apiConfig";
 import { zmpSdk, type ZaloUserProfile } from "../services/zmp-sdk";
+import avatar1 from "../assets/avatars/avatar-1.png";
+import avatar2 from "../assets/avatars/avatar-2.png";
+import avatar3 from "../assets/avatars/avatar-3.png";
+import avatar4 from "../assets/avatars/avatar-4.png";
+import avatar5 from "../assets/avatars/avatar-5.png";
+
+export const DEFAULT_AVATAR = avatar1;
 
 export const PRESET_AVATARS = [
   {
     id: "avatar-1",
-    label: "Thanh niên",
-    url: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80",
+    label: "Cụ bà M’Nông",
+    url: avatar1,
   },
   {
     id: "avatar-2",
-    label: "Nữ du khách",
-    url: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=150&q=80",
+    label: "Bé trai thổi sáo",
+    url: avatar2,
   },
   {
     id: "avatar-3",
-    label: "Tây Nguyên",
-    url: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=150&q=80",
+    label: "Thiếu nữ dệt vải",
+    url: avatar3,
   },
   {
     id: "avatar-4",
-    label: "Dân tộc M’Nông",
-    url: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80",
+    label: "Già làng M’Nông",
+    url: avatar4,
   },
   {
     id: "avatar-5",
-    label: "Rừng thông",
-    url: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=150&q=80",
-  },
-  {
-    id: "avatar-6",
-    label: "Đắk Song",
-    url: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=150&q=80",
+    label: "Bé gái đeo gùi",
+    url: avatar5,
   },
 ];
 
@@ -61,10 +63,7 @@ export function UserProfileModal({
   useEffect(() => {
     if (isOpen) {
       setName(initialProfile?.name || "");
-      setAvatar(
-        initialProfile?.avatar ||
-          "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80"
-      );
+      setAvatar(initialProfile?.avatar || DEFAULT_AVATAR);
       setStatusMessage(null);
     }
   }, [isOpen, initialProfile]);
@@ -83,9 +82,7 @@ export function UserProfileModal({
 
     try {
       const cleanName = name.trim();
-      const cleanAvatar =
-        avatar.trim() ||
-        "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80";
+      const cleanAvatar = avatar.trim() || DEFAULT_AVATAR;
 
       // 1. Cập nhật local storage và state SDK (giữ nguyên ID ổn định)
       const updated = zmpSdk.setUserProfile({
@@ -162,12 +159,11 @@ export function UserProfileModal({
           <div className="flex items-center gap-3.5 p-3 rounded-xl bg-stone-50 border border-stone-200">
             <div className="relative shrink-0">
               <img
-                src={avatar || "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80"}
+                src={avatar || DEFAULT_AVATAR}
                 alt="Avatar"
                 className="w-14 h-14 rounded-full object-cover border-2 border-amber-400 shadow-xs"
                 onError={(e) => {
-                  (e.target as HTMLImageElement).src =
-                    "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80";
+                  (e.target as HTMLImageElement).src = DEFAULT_AVATAR;
                 }}
               />
               <span className="absolute -bottom-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-emerald-800 text-white text-[9px] font-bold border border-white">
@@ -178,7 +174,7 @@ export function UserProfileModal({
             <div className="flex-1 min-w-0">
               <div className="text-[11px] font-bold text-stone-700">Ảnh đại diện trên BXH</div>
               <p className="text-[10px] text-stone-500 mt-0.5">
-                Nhấn chọn 1 trong các hình mẫu bên dưới.
+                Nhấn chọn 1 trong 5 hình mẫu Đắk Song bên dưới.
               </p>
             </div>
           </div>
@@ -186,9 +182,9 @@ export function UserProfileModal({
           {/* Chọn ảnh mẫu có sẵn */}
           <div>
             <label className="block text-[11px] font-bold text-stone-700 mb-1.5">
-              Chọn ảnh đại diện mẫu:
+              Chọn ảnh đại diện mẫu (5 phong cách Đắk Song):
             </label>
-            <div className="grid grid-cols-6 gap-2">
+            <div className="grid grid-cols-5 gap-2">
               {PRESET_AVATARS.map((item) => {
                 const isSelected = avatar === item.url;
                 return (
@@ -197,7 +193,7 @@ export function UserProfileModal({
                     type="button"
                     onClick={() => setAvatar(item.url)}
                     className={`relative rounded-xl overflow-hidden aspect-square border-2 transition active:scale-95 cursor-pointer ${
-                      isSelected ? "border-amber-500 ring-2 ring-amber-400" : "border-stone-200 hover:border-stone-400"
+                      isSelected ? "border-amber-500 ring-2 ring-amber-400 shadow-sm" : "border-stone-200 hover:border-stone-400"
                     }`}
                     title={item.label}
                   >

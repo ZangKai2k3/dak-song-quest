@@ -7,7 +7,7 @@ import { zmpSdk, type ZaloUserProfile } from "../services/zmp-sdk";
 import { weeklyAttemptStorageAtom } from "../state/store";
 import type { LeaderboardEntry } from "../types";
 import { formatDuration, getPlayerTag, getWeekId } from "../utils/quiz";
-import { UserProfileModal } from "../components/UserProfileModal";
+import { UserProfileModal, DEFAULT_AVATAR } from "../components/UserProfileModal";
 
 const defaultDemoEntries: LeaderboardEntry[] = [
   { rank: 1, name: "M’Nông Explorer", avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80", score: 24, totalQuestions: 25, timeMs: 68300, badge: "Top 1" },
@@ -225,7 +225,7 @@ export function Leaderboard() {
 
           <div className="flex items-center gap-2.5">
             <img
-              src={myProfile?.avatar || "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80"}
+              src={myProfile?.avatar || DEFAULT_AVATAR}
               alt=""
               className="w-10 h-10 rounded-full object-cover border-2 border-amber-400 shrink-0 shadow-2xs"
             />
