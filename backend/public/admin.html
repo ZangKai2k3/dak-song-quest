@@ -86,29 +86,12 @@
         <div>
           <h1 class="text-base sm:text-lg font-black tracking-tight text-white flex items-center gap-2">
             <span id="brand-title">ĐẮK SONG QUEST</span>
-            <span id="brand-tag" class="bg-amber-400 text-slate-950 text-[11px] font-black px-2.5 py-0.5 rounded-full uppercase shadow-xs transition-colors duration-300">
-              Admin CMS
-            </span>
           </h1>
           <p id="brand-subtitle" class="text-xs text-slate-300 font-medium">Hệ thống Quản lý Voucher & Điều phối Nông sản OCOP Đắk Song</p>
         </div>
       </div>
 
       <div class="flex items-center flex-wrap gap-2 sm:gap-3">
-        <!-- Huy hiệu Tài khoản Đang Đăng Nhập -->
-        <div id="role-badge-container" class="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-700 shadow-xs transition-colors duration-300">
-          <span id="role-icon-display" class="text-base">🏛️</span>
-          <div class="text-left">
-            <div class="text-[11px] font-black text-white" id="role-agency-display">UBND & BQL Huyện</div>
-            <div class="text-[9px] font-bold text-amber-400 uppercase tracking-wider" id="role-name-display">Toàn quyền Huyện</div>
-          </div>
-        </div>
-
-        <span class="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-full text-[11px] font-black bg-emerald-950 text-emerald-300 border border-emerald-500/50 shadow-xs">
-          <span class="h-2 w-2 rounded-full bg-emerald-400 animate-pulse"></span>
-          SQL Server
-        </span>
-
         <button onclick="loadAllData()" class="bg-slate-800 hover:bg-slate-700 text-white px-3 py-1.5 rounded-xl text-xs font-black transition flex items-center gap-1.5 border border-slate-700 cursor-pointer shadow-xs" title="Làm mới">
           <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
         </button>
@@ -119,19 +102,6 @@
       </div>
     </div>
   </header>
-
-  <!-- BANNER THÔNG BÁO VAI TRÒ ĐƯỢC ỦY QUYỀN -->
-  <div id="role-banner" class="bg-amber-500 text-slate-950 font-black text-xs py-2 px-4 shadow-sm border-b border-amber-600 flex items-center justify-between transition-colors duration-300">
-    <div class="max-w-7xl mx-auto w-full flex items-center justify-between gap-2">
-      <div class="flex items-center gap-2">
-        <i data-lucide="info" class="w-4 h-4 shrink-0"></i>
-        <span id="role-banner-text">Khu vực điều hành cấp Huyện: Quản lý Quán Voucher, Bảng xếp hạng và Giám sát toàn hệ thống.</span>
-      </div>
-      <button onclick="switchRoleFast()" class="underline text-[11px] hover:text-white cursor-pointer font-extrabold shrink-0">
-        ⇄ Chuyển đổi vai trò quản trị
-      </button>
-    </div>
-  </div>
 
   <!-- NAVIGATION TABS -->
   <div id="nav-tabs-bar" class="bg-white border-b border-slate-300 shadow-sm sticky top-[68px] z-40 transition-colors duration-300">
@@ -1038,13 +1008,7 @@
       const mainHeader = document.getElementById('main-header');
       const iconBox = document.getElementById('brand-icon-box');
       const bTitle = document.getElementById('brand-title');
-      const bTag = document.getElementById('brand-tag');
       const bSub = document.getElementById('brand-subtitle');
-      const roleIcon = document.getElementById('role-icon-display');
-      const agencyDisplay = document.getElementById('role-agency-display');
-      const roleNameDisplay = document.getElementById('role-name-display');
-      const rBanner = document.getElementById('role-banner');
-      const bannerText = document.getElementById('role-banner-text');
 
       const tabDashLabel = document.getElementById('tab-dashboard-label');
       const tabOrdersLabel = document.getElementById('tab-orders-label');
@@ -1061,17 +1025,7 @@
           iconBox.innerHTML = '<i data-lucide="sprout" class="w-5 h-5"></i>';
         }
         if (bTitle) bTitle.innerText = 'SÀN NÔNG SẢN OCOP ĐẮK SONG';
-        if (bTag) {
-          bTag.innerText = 'HỢP TÁC XÃ (COOP)';
-          bTag.className = 'bg-emerald-400 text-emerald-950 text-[11px] font-black px-2.5 py-0.5 rounded-full uppercase shadow-xs transition-colors duration-300';
-        }
         if (bSub) bSub.innerText = 'Cổng Điều phối Nông sản & Quản lý Đơn hàng - Hợp tác xã Nông sản Đắk Song';
-
-        if (roleIcon) roleIcon.innerText = '🌾';
-        if (agencyDisplay) agencyDisplay.innerText = 'Hợp tác xã Nông sản';
-        if (roleNameDisplay) roleNameDisplay.innerText = 'Quản trị Sàn OCOP';
-        if (rBanner) rBanner.className = 'bg-emerald-700 text-white font-black text-xs py-2 px-4 shadow-sm border-b border-emerald-800 flex items-center justify-between transition-colors duration-300';
-        if (bannerText) bannerText.innerHTML = '🌾 <b>Khu vực Hợp tác xã Đắk Song:</b> Toàn quyền quản trị Sàn thương mại điện tử OCOP, kho hàng và điều phối đơn hàng nông sản.';
 
         if (tabDashLabel) tabDashLabel.innerText = 'Tổng quan Sàn OCOP';
         if (tabOrdersLabel) tabOrdersLabel.innerText = 'Điều phối Đơn hàng OCOP';
@@ -1097,17 +1051,7 @@
           iconBox.innerHTML = '<i data-lucide="landmark" class="w-5 h-5"></i>';
         }
         if (bTitle) bTitle.innerText = 'ĐẮK SONG QUEST';
-        if (bTag) {
-          bTag.innerText = 'UBND HUYỆN (DISTRICT)';
-          bTag.className = 'bg-amber-400 text-slate-950 text-[11px] font-black px-2.5 py-0.5 rounded-full uppercase shadow-xs transition-colors duration-300';
-        }
         if (bSub) bSub.innerText = 'Hệ thống Quản lý Voucher & Giám sát Toàn Huyện Đắk Song';
-
-        if (roleIcon) roleIcon.innerText = '🏛️';
-        if (agencyDisplay) agencyDisplay.innerText = 'UBND & BQL Huyện';
-        if (roleNameDisplay) roleNameDisplay.innerText = 'Quản trị Huyện & Voucher';
-        if (rBanner) rBanner.className = 'bg-amber-500 text-slate-950 font-black text-xs py-2 px-4 shadow-sm border-b border-amber-600 flex items-center justify-between transition-colors duration-300';
-        if (bannerText) bannerText.innerHTML = '🏛️ <b>Khu vực Ủy ban Nhân dân / Ban Quản lý Huyện:</b> Thẩm định và thỏa thuận hạn mức Voucher quán ăn, khách sạn; Quản lý BXH Quiz và Giám sát kiểm toán.';
 
         if (tabDashLabel) tabDashLabel.innerText = 'Trung tâm Điều hành Du lịch';
         const tabAuditLabel = document.getElementById('tab-audit-logs-label');
