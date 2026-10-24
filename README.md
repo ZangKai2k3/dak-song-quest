@@ -1,397 +1,356 @@
-# DAK SONG QUEST - ZALO MINI APP VA HE THONG QUAN TRI ADMIN CMS
+# ĐẮK SONG QUEST - ZALO MINI APP VÀ HỆ THỐNG QUẢN TRỊ ADMIN CMS
 
 ---
 
-## 1. GIOI THIEU DU AN
+## 1. GIỚI THIỆU DỰ ÁN
 
-### 1.1. Ten du an va Muc tieu
-- Ten du an: Dak Song Quest.
-- Muc tieu tong quat: Xay dung nen tang so hoa du lich ket hop tro choi hoa (Gamification) va thuong mai dien tu nong san OCOP nham quang ba hinh anh van hoa, con nguoi, danh lam thang canh huyen Dak Song, tinh Dak Nong; dong thoi ho tro tieu thu dac san nong nghiep dia phuong va thuc day du khach su dung dich vu luu tru, am thuc tai dia ban.
+### 1.1. Tên dự án và Mục tiêu
+- Tên dự án: Đắk Song Quest.
+- Mục tiêu tổng quát: Xây dựng nền tảng số hóa du lịch kết hợp trò chơi hóa (Gamification) và thương mại điện tử nông sản OCOP nhằm quảng bá hình ảnh văn hóa, con người, danh lam thắng cảnh huyện Đắk Song, tỉnh Đắk Nông; đồng thời hỗ trợ tiêu thụ đặc sản nông nghiệp địa phương và thúc đẩy du khách sử dụng dịch vụ lưu trú, ẩm thực tại địa bàn.
 
-### 1.2. Doi tuong phuc vu
-1. Du khach va Nguoi dan dia phuong: Trai nghiem tro choi do vui van hoa, san voucher giam gia thuc te, mua dac san OCOP chinh goc va tra cuu thong tin du lich tren thiet bi di dong thong qua ung dung Zalo.
-2. Hop tac xa Nong san Dak Song: Don vi kinh doanh va dieu phoi san pham OCOP, quan tri kho hang, thiet lap bang gia va xu ly quy trinh giao van don hang tren Cong thong tin Quan tri Admin CMS Web.
-3. UBND va Ban Quan ly Huyen Dak Song: Co quan quan ly nha nuoc giam sat hoat dong du lich, cap phat han muc voucher uu dai cho cac co so kinh doanh, giam sat tinh minh bach cua bang xep hang va kiem toan toan bo thao tac he thong.
-4. Co so kinh doanh am thuc va luu tru: Cac nha hang, quan an, khach san tren dia ban tiep nhan va xac thuc voucher giam gia do du khach mang den su dung.
+### 1.2. Đối tượng phục vụ
+1. Du khách và Người dân địa phương: Trải nghiệm trò chơi đố vui văn hóa, săn voucher giảm giá thực tế, mua đặc sản OCOP chính gốc và tra cứu thông tin du lịch trên thiết bị di động thông qua ứng dụng Zalo.
+2. Hợp tác xã Nông sản Đắk Song: Đơn vị kinh doanh và điều phối sản phẩm OCOP, quản trị kho hàng, thiết lập bảng giá và xử lý quy trình giao vận đơn hàng trên Cổng thông tin Quản trị Admin CMS Web.
+3. UBND và Ban Quản lý Huyện Đắk Song: Cơ quan quản lý nhà nước giám sát hoạt động du lịch, cấp phát hạn mức voucher ưu đãi cho các cơ sở kinh doanh, giám sát tính minh bạch của bảng xếp hạng và kiểm toán toàn bộ thao tác hệ thống.
+4. Cơ sở kinh doanh ẩm thực và lưu trú: Các nhà hàng, quán ăn, khách sạn trên địa bàn tiếp nhận và xác thực voucher giảm giá do du khách mang đến sử dụng.
 
-### 1.3. Diem noi bat thuc te cua he thong
-- Kien truc 1 Server 2 Giao dien: Mot may chu backend Node.js Express va co so du lieu Microsoft SQL Server duy nhat nhung tu dong bien hoa giao dien quan tri theo vai tro: giao dien Hop tac xa (chuyen ve nong san OCOP) va giao dien UBND Huyen (chuyen ve du lich va voucher).
-- Tro choi do vui xao tron chong hoc thuoc: Ap dung thuat toan Fisher-Yates de xao tron ngau nhien thu tu cau hoi va dap an; tu dong sinh ma nhan dien Tag ID #1000-#9999 de phan biet cac thi sinh trung ten tren bang xep hang.
-- Vong quay may man lien ket han muc thuc: Tu dong truy van co so du lieu va loai bo cac co so da het han muc phat hanh, dam bao khong phat voucher ao vuot qua cam ket cua cac quan.
-- Quy trinh thuong mai OCOP dong bo: Ho tro thanh toan tien mat (COD) va Vi ZaloPay (mo phong in-app khong chu sandbox), theo doi 4 buoc tien do ro rang, tu dong khoa huy don khi buu kien dang van chuyen va co che hoan tra 100% ton kho ve CSDL khi don bi huy boi khach hang hoac HTX.
-- Hop thoai popup thong minh: Chi hien thi hop thoai gioi thieu ung dung dung 1 lan moi phien truy cap (session), khong gay phien phuc khi nguoi dung chuyen qua lai giua cac man hinh.
+### 1.3. Điểm nổi bật thực tế của hệ thống
+- Kiến trúc 1 Server 2 Giao diện: Một máy chủ backend Node.js Express và cơ sở dữ liệu Microsoft SQL Server duy nhất nhưng tự động biến hóa giao diện quản trị theo vai trò: giao diện Hợp tác xã (chuyên về nông sản OCOP) và giao diện UBND Huyện (chuyên về du lịch và voucher).
+- Trò chơi đố vui xáo trộn chống học thuộc: Áp dụng thuật toán Fisher-Yates để xáo trộn ngẫu nhiên thứ tự câu hỏi và đáp án; tự động sinh mã nhận diện Tag ID #1000-#9999 để phân biệt các thí sinh trùng tên trên bảng xếp hạng.
+- Vòng quay may mắn liên kết hạn mức thực: Tự động truy vấn cơ sở dữ liệu và loại bỏ các cơ sở đã hết hạn mức phát hành, đảm bảo không phát voucher ảo vượt quá cam kết của các quán.
+- Quy trình thương mại OCOP đồng bộ: Hỗ trợ thanh toán tiền mặt (COD) và Ví ZaloPay (mô phỏng in-app không chữ sandbox), theo dõi 4 bước tiến độ rõ ràng, tự động khóa hủy đơn khi bưu kiện đang vận chuyển và cơ chế hoàn trả 100% tồn kho về CSDL khi đơn bị hủy bởi khách hàng hoặc HTX.
+- Hộp thoại popup thông minh: Chỉ hiển thị hộp thoại giới thiệu ứng dụng đúng 1 lần mỗi phiên truy cập (session), không gây phiền phức khi người dùng chuyển qua lại giữa các màn hình.
 
 ---
 
-## 2. TRANG THAI TRIEN KHAI HIEN TAI
+## 2. TRẠNG THÁI TRIỂN KHAI HIỆN TẠI
 
-Bang danh gia chi tiet trang thai cac phan he chuc nang dua tren ma nguon thuc te:
+Bảng đánh giá chi tiết trạng thái các phân hệ chức năng dựa trên mã nguồn thực tế:
 
-| Phan he hoac Tinh nang | Trang thai trien khai | Ghi chu thuc te dua tren ma nguon |
+| Phân hệ hoặc Tính năng | Trạng thái triển khai | Ghi chú thực tế dựa trên mã nguồn |
 | :--- | :--- | :--- |
-| Giao dien Zalo Mini App di dong | Hoan thien va hoat dong | Trien khai bang React 19, TypeScript, Tailwind CSS v4; giao dien responsive day du tren man hinh di dong |
-| Popup gioi thieu ung dung phien dau | Hoan thien va hoat dong | Su dung sessionStorage dak_song_intro_shown de chi hien thi 1 lan moi phien, khong lap lai khi bam ve Trang chu |
-| The thoi tiet ve tinh thoi gian thuc | Hoan thien va hoat dong | Lay du lieu tu Open-Meteo API theo toa do Dak Song (12.535, 107.692), co co che fallback khi mat ket noi mang |
-| Tro choi do vui: Thi thu | Hoan thien va hoat dong | Cho phep loc 5 nhom chu de, xao tron cau hoi, hien thi loi giai thich va cap voucher theo ty le diem (toi da 3 voucher/ngay) |
-| Tro choi do vui: Thi chinh thuc | Hoan thien va hoat dong | Bo de 25 cau Tong hop, do thoi gian lam bai bang mili-giay, nop ket qua vao bang xep hang tuan tren SQL Server |
-| Bang xep hang tuan va Tag ID | Hoan thien va hoat dong | Sap xep uu tien Score giam dan -> TimeMs tang dan; sinh Tag ID #1000-#9999 chong trung ten; luu ket qua tot nhat cua thi sinh |
-| Vong quay may man | Hoan thien va hoat dong | Loc quan con han muc thuc te tu CSDL; cap nhat IssuedCount qua Transaction an toan; sinh ma DS-YYYYMMDD-XXXX |
-| He thong nhiem vu hang ngay | Hoan thien va hoat dong | Tich luy luot quay may man khi tra loi dung; tu dong lam moi trang thai vao 00:00 UTC+7 |
-| San nong san OCOP va Ton kho | Hoan thien va hoat dong | Lay du lieu va ton kho truc tiep tu bang Products tren SQL Server; khoa bi quan chong ban vuot ton kho |
-| Thanh toan don hang OCOP | Mo phong / Cung cap COD | Ho tro COD tien mat; phuong thuc Vi ZaloPay su dung modal mo phong xac nhan in-app (chua tich hop merchant gateway that) |
-| Theo doi va Cap nhat don hang | Hoan thien va hoat dong | Tien do 4 buoc ro rang; cho phep sua dia chi/so dien thoai khi don o buoc Cho duyet; nut xac nhan mau xanh ro rang |
-| Quy trinh huy don hoan kho 100% | Hoan thien va hoat dong | Tu dong cong tra 100% ton kho ve CSDL; tu dong khoa huy khi don da chuyen sang Shipping; ghi chu ro nguon huy USER vs HTX |
-| Quan tri Admin CMS da phan quyen | Hoan thien va hoat dong | 1 Server 2 Giao dien rieng biet cho COOP va DISTRICT; an cac tab khong thuoc tham quyen; chan 403 o tang backend |
-| Nhat ky kiem toan (Audit Logs) | Hoan thien va hoat dong | Ghi nhan toan bo hanh vi thay doi han muc, gia ca, ton kho, huy don va xoa BXH vao bang AdminAuditLogs |
-| Ngan hang cau hoi trac nghiem | Du lieu cuc bo tinh | 25 cau hoi hien luu trong file src/data/questions.ts chu chua quan tri dong qua bang CSDL |
+| Giao diện Zalo Mini App di động | Hoàn thiện và hoạt động | Triển khai bằng React 19, TypeScript, Tailwind CSS v4; giao diện responsive đầy đủ trên màn hình di động |
+| Popup giới thiệu ứng dụng phiên đầu | Hoàn thiện và hoạt động | Sử dụng sessionStorage dak_song_intro_shown để chỉ hiển thị 1 lần mỗi phiên, không lặp lại khi bấm về Trang chủ |
+| Thẻ thời tiết vệ tinh thời gian thực | Hoàn thiện và hoạt động | Lấy dữ liệu từ Open-Meteo API theo tọa độ Đắk Song (12.535, 107.692), có cơ chế fallback khi mất kết nối mạng |
+| Trò chơi đố vui: Thi thử | Hoàn thiện và hoạt động | Cho phép lọc 5 nhóm chủ đề, xáo trộn câu hỏi, hiển thị lời giải thích và cấp voucher theo tỷ lệ điểm (tối đa 3 voucher/ngày) |
+| Trò chơi đố vui: Thi chính thức | Hoàn thiện và hoạt động | Bộ đề 25 câu Tổng hợp, đo thời gian làm bài bằng mili-giây, nộp kết quả vào bảng xếp hạng tuần trên SQL Server |
+| Bảng xếp hạng tuần và Tag ID | Hoàn thiện và hoạt động | Sắp xếp ưu tiên Score giảm dần -> TimeMs tăng dần; sinh Tag ID #1000-#9999 chống trùng tên; lưu kết quả tốt nhất của thí sinh |
+| Vòng quay may mắn | Hoàn thiện và hoạt động | Lọc quán còn hạn mức thực tế từ CSDL; cập nhật IssuedCount qua Transaction an toàn; sinh mã DS-YYYYMMDD-XXXX |
+| Hệ thống nhiệm vụ hàng ngày | Hoàn thiện và hoạt động | Tích lũy lượt quay may mắn khi trả lời đúng; tự động làm mới trạng thái vào 00:00 UTC+7 |
+| Sàn nông sản OCOP và Tồn kho | Hoàn thiện và hoạt động | Lấy dữ liệu và tồn kho trực tiếp từ bảng Products trên SQL Server; khóa bi quan chống bán vượt tồn kho |
+| Thanh toán đơn hàng OCOP | Mô phỏng / Cung cấp COD | Hỗ trợ COD tiền mặt; phương thức Ví ZaloPay sử dụng modal mô phỏng xác nhận in-app (chưa tích hợp merchant gateway thật) |
+| Theo dõi và Cập nhật đơn hàng | Hoàn thiện và hoạt động | Tiến độ 4 bước rõ ràng; cho phép sửa địa chỉ/số điện thoại khi đơn ở bước Chờ duyệt; nút xác nhận màu xanh rõ ràng |
+| Quy trình hủy đơn hoàn kho 100% | Hoàn thiện và hoạt động | Tự động cộng trả 100% tồn kho về CSDL; tự động khóa hủy khi đơn đã chuyển sang Shipping; ghi chú rõ nguồn hủy USER vs HTX |
+| Quản trị Admin CMS đã phân quyền | Hoàn thiện và hoạt động | 1 Server 2 Giao diện riêng biệt cho COOP và DISTRICT; ẩn các tab không thuộc thẩm quyền; chặn 403 ở tầng backend |
+| Nhật ký kiểm toán (Audit Logs) | Hoàn thiện và hoạt động | Ghi nhận toàn bộ hành vi thay đổi hạn mức, giá cả, tồn kho, hủy đơn và xóa BXH vào bảng AdminAuditLogs |
+| Ngân hàng câu hỏi trắc nghiệm | Dữ liệu cục bộ tĩnh | 25 câu hỏi hiện lưu trong file src/data/questions.ts chứ chưa quản trị động qua bảng CSDL |
 
 ---
 
-## 3. CONG NGHE SU DUNG
+## 3. CÔNG NGHỆ SỬ DỤNG
 
 ### 3.1. Frontend Mini App
-- Ngon ngu va Framework: TypeScript, React 19.0.0.
-- Bundler va Tooling: Vite 7.3.0.
+- Ngôn ngữ và Framework: TypeScript, React 19.0.0.
+- Bundler và Tooling: Vite 7.3.0.
 - Styling: Tailwind CSS 4.0.0.
-- State Management: Jotai 2.12.1 (Atomic State ket hop atomWithStorage luu LocalStorage).
-- Icons: Lucide React 1.16.0.
-- Zalo Integration: ZMP SDK (zmp-sdk 2.53.0).
+- Quản lý trạng thái: Jotai 2.12.1 (Atomic State kết hợp atomWithStorage lưu LocalStorage).
+- Biểu tượng vector: Lucide React 1.16.0.
+- Tích hợp Zalo: ZMP SDK (zmp-sdk 2.53.0).
 
-### 3.2. Backend va May chu API
+### 3.2. Backend và Máy chủ API
 - Runtime: Node.js (v20+).
 - Framework: Express 4.21.2 (TypeScript).
-- Database Driver: mssql 11.0.1 ket hop msnodesqlv8 4.2.3 (ho tro ket noi Windows Authentication).
-- Bao mat va Tien ich: cors 2.8.5, dotenv 16.4.7.
+- Database Driver: mssql 11.0.1 kết hợp msnodesqlv8 4.2.3 (hỗ trợ kết nối Windows Authentication).
+- Bảo mật và Tiện ích: cors 2.8.5, dotenv 16.4.7.
 
-### 3.3. Co so du lieu
-- He quan tri CSDL: Microsoft SQL Server (SQLEXPRESS / LocalDB / SQL Server 2019/2022).
-- Ten co so du lieu: DakSongQuestDB.
-- To chuc du lieu: 8 bang quan he (AdminUsers, Venues, UserVouchers, Products, Orders, OrderItems, QuizLeaderboard, AdminAuditLogs).
+### 3.3. Cơ sở dữ liệu
+- Hệ quản trị CSDL: Microsoft SQL Server (SQLEXPRESS / LocalDB / SQL Server 2019/2022).
+- Tên cơ sở dữ liệu: DakSongQuestDB.
+- Tổ chức dữ liệu: 8 bảng quan hệ (AdminUsers, Venues, UserVouchers, Products, Orders, OrderItems, QuizLeaderboard, AdminAuditLogs).
 
-### 3.4. Dich vu ben ngoai
-- Open-Meteo Satellite API: Lay thong so khi tuong ve tinh thoi gian thuc tai toa do Dak Song (12.535, 107.692).
-
----
-
-## 4. YEU CAU MOI TRUONG
-
-Truoc khi cai dat va van hanh he thong, may tinh can dap ung cac yeu cau ky thuat:
-- He dieu hanh: Windows 10 / Windows 11 (khuyen nghi) hoac Linux / macOS (can cau hinh tai khoan SQL Server xac thuc SQL thay vi Windows Authentication).
-- Node.js: Phien ban 20.x tro len (kiem tra bang lenh: node -v).
-- npm: Phien ban 10.x tro len (kiem tra bang lenh: npm -v).
-- Microsoft SQL Server: Phien ban 2019, 2022 hoac ban Express (.\SQLEXPRESS) dang chay service.
-- ODBC Driver: ODBC Driver 18 for SQL Server (hoac ODBC Driver 17 for SQL Server).
-- Trinh duyet web: Google Chrome, Microsoft Edge hoac Mozilla Firefox phien ban moi nhat.
-- Cong cu Zalo Mini App (tuy chon khi muon deploy len moi truong that): Zalo CLI (zmp-cli).
+### 3.4. Dịch vụ bên ngoài
+- Open-Meteo Satellite API: Lấy thông số khí tượng vệ tinh thời gian thực tại tọa độ Đắk Song (12.535, 107.692).
 
 ---
 
-## 5. HUONG DAN CAI DAT VA CHAY DU AN
+## 4. YÊU CẦU MÔI TRƯỜNG
 
-### 5.1. Buoc 1: Mo thu muc ma nguon
-Mo terminal (PowerShell hoac Command Prompt) tai thu muc chua du an:
+Trước khi cài đặt và vận hành hệ thống, máy tính cần đáp ứng các yêu cầu kỹ thuật:
+- Hệ điều hành: Windows 10 / Windows 11 (khuyến nghị) hoặc Linux / macOS (cần cấu hình tài khoản SQL Server xác thực SQL thay vì Windows Authentication).
+- Node.js: Phiên bản 20.x trở lên (kiểm tra bằng lệnh: node -v).
+- npm: Phiên bản 10.x trở lên (kiểm tra bằng lệnh: npm -v).
+- Microsoft SQL Server: Phiên bản 2019, 2022 hoặc bản Express (.\SQLEXPRESS) đang chạy service.
+- ODBC Driver: ODBC Driver 18 for SQL Server (hoặc ODBC Driver 17 for SQL Server).
+- Trình duyệt web: Google Chrome, Microsoft Edge hoặc Mozilla Firefox phiên bản mới nhất.
+- Công cụ Zalo Mini App (tùy chọn khi muốn deploy lên môi trường thật): Zalo CLI (zmp-cli).
+
+---
+
+## 5. HƯỚNG DẪN CÀI ĐẶT VÀ CHẠY DỰ ÁN
+
+### 5.1. Bước 1: Mở thư mục mã nguồn
+Mở terminal (PowerShell hoặc Command Prompt) tại thư mục chứa dự án:
 ```bash
 cd d:\test\dak-song-quest-fixed
 ```
 
 ---
 
-### 5.2. Buoc 2: Cau hinh va Khoi chay Backend Server
+### 5.2. Bước 2: Cấu hình và Khởi chạy Backend Server
 
-1. Di chuyen vao thu muc backend va cai dat thu vien:
+1. Di chuyển vào thư mục backend và cài đặt thư viện:
    ```bash
    cd backend
    npm install
    ```
 
-2. Kiem tra va cau hinh bien moi truong trong file backend/.env:
+2. Kiểm tra và cấu hình biến môi trường trong file backend/.env:
    ```env
    PORT=5000
    DB_SERVER=.\SQLEXPRESS
    DB_DATABASE=DakSongQuestDB
    DB_CONNECTION_STRING=Server=.\SQLEXPRESS;Database=DakSongQuestDB;Trusted_Connection=Yes;Driver={ODBC Driver 18 for SQL Server};TrustServerCertificate=Yes
    ```
-   Luu y: Neu su dung ten SQL Server khac (vi du: localhost hoac ten may ca nhan), hay thay doi gia tri DB_SERVER tuong ung.
+   Lưu ý: Nếu sử dụng tên SQL Server khác (ví dụ: localhost hoặc tên máy cá nhân), hãy thay đổi giá trị DB_SERVER tương ứng.
 
-3. Tao co so du lieu tren SQL Server:
-   - Mo SQL Server Management Studio (SSMS) hoac Azure Data Studio.
-   - Thuc thi lenh tao co so du lieu:
+3. Tạo cơ sở dữ liệu trên SQL Server:
+   - Mở SQL Server Management Studio (SSMS) hoặc Azure Data Studio.
+   - Thực thi lệnh tạo cơ sở dữ liệu:
      ```sql
      CREATE DATABASE DakSongQuestDB;
      ```
-   - Luu y: Ban khong can phai chay script tao bang thu cong. Khi backend khoi chay lan dau, ma nguon trong backend/src/config/db.ts se tu dong khoi tao toan bo 8 bang CSDL va nap san du lieu mau ban dau (tai khoan quan tri, san pham OCOP mau, quan an mau).
+   - Lưu ý: Bạn không cần phải chạy script tạo bảng thủ công. Khi backend khởi chạy lần đầu, mã nguồn trong backend/src/config/db.ts sẽ tự động khởi tạo toàn bộ 8 bảng CSDL và nạp sẵn dữ liệu mẫu ban đầu (tài khoản quản trị, sản phẩm OCOP mẫu, quán ăn mẫu).
 
-4. Bien dich TypeScript va chay may chu Backend:
+4. Biên dịch TypeScript và chạy máy chủ Backend:
    ```bash
    npm run build
    node dist/index.js
    ```
-   Khi khoi dong thanh cong, terminal se hien thi:
-   - May chu API dang lang nghe tai cong: http://localhost:5000
-   - Ket noi co so du lieu Microsoft SQL Server thanh cong.
+   Khi khởi động thành công, terminal sẽ thông báo:
+   - Máy chủ API đang lắng nghe tại cổng: http://localhost:5000
+   - Kết nối cơ sở dữ liệu Microsoft SQL Server thành công.
 
-5. Thong tin truy cap Cong Quan tri Admin CMS Web:
-   - Dia chi truy cap: http://localhost:5000/admin.html
-   - Tai khoan Hop tac xa Nong san Dak Song (Role COOP): htx_daksong / Mat khau: 123
-   - Tai khoan UBND va Ban Quan ly Huyen (Role DISTRICT): huyen_daksong / Mat khau: 123
+5. Thông tin truy cập Cổng Quản trị Admin CMS Web:
+   - Địa chỉ truy cập: http://localhost:5000/admin.html
+   - Tài khoản Hợp tác xã Nông sản Đắk Song (Role COOP): htx_daksong / Mật khẩu: 123
+   - Tài khoản UBND và Ban Quản lý Huyện (Role DISTRICT): huyen_daksong / Mật khẩu: 123
 
 ---
 
-### 5.3. Buoc 3: Cai dat va Khoi chay Frontend Zalo Mini App
+### 5.3. Bước 3: Cài đặt và Khởi chạy Frontend Zalo Mini App
 
-1. Mo mot cua so Terminal moi va di chuyen ve thu muc goc cua du an:
+1. Mở một cửa sổ Terminal mới và di chuyển về thư mục gốc của dự án:
    ```bash
    cd d:\test\dak-song-quest-fixed
    ```
 
-2. Cai dat cac thu vien phu thuoc:
+2. Cài đặt các thư viện phụ thuộc:
    ```bash
    npm install
    ```
 
-3. Khoi chay may chu phat trien Vite:
+3. Khởi chạy máy chủ phát triển Vite:
    ```bash
    npm run dev
    ```
-   May chu Vite se khoi dong tai dia chi: http://localhost:5173
+   Máy chủ Vite sẽ khởi động tại địa chỉ: http://localhost:5173
 
-4. Trai nghiem ung dung tren trinh duyet:
-   - Mo trinh duyet va truy cap: http://localhost:5173
-   - Giao dien ung dung se hien thi duoi khung dien thoai di dong hoac responsive toan man hinh.
+4. Trải nghiệm ứng dụng trên trình duyệt:
+   - Mở trình duyệt và truy cập: http://localhost:5173
+   - Giao diện ứng dụng sẽ hiển thị dưới khung điện thoại di động hoặc responsive toàn màn hình.
 
 ---
 
-### 5.4. Buoc 4: Trien khai len nen tang Zalo Mini App that (Tuy chon)
+### 5.4. Bước 4: Triển khai lên nền tảng Zalo Mini App thật (Tùy chọn)
 
-1. Dang nhap tai khoan lap trinh vien Zalo qua Zalo CLI:
+1. Đăng nhập tài khoản lập trình viên Zalo qua Zalo CLI:
    ```bash
    zmp login
    ```
-   Quet ma QR hien thi tren man hinh terminal bang ung dung Zalo tren dien thoai.
+   Quét mã QR hiển thị trên màn hình terminal bằng ứng dụng Zalo trên điện thoại.
 
-2. Dong goi va tai phien ban kiem thu len may chu Zalo:
+2. Đóng gói và tải phiên bản kiểm thử lên máy chủ Zalo:
    ```bash
    npm run deploy
    ```
-   Nhap mo ta phien ban (vi du: Phien ban nghiem thu du an) va chon trang thai Testing.
+   Nhập mô tả phiên bản (ví dụ: Phiên bản nghiệm thu dự án) và chọn trạng thái Testing.
 
-3. Quet ma QR phien ban tren Zalo Mini App Developer Console (https://mini.zalo.me) de kiem thu truc tiep trong ung dung Zalo tren dien thoai that.
+3. Quét mã QR phiên bản trên Zalo Mini App Developer Console (https://mini.zalo.me) để kiểm thử trực tiếp trong ứng dụng Zalo trên điện thoại thật.
 
 ---
 
-## 6. CAU TRUC THU MUC DU AN
+## 6. CẤU TRÚC THƯ MỤC DỰ ÁN
 
 ```text
 dak-song-quest-fixed/
-|-- app-config.json              Tep cau hinh thong tin Zalo Mini App
-|-- package.json                 Khai bao thu vien phia Frontend
-|-- vite.config.ts               Cau hinh bundler Vite, Port 5173 va Dev Proxy den Backend
-|-- MO_TA_HE_THONG.md            Tai lieu dac ta kien truc, nghiep vu va mo hinh du lieu chi tiet
-|-- README.md                    Tai lieu huong dan tong quan, cai dat va van hanh he thong
-|-- dist/                        Thu muc ma nguon sau khi build san sang deploy Zalo
-|-- backend/                     Thu muc Backend Node.js Express va Admin CMS
-|   |-- .env                     Bien moi truong: PORT va chuoi ket noi SQL Server
-|   |-- package.json             Khai bao thu vien backend (express, mssql, cors...)
-|   |-- tsconfig.json            Cau hinh bien dich TypeScript backend
+|-- app-config.json              Tệp cấu hình thông tin Zalo Mini App
+|-- package.json                 Khai báo thư viện phía Frontend
+|-- vite.config.ts               Cấu hình bundler Vite, Port 5173 và Dev Proxy đến Backend
+|-- MO_TA_HE_THONG.md            Tài liệu đặc tả kiến trúc, nghiệp vụ và mô hình dữ liệu chi tiết
+|-- README.md                    Tài liệu hướng dẫn tổng quan, cài đặt và vận hành hệ thống
+|-- dist/                        Thư mục mã nguồn sau khi build sẵn sàng deploy Zalo
+|-- backend/                     Thư mục Backend Node.js Express và Admin CMS
+|   |-- .env                     Biến môi trường: PORT và chuỗi kết nối SQL Server
+|   |-- package.json             Khai báo thư viện backend (express, mssql, cors...)
+|   |-- tsconfig.json            Cấu hình biên dịch TypeScript backend
 |   |-- public/
-|   |   `-- admin.html           Trang Quan tri Admin CMS Web da phan quyen RBAC
+|   |   `-- admin.html           Trang Quản trị Admin CMS Web đã phân quyền RBAC
 |   `-- src/
-|       |-- index.ts             Entry point may chu Express va dang ky routes
+|       |-- index.ts             Entry point máy chủ Express và đăng ký routes
 |       |-- config/
-|       |   `-- db.ts            Ket noi SQL Server, khoi tao bang va du lieu mau ban dau
+|       |   `-- db.ts            Kết nối SQL Server, khởi tạo bảng và dữ liệu mẫu ban đầu
 |       `-- routes/
-|           |-- admin.ts         API Dashboard stats, CRUD co so, phan quyen va Audit Logs
-|           |-- leaderboard.ts   API Bang xep hang, nop diem va cap nhat ten thi sinh
-|           |-- orders.ts        API Don hang, thanh toan, huy don hoan kho va doi dia chi
-|           |-- products.ts      API Danh sach dac san OCOP va so luong ton kho
-|           `-- vouchers.ts      API Han muc voucher, quay thuong va xac nhan tai quan
-`-- src/                         Thu muc ma nguon Frontend Zalo Mini App
-    |-- App.tsx                  Router ung dung va Layout chinh
+|           |-- admin.ts         API Dashboard stats, CRUD cơ sở, phân quyền và Audit Logs
+|           |-- leaderboard.ts   API Bảng xếp hạng, nộp điểm và cập nhật tên thí sinh
+|           |-- orders.ts        API Đơn hàng, thanh toán, hủy đơn hoàn kho và đổi địa chỉ
+|           |-- products.ts      API Danh sách đặc sản OCOP và số lượng tồn kho
+|           `-- vouchers.ts      API Hạn mức voucher, quay thưởng và xác nhận tại quán
+`-- src/                         Thư mục mã nguồn Frontend Zalo Mini App
+    |-- App.tsx                  Router ứng dụng và Layout chính
     |-- main.tsx                 Entry point React DOM
-    |-- components/              Cac thanh phan giao dien tai su dung
-    |   |-- BottomNav.tsx        Thanh dieu huong duoi (Trang chu, Thi, Cua hang, Ban do, Voucher)
-    |   |-- Header.tsx           Thanh tieu de ung dung va nut ho so ca nhan
-    |   |-- LuckyWheelModal.tsx  Modal Vong quay may man kiem tra han muc co so
-    |   |-- UserProfileModal.tsx Modal doi ten va chon 1 trong 5 avatar chibi Tay Nguyen
-    |   `-- WeatherCard.tsx      The hien thi thoi tiet ve tinh thoi gian thuc
-    |-- data/                    Du lieu tinh
-    |   |-- questions.ts         Ngan hang 25 cau hoi trac nghiem van hoa, lich su Dak Song
-    |   `-- venues.ts            Danh ba co so luu tru, am thuc va hotline lien he
-    |-- pages/                   Cac man hinh nghiep vu chinh
-    |   |-- Home.tsx             Trang chu: Popup gioi thieu, thoi tiet, vong quay, danh ba quan
-    |   |-- Quiz.tsx             Trang thi quiz: Che do thi chinh thuc va Che do luyen tap
-    |   |-- Leaderboard.tsx      Trang bang xep hang tuan, the hien Tag ID va thoi gian ms
-    |   |-- Store.tsx            Trang cua hang OCOP: Gio hang, thanh toan, theo doi va huy don
-    |   |-- Vouchers.tsx         Trang vi voucher nguoi dung va ma QR doi uu dai tai quan
-    |   `-- MapPage.tsx          Trang cam nang du lich, danh lam thang canh va ban do
-    |-- services/                Giao tiep dich vu ben ngoai
-    |   |-- api.ts               Client Axios/Fetch ket noi den Backend API
-    |   |-- weather.ts           Service lay thong tin thoi tiet ve tinh tu Open-Meteo
-    |   `-- zalo.ts              Service giao tiep voi ZMP SDK
-    |-- state/                   Quan ly trang thai
-    |   `-- store.ts             Jotai atoms luu giu gio hang, voucher, diem so, luot quay
-    |-- types/                   Dinh nghia kieu du lieu TypeScript toan he thong
-    `-- utils/                   Cac ham tien ich
-        `-- quiz.ts              Thuat toan Fisher-Yates, tinh tuan ISO, tinh Tag ID nguoi choi
+    |-- components/              Các thành phần giao diện tái sử dụng
+    |   |-- BottomNav.tsx        Thanh điều hướng dưới (Trang chủ, Thi, Cửa hàng, Bản đồ, Voucher)
+    |   |-- Header.tsx           Thanh tiêu đề ứng dụng và nút hồ sơ cá nhân
+    |   |-- LuckyWheelModal.tsx  Modal Vòng quay may mắn kiểm tra hạn mức cơ sở
+    |   |-- UserProfileModal.tsx Modal đổi tên và chọn 1 trong 5 avatar chibi Tây Nguyên
+    |   `-- WeatherCard.tsx      Thẻ hiển thị thời tiết vệ tinh thời gian thực
+    |-- data/                    Dữ liệu tĩnh
+    |   |-- questions.ts         Ngân hàng 25 câu hỏi trắc nghiệm văn hóa, lịch sử Đắk Song
+    |   `-- venues.ts            Danh bạ cơ sở lưu trú, ẩm thực và hotline liên hệ
+    |-- pages/                   Các màn hình nghiệp vụ chính
+    |   |-- Home.tsx             Trang chủ: Popup giới thiệu, thời tiết, vòng quay, danh bạ quán
+    |   |-- Quiz.tsx             Trang thi quiz: Chế độ thi chính thức và Chế độ luyện tập
+    |   |-- Leaderboard.tsx      Trang bảng xếp hạng tuần, thể hiện Tag ID và thời gian ms
+    |   |-- Store.tsx            Trang cửa hàng OCOP: Giỏ hàng, thanh toán, theo dõi và hủy đơn
+    |   |-- Vouchers.tsx         Trang ví voucher người dùng và mã QR đổi ưu đãi tại quán
+    |   `-- MapPage.tsx          Trang cẩm nang du lịch, danh lam thắng cảnh và bản đồ
+    |-- services/                Giao tiếp dịch vụ bên ngoài
+    |   |-- api.ts               Client Axios/Fetch kết nối đến Backend API
+    |   |-- weather.ts           Service lấy thông tin thời tiết vệ tinh từ Open-Meteo
+    |   `-- zalo.ts              Service giao tiếp với ZMP SDK
+    |-- state/                   Quản lý trạng thái
+    |   `-- store.ts             Jotai atoms lưu giữ giỏ hàng, voucher, điểm số, lượt quay
+    |-- types/                   Định nghĩa kiểu dữ liệu TypeScript toàn hệ thống
+    `-- utils/                   Các hàm tiện ích
+        `-- quiz.ts              Thuật toán Fisher-Yates, tính tuần ISO, tính Tag ID người chơi
 ```
 
 ---
 
-## 7. HUONG DAN SU DUNG CHO NGUOI DUNG CUOI
+## 7. HƯỚNG DẪN SỬ DỤNG CHO NGƯỜI DÙNG CUỐI
 
-### 7.1. Man hinh chinh (Trang Chu) va Hop thoai Popup Gioi thieu
-- Khi nguoi dung mo ung dung trong mot phien moi, hop thoai popup Chao mung den voi Dak Song Quest se tu dong xuat hien de gioi thieu 3 tien ich cot loi: San voucher uu dai, Kham pha do vui van hoa va Mua nong san OCOP.
-- Nguoi dung nhan nut Vao ung dung de dong popup va bat dau su dung. Hop thoai nay se khong xuat hien lai khi nguoi dung nhan chuyen ve Trang chu tu cac man hinh khac trong cung phien truy cap.
-- Tai Trang chu, nguoi dung co the xem the Thoi tiet thoi gian thuc tai Dak Song, nhan vao nut Vong quay may man de quay thuong, hoac cuon xuong danh ba de tim kiem cac nha hang, quan an, khach san. Moi quan an deu co nut Goi hotline de lien he truc tiep va nut Chi duong de mo ban do Google Maps.
+### 7.1. Màn hình chính (Trang Chủ) và Hộp thoại Popup Giới thiệu
+- Khi người dùng mở ứng dụng trong một phiên mới, hộp thoại popup Chào mừng đến với Đắk Song Quest sẽ tự động xuất hiện để giới thiệu 3 tiện ích cốt lõi: Săn voucher ưu đãi, Khám phá đố vui văn hóa và Mua nông sản OCOP.
+- Người dùng nhấn nút Vào ứng dụng để đóng popup và bắt đầu sử dụng. Hộp thoại này sẽ không xuất hiện lại khi người dùng nhấn chuyển về Trang chủ từ các màn hình khác trong cùng phiên truy cập.
+- Tại Trang chủ, người dùng có thể xem thẻ Thời tiết thời gian thực tại Đắk Song, nhấn vào nút Vòng quay may mắn để quay thưởng, hoặc cuộn xuống danh bạ để tìm kiếm các nhà hàng, quán ăn, khách sạn. Mỗi quán ăn đều có nút Gọi hotline để liên hệ trực tiếp và nút Chỉ đường để mở bản đồ Google Maps.
 
-### 7.2. Phan he Thi Do Vui (Quiz Game)
-- Truy cap bang cach nhan tab Thi tren thanh BottomNav hoac bam nut Thi do vui tai Trang chu.
-- Nguoi choi lua chon 1 trong 2 che do:
-  1. Che do Thi thu / Luyen tap:
-     - Nguoi choi co the chon mot chu de yeu thich (Dia ly, Lich su, Van hoa, Nong nghiep - OCOP) hoac Tat ca.
-     - Khong gioi han thoi gian lam bai. Sau moi cau hoi, he thong se hien thi ngay loi giai thich chi tiet de nguoi choi bo sung kien thuc.
-     - Neu hoan thanh dat tu 70% tro len va chua nhan du 3 voucher trong ngay, nguoi choi se duoc thuong ngay 1 voucher giam gia vao Vi voucher.
-  2. Che do Thi chinh thuc:
-     - Bo de co dinh 25 cau hoi Tong hop, duoc xao tron ngau nhien thu tu cau va thu tu dap an A, B, C, D.
-     - He thong tu dong dem thoi gian chinh xac bang mili-giay.
-     - Sau khi nop bai, ket qua duoc gui len may chu de xep hang tuan thoi gian thuc. Thi sinh co the thi lai nhieu lan, he thong se tu dong ghi nhan ket qua tot nhat cua ban.
-- Thiet lap Ho so nguoi choi:
-  - Nhan vao bieu tuong avatar hoac nut Ho so tai goc tren man hinh.
-  - Nguoi choi co the nhap Ten hien thi moi va lua chon 1 trong 5 avatar chibi dac trung van hoa Tay Nguyen.
+### 7.2. Phân hệ Thi Đố Vui (Quiz Game)
+- Truy cập bằng cách nhấn tab Thi trên thanh BottomNav hoặc bấm nút Thi đố vui tại Trang chủ.
+- Người chơi lựa chọn 1 trong 2 chế độ:
+  1. Chế độ Thi thử / Luyện tập:
+     - Người chơi có thể chọn một chủ đề yêu thích (Địa lý, Lịch sử, Văn hóa, Nông nghiệp - OCOP) hoặc Tất cả.
+     - Không giới hạn thời gian làm bài. Sau mỗi câu hỏi, hệ thống sẽ hiển thị ngay lời giải thích chi tiết để người chơi bổ sung kiến thức.
+     - Nếu hoàn thành đạt từ 70% trở lên và chưa nhận đủ 3 voucher trong ngày, người chơi sẽ được thưởng ngay 1 voucher giảm giá vào Ví voucher.
+  2. Chế độ Thi chính thức:
+     - Bộ đề cố định 25 câu hỏi Tổng hợp, được xáo trộn ngẫu nhiên thứ tự câu và thứ tự đáp án A, B, C, D.
+     - Hệ thống tự động đếm thời gian chính xác bằng mili-giây.
+     - Sau khi nộp bài, kết quả được gửi lên máy chủ để xếp hạng tuần thời gian thực. Thí sinh có thể thi lại nhiều lần, hệ thống sẽ tự động ghi nhận kết quả tốt nhất của bạn.
+- Thiết lập Hồ sơ người chơi:
+  - Nhấn vào biểu tượng avatar hoặc nút Hồ sơ tại góc trên màn hình.
+  - Người chơi có thể nhập Tên hiển thị mới và lựa chọn 1 trong 5 avatar chibi đặc trưng văn hóa Tây Nguyên.
 
-### 7.3. Vong quay May man va Nhiem vu hang ngay
-- Nhan nut Vong quay may man tai Trang chu de mo giao dien banh xe quay.
-- Neu con luot quay (luckySpins > 0), nhan nut Quay ngay. Banh xe se quay ngau nhien va dung o o co so con han muc phat voucher tren CSDL.
-- Khi trung thuong, hop thoai chuc mung xuat hien va voucher se duoc luu ngay vao Vi voucher cua ban voi ma duy nhat dang DS-YYYYMMDD-XXXX.
-- Nhan them luot quay qua Nhiem vu hang ngay:
-  - Kiem tra danh sach nhiem vu ngay trong hop thoai: Tra loi 3 cau hoi, Hoan thanh 1 bai thi, Tra loi dung chu de yeu cau.
-  - Khi hoan thanh moi nhiem vu, he thong se tu dong cong them 1 luot quay may man.
+### 7.3. Vòng quay May mắn và Nhiệm vụ hàng ngày
+- Nhấn nút Vòng quay may mắn tại Trang chủ để mở giao diện bánh xe quay.
+- Nếu còn lượt quay (luckySpins > 0), nhấn nút Quay ngay. Bánh xe sẽ quay ngẫu nhiên và dừng ở ô cơ sở còn hạn mức phát voucher trên CSDL.
+- Khi trúng thưởng, hộp thoại chúc mừng xuất hiện và voucher sẽ được lưu ngay vào Ví voucher của bạn với mã duy nhất dạng DS-YYYYMMDD-XXXX.
+- Nhận thêm lượt quay qua Nhiệm vụ hàng ngày:
+  - Kiểm tra danh sách nhiệm vụ ngày trong hộp thoại: Trả lời 3 câu hỏi, Hoàn thành 1 bài thi, Trả lời đúng chủ đề yêu cầu.
+  - Khi hoàn thành mỗi nhiệm vụ, hệ thống sẽ tự động cộng thêm 1 lượt quay may mắn.
 
-### 7.4. Vi Voucher ca nhan va Cach su dung tai quan
-- Truy cap tab Voucher tren thanh BottomNav de quan ly toan bo voucher ban dang so huu.
-- Voucher duoc phan loai thanh 2 muc: Chua su dung va Da su dung.
-- Cach su dung voucher giam gia:
-  1. Den truc tiep nha hang, quan an hoac khach san co ten tren voucher.
-  2. Mo the voucher va nhan nut Su dung tai quan de hien thi ma code va ma QR.
-  3. Xuat trinh ma cho nhan vien thu ngan de duoc tru truc tiep vao hoa don thanh toan.
-  4. Nhan Xac nhan da su dung de danh dau voucher da hoan tat.
+### 7.4. Ví Voucher cá nhân và Cách sử dụng tại quán
+- Truy cập tab Voucher trên thanh BottomNav để quản lý toàn bộ voucher bạn đang sở hữu.
+- Voucher được phân loại thành 2 mục: Chưa sử dụng và Đã sử dụng.
+- Cách sử dụng voucher giảm giá:
+  1. Đến trực tiếp nhà hàng, quán ăn hoặc khách sạn có tên trên voucher.
+  2. Mở thẻ voucher và nhấn nút Sử dụng tại quán để hiển thị mã code và mã QR.
+  3. Xuất trình mã cho nhân viên thu ngân để được trừ trực tiếp vào hóa đơn thanh toán.
+  4. Nhấn Xác nhận đã sử dụng để đánh dấu voucher đã hoàn tất.
 
-### 7.5. San Nong san OCOP va Quan ly Don hang
-- Truy cap tab Cua hang tren thanh BottomNav.
-- Chon dac san OCOP (Tieu den huu co, Ca phe Robusta, Hat Mac ca...) va nhan Them vao gio.
-- Vao Gio hang, nhap day du thong tin: Ho ten, So dien thoai, Dia chi giao hang.
-- Chon phuong thuc thanh toan:
-  - Vi ZaloPay: He thong mo hop thoai xac nhan thanh toan Vi ZaloPay chuyen nghiep khong chu sandbox. Nhan Xac nhan de hoan tat.
-  - Tien mat khi nhan hang (COD): Thanh toan tien mat truc tiep cho shipper khi nhan hang.
-- Theo doi tien do don hang: Vao tab Don hang cua toi trong Cua hang de theo doi 4 buoc tien do: Cho duyet -> Dong goi -> Dang giao -> Hoan tat.
-- Chinh sua thong tin nhan hang: Khi don dang o buoc Cho duyet, co the bam Sua thong tin de cap nhat lai dia chi hoac so dien thoai. Form co nut xac nhan mau xanh ro rang va popup thong bao khi sua thanh cong.
-- Huy don hoan kho: Khi don dang o buoc Cho duyet hoac Dong goi, nguoi dung co the bam nut Huy don hang. Hop thoai popup xac nhan se hien thi. Khi xac nhan huy, he thong se tu dong hoan tra 100% so luong san pham ve kho tren co so du lieu. Khi don hang da chuyen sang Dang giao (Shipping), nut huy se tu dong duoc khoa de bao ve tien do van chuyen.
+### 7.5. Sàn Nông sản OCOP và Quản lý Đơn hàng
+- Truy cập tab Cửa hàng trên thanh BottomNav.
+- Chọn đặc sản OCOP (Tiêu đen hữu cơ, Cà phê Robusta, Hạt Mắc ca...) và nhấn Thêm vào giỏ.
+- Vào Giỏ hàng, nhập đầy đủ thông tin: Họ tên, Số điện thoại, Địa chỉ giao hàng.
+- Chọn phương thức thanh toán:
+  - Ví ZaloPay: Hệ thống mở hộp thoại xác nhận thanh toán Ví ZaloPay chuyên nghiệp không chữ sandbox. Nhấn Xác nhận để hoàn tất.
+  - Tiền mặt khi nhận hàng (COD): Thanh toán tiền mặt trực tiếp cho shipper khi nhận hàng.
+- Theo dõi tiến độ đơn hàng: Vào tab Đơn hàng của tôi trong Cửa hàng để theo dõi 4 bước tiến độ: Chờ duyệt -> Đóng gói -> Đang giao -> Hoàn tất.
+- Chỉnh sửa thông tin nhận hàng: Khi đơn đang ở bước Chờ duyệt, có thể bấm Sửa thông tin để cập nhật lại địa chỉ hoặc số điện thoại. Form có nút xác nhận màu xanh rõ ràng và popup thông báo khi sửa thành công.
+- Hủy đơn hoàn kho: Khi đơn đang ở bước Chờ duyệt hoặc Đóng gói, người dùng có thể bấm nút Hủy đơn hàng. Hộp thoại popup xác nhận sẽ hiển thị. Khi xác nhận hủy, hệ thống sẽ tự động hoàn trả 100% số lượng sản phẩm về kho trên cơ sở dữ liệu. Khi đơn hàng đã chuyển sang Đang giao (Shipping), nút hủy sẽ tự động được khóa để bảo vệ tiến độ vận chuyển.
 
-### 7.6. Bang xep hang tuan
-- Nhan nut Xem BXH tu man hinh tong ket quiz hoac the thong ke de vao trang Bang xep hang.
-- Nguoi choi co the chon tuan thi dau de xem lai lich su. Top 1, Top 2, Top 3 duoc trao huy chuong vang, bac, dong.
-- Thi sinh duoc hien thi ro rang kem Tag ID #1000-#9999 de tranh nham lan voi cac thi sinh khac co cung ten.
-- Top 5 thi sinh co diem cao nhat va thoi gian lam bai nhanh nhat vao 23:59 Chu Nhat hang tuan se duoc trao voucher dac biet giam gia 30%.
+### 7.6. Bảng xếp hạng tuần
+- Nhấn nút Xem BXH từ màn hình tổng kết quiz hoặc thẻ thống kê để vào trang Bảng xếp hạng.
+- Người chơi có thể chọn tuần thi đấu để xem lại lịch sử. Top 1, Top 2, Top 3 được trao huy chương vàng, bạc, đồng.
+- Thí sinh được hiển thị rõ ràng kèm Tag ID #1000-#9999 để tránh nhầm lẫn với các thí sinh khác có cùng tên.
+- Top 5 thí sinh có điểm cao nhất và thời gian làm bài nhanh nhất vào 23:59 Chủ Nhật hàng tuần sẽ được trao voucher đặc biệt giảm giá 30%.
 
-### 7.7. Cong thong tin Quan tri Admin CMS Web
-- Truy cap tai trinh duyet may tinh: http://localhost:5000/admin.html
-- Dang nhap theo vai tro:
-  1. Vai tro Hop tac xa Nong san (htx_daksong / 123):
-     - Giao dien thuong hieu mau xanh ngoc / Emerald.
-     - Dashboard OCOP: Xem doanh thu san, don cho duyet, don dang dong goi va van chuyen, tong quan kho hang.
-     - Tab Don hang: Nhan nut Xac nhan con hang (chuyen sang Dong goi), nut Giao Viettel Post (chuyen sang Dang giao), nut Giao thanh cong (Hoan tat) hoac nut Huy don do pham cap/so luong nong san chua dat (kem ghi chu xin loi va hoan 100% ton kho).
-     - Tab Kho hang: Dieu chinh gia niem yet va cap nhat them so luong ton kho cho tung dac san OCOP.
-     - An hoan toan cac tab thuoc tham quyen quan ly nha nuoc cua Huyen.
-  2. Vai tro UBND va Ban Quan ly Huyen (huyen_daksong / 123):
-     - Giao dien thuong hieu mau Slate va Vang Amber.
-     - Dashboard IOC Du lich: Xem so luong co so hop tac, so voucher da dung tai quan, luot thi sinh tham gia quiz va tong luot kiem toan he thong. Bang kiem toan gan day chi hien thi thao tac ve voucher va BXH.
-     - Tab Quan & Han muc: Them co so am thuc/luu tru moi, cap them so luong voucher, sua han muc toi da hoac xoa co so khoi he thong.
-     - Tab BXH Quiz: Giam sat danh sach thi sinh, xoa ket qua thi gian lan hoac reset ve 0 de yeu cau thi lai.
-     - Tab Lich su kiem toan: Theo doi va tra cuu toan bo nhat ky hanh vi tren he thong (chi loc va xem the BXH va Voucher).
-     - An hoan toan cac tab ve don hang va kho hang OCOP.
-  3. Nut Chuyen doi vai tro 1-Click: Tren thanh header luon co nut chuyen nhanh giua Hop tac xa va Huyen giup can bo kiem tra giao dien tuc thi ma khong can dang xuat.
-
----
-
-## 8. KIEM TRA VA XAC MINH HE THONG
-
-Cac kich ban kiem thu quan trong de kiem tra hoat dong thuc te cua he thong:
-
-1. Kiem thu Luong Do vui va Tinh diem:
-   - Chon che do Thi chinh thuc, tra loi het 25 cau hoi.
-   - Kiem tra bo dem thoi gian mili-giay dung lai khi hoan thanh.
-   - Mo trang Bang xep hang kiem tra ten va Tag ID da xuat hien dung vi tri voi diem so va thoi gian thuc.
-2. Kiem thu Vong quay may man va Han muc CSDL:
-   - Mo Admin CMS voi tai khoan Huyen (huyen_daksong), vao tab Quan & Han muc va ha TotalLimit cua mot quan ve bang voi IssuedCount.
-   - Quay lai Mini App tren dien thoai, mo Vong quay may man va kiem tra xem quan do da duoc tu dong loai bo khoi danh sach o quay chua.
-3. Kiem thu Don hang OCOP va Hoan kho 100%:
-   - Ghi nho so luong InStockQuantity cua san pham Tieu den huu co tren Store.
-   - Dat mua 2 goi Tieu den huu co. Sau khi dat xong, kiem tra lai xem ton kho tren CSDL da tu dong giam di 2 chua.
-   - Vao tab Don hang cua toi, bam nut Huy don hang va xac nhan trong popup.
-   - Kiem tra lai xem ton kho cua san pham da duoc cong tra lai dung 2 don vi chua.
-4. Kiem thu Phan quyen va Chuc nang chan loi 403 Forbidden:
-   - Dang nhap tai khoan Hop tac xa (htx_daksong).
-   - Su dung cong cu Postman hoac fetch tren Console trinh duyet gui request xoa ket qua thi: DELETE /api/admin/leaderboard/1.
-   - Kiem tra xem backend co tra ve ma HTTP 403 Forbidden hay khong.
+### 7.7. Cổng thông tin Quản trị Admin CMS Web
+- Truy cập tại trình duyệt máy tính: http://localhost:5000/admin.html
+- Đăng nhập theo vai trò:
+  1. Vai trò Hợp tác xã Nông sản (htx_daksong / 123):
+     - Giao diện thương hiệu màu xanh ngọc / Emerald.
+     - Dashboard OCOP: Xem doanh thu sàn, đơn chờ duyệt, đơn đang đóng gói và vận chuyển, tổng quan kho hàng.
+     - Tab Đơn hàng: Nhấn nút Xác nhận còn hàng (chuyển sang Đóng gói), nút Giao Viettel Post (chuyển sang Đang giao), nút Giao thành công (Hoàn tất) hoặc nút Hủy đơn do phẩm cấp/số lượng nông sản chưa đạt (kèm ghi chú xin lỗi và hoàn 100% tồn kho).
+     - Tab Kho hàng: Điều chỉnh giá niêm yết và cập nhật thêm số lượng tồn kho cho từng đặc sản OCOP.
+     - Ẩn hoàn toàn các tab thuộc thẩm quyền quản lý nhà nước của Huyện.
+  2. Vai trò UBND và Ban Quản lý Huyện (huyen_daksong / 123):
+     - Giao diện thương hiệu màu Slate và Vàng Amber.
+     - Dashboard IOC Du lịch: Xem số lượng cơ sở hợp tác, số voucher đã dùng tại quán, lượt thí sinh tham gia quiz và tổng lượt kiểm toán hệ thống. Bảng kiểm toán gần đây chỉ hiển thị thao tác về voucher và BXH.
+     - Tab Quán & Hạn mức: Thêm cơ sở ẩm thực/lưu trú mới, cấp thêm số lượng voucher, sửa hạn mức tối đa hoặc xóa cơ sở khỏi hệ thống.
+     - Tab BXH Quiz: Giám sát danh sách thí sinh, xóa kết quả thi gian lận hoặc reset về 0 để yêu cầu thi lại.
+     - Tab Lịch sử kiểm toán: Theo dõi và tra cứu toàn bộ nhật ký hành vi trên hệ thống (chỉ lọc và xem thẻ BXH và Voucher).
+     - Ẩn hoàn toàn các tab về đơn hàng và kho hàng OCOP.
+  3. Nút Chuyển đổi vai trò 1-Click: Trên thanh header luôn có nút chuyển nhanh giữa Hợp tác xã và Huyện giúp cán bộ kiểm tra giao diện tức thì mà không cần đăng xuất.
 
 ---
 
-## 9. TAI LIEU LIEN QUAN
+## 8. KIỂM TRA VÀ XÁC MINH HỆ THỐNG
 
-De tim hieu chuyen sau ve kien truc phan mem, mo hinh thuc the ERD, chi tiet ma nguon tung component, danh muc day du tat ca cac API endpoints va bang quy tac nghiep vu toan he thong, vui long tham khao tep:
-- MO_TA_HE_THONG.md (Tai lieu mo ta he thong toan dien).
+Các kịch bản kiểm thử quan trọng để kiểm tra hoạt động thực tế của hệ thống:
+
+1. Kiểm thử Luồng Đố vui và Tính điểm:
+   - Chọn chế độ Thi chính thức, trả lời hết 25 câu hỏi.
+   - Kiểm tra bộ đếm thời gian mili-giay dừng lại khi hoàn thành.
+   - Mở trang Bảng xếp hạng kiểm tra tên và Tag ID đã xuất hiện đúng vị trí với điểm số và thời gian thực.
+2. Kiểm thử Vòng quay may mắn và Hạn mức CSDL:
+   - Mở Admin CMS với tài khoản Huyện (huyen_daksong), vào tab Quán & Hạn mức và hạ TotalLimit của một quán về bằng với IssuedCount.
+   - Quay lại Mini App trên điện thoại, mở Vòng quay may mắn và kiểm tra xem quán đó đã được tự động loại bỏ khỏi danh sách ô quay chưa.
+3. Kiểm thử Đơn hàng OCOP và Hoàn kho 100%:
+   - Ghi nhớ số lượng InStockQuantity của sản phẩm Tiêu đen hữu cơ trên Store.
+   - Đặt mua 2 gói Tiêu đen hữu cơ. Sau khi đặt xong, kiểm tra lại xem tồn kho trên CSDL đã tự động giảm đi 2 chưa.
+   - Vào tab Đơn hàng của tôi, bấm nút Hủy đơn hàng và xác nhận trong popup.
+   - Kiểm tra lại xem tồn kho của sản phẩm đã được cộng trả lại đúng 2 đơn vị chưa.
+4. Kiểm thử Phân quyền và Chức năng chặn lỗi 403 Forbidden:
+   - Đăng nhập tài khoản Hợp tác xã (htx_daksong).
+   - Sử dụng công cụ Postman hoặc fetch trên Console trình duyệt gửi request xóa kết quả thi: DELETE /api/admin/leaderboard/1.
+   - Kiểm tra xem backend có trả về mã HTTP 403 Forbidden hay không.
 
 ---
 
-## 10. CAC LOI THUONG GAP VA CACH KHAC PHUC
+## 9. TÀI LIỆU LIÊN QUAN
 
-| Hien tuong loi | Nguyen nhan tiem an | Cach xu ly cu the |
+Để tìm hiểu chuyên sâu về kiến trúc phần mềm, mô hình thực thể ERD, chi tiết mã nguồn từng component, danh mục đầy đủ tất cả các API endpoints và bảng quy tắc nghiệp vụ toàn hệ thống, vui lòng tham khảo tệp:
+- MO_TA_HE_THONG.md (Tài liệu mô tả hệ thống toàn diện).
+
+---
+
+## 10. CÁC LỖI THƯỜNG GẶP VÀ CÁCH KHẮC PHỤC
+
+| Hiện tượng lỗi | Nguyên nhân tiềm ẩn | Cách xử lý cụ thể |
 | :--- | :--- | :--- |
-| Loi ECONNREFUSED khi backend ket noi den SQL Server | Dịch vu SQL Server (SQLEXPRESS) chua duoc bat hoac chua bat giao thuc TCP/IP | Mo SQL Server Configuration Manager, dam bao service SQL Server (SQLEXPRESS) dang o trang thai Running; bat TCP/IP trong phan SQL Server Network Configuration va khoi dong lai service |
-| Loi Login failed for user khi ket noi CSDL | Thiet lap xac thuc SQL Server chua cho phep Windows Authentication hoac sai chuoi ket noi | Mo file backend/.env, kiem tra chuoi ket noi DB_CONNECTION_STRING; dam bao tham so Trusted_Connection=Yes va TrustServerCertificate=Yes duoc khai bao dung |
-| May chu bao Port 5000 already in use | Cong 5000 dang bi mot phien chay truoc cua Node.js hoac ung dung khac chiem dung | Mo terminal go lenh tim tien trinh: netstat -ano \| findstr :5000; sau do huy tien trinh bang lenh: taskkill /PID <PID_NUMBER> /F roi khoi dong lai backend |
-| May chu Vite bao Port 5173 in use | Cong 5173 dang duoc mo boi mot tien trinh dev khac | Vite se tu dong chuyen sang cong 5174; hoac ban co the dung taskkill de tat tien trinh cu va khoi dong lai |
-| Loi ERESOLVE khi chay npm install | Xung dot phien ban phu thuoc giua cac package moi | Chay lenh cai dat kem tham so legacy: npm install --legacy-peer-deps |
-| Trang admin.html hien thi trang trang hoac bao loi API | May chu backend chua duoc bien dich hoac chua chay lenh npm run build trong backend | Vao thu muc backend, chay npm run build de bien dich TypeScript sang dist/, sau do khoi dong bang node dist/index.js |
-| Khong mo duoc ban do Google Maps tren mot so trinh duyet | Trinh duyet chan cua so popup moi (pop-up blocker) | Cho phep pop-up cho dia chi localhost:5173 trong cai dat quyen rieng tu cua trinh duyet |
-
-Cac kich ban kiem thu quan trong de kiem tra hoat dong thuc te cua he thong:
-
-1. Kiem thu Luong Do vui va Tinh diem:
-   - Chon che do Thi chinh thuc, tra loi het 25 cau hoi.
-   - Kiem tra bo dem thoi gian mili-giay dung lai khi hoan thanh.
-   - Mo trang Bang xep hang kiem tra ten va Tag ID da xuat hien dung vi tri voi diem so va thoi gian thuc.
-2. Kiem thu Vong quay may man va Han muc CSDL:
-   - Mo Admin CMS voi tai khoan Huyen (huyen_daksong), vao tab Quan & Han muc va ha TotalLimit cua mot quan ve bang voi IssuedCount.
-   - Quay lai Mini App tren dien thoai, mo Vong quay may man va kiem tra xem quan do da duoc tu dong loai bo khoi danh sach o quay chua.
-3. Kiem thu Don hang OCOP va Hoan kho 100%:
-   - Ghi nho so luong InStockQuantity cua san pham Tieu den huu co tren Store.
-   - Dat mua 2 goi Tieu den huu co. Sau khi dat xong, kiem tra lai xem ton kho tren CSDL da tu dong giam di 2 chua.
-   - Vao tab Don hang cua toi, bam nut Huy don hang va xac nhan trong popup.
-   - Kiem tra lai xem ton kho cua san pham da duoc cong tra lai dung 2 don vi chua.
-4. Kiem thu Phan quyen va Chuc nang chan loi 403 Forbidden:
-   - Dang nhap tai khoan Hop tac xa (htx_daksong).
-   - Su dung cong cu Postman hoac fetch tren Console trinh duyet gui request xoa ket qua thi: DELETE /api/admin/leaderboard/1.
-   - Kiem tra xem backend co tra ve ma HTTP 403 Forbidden hay khong.
-
----
-
-## 9. TAI LIEU LIEN QUAN
-
-De tim hieu chuyen sau ve kien truc phan mem, mo hinh thuc the ERD, chi tiet ma nguon tung component, danh muc day du tat ca cac API endpoints va bang quy tac nghiep vu toan he thong, vui long tham khao tep:
-- MO_TA_HE_THONG.md (Tai lieu mo ta he thong toan dien).
-
----
-
-## 10. CAC LOI THUONG GAP VA CACH KHAC PHUC
-
-| Hien tuong loi | Nguyen nhan tiem an | Cach xu ly cu the |
-| :--- | :--- | :--- |
-| Loi ECONNREFUSED khi backend ket noi den SQL Server | Dịch vu SQL Server (SQLEXPRESS) chua duoc bat hoac chua bat giao thuc TCP/IP | Mo SQL Server Configuration Manager, dam bao service SQL Server (SQLEXPRESS) dang o trang thai Running; bat TCP/IP trong phan SQL Server Network Configuration va khoi dong lai service |
-| Loi Login failed for user khi ket noi CSDL | Thiet lap xac thuc SQL Server chua cho phep Windows Authentication hoac sai chuoi ket noi | Mo file backend/.env, kiem tra chuoi ket noi DB_CONNECTION_STRING; dam bao tham so Trusted_Connection=Yes va TrustServerCertificate=Yes duoc khai bao dung |
-| May chu bao Port 5000 already in use | Cong 5000 dang bi mot phien chay truoc cua Node.js hoac ung dung khac chiem dung | Mo terminal go lenh tim tien trinh: netstat -ano \| findstr :5000; sau do huy tien trinh bang lenh: taskkill /PID <PID_NUMBER> /F roi khoi dong lai backend |
-| May chu Vite bao Port 5173 in use | Cong 5173 dang duoc mo boi mot tien trinh dev khac | Vite se tu dong chuyen sang cong 5174; hoac ban co the dung taskkill de tat tien trinh cu va khoi dong lai |
-| Loi ERESOLVE khi chay npm install | Xung dot phien ban phu thuoc giua cac package moi | Chay lenh cai dat kem tham so legacy: npm install --legacy-peer-deps |
-| Trang admin.html hien thi trang trang hoac bao loi API | May chu backend chua duoc bien dich hoac chua chay lenh npm run build trong backend | Vao thu muc backend, chay npm run build de bien dich TypeScript sang dist/, sau do khoi dong bang node dist/index.js |
-| Khong mo duoc ban do Google Maps tren mot so trinh duyet | Trinh duyet chan cua so popup moi (pop-up blocker) | Cho phep pop-up cho dia chi localhost:5173 trong cai dat quyen rieng tu cua trinh duyet |
-
+| Lỗi ECONNREFUSED khi backend kết nối đến SQL Server | Dịch vụ SQL Server (SQLEXPRESS) chưa được bật hoặc chưa bật giao thức TCP/IP | Mở SQL Server Configuration Manager, đảm bảo service SQL Server (SQLEXPRESS) đang ở trạng thái Running; bật TCP/IP trong phần SQL Server Network Configuration và khởi động lại service |
+| Lỗi Login failed for user khi kết nối CSDL | Thiết lập xác thực SQL Server chưa cho phép Windows Authentication hoặc sai chuỗi kết nối | Mở file backend/.env, kiểm tra chuỗi kết nối DB_CONNECTION_STRING; đảm bảo tham số Trusted_Connection=Yes và TrustServerCertificate=Yes được khai báo đúng |
+| Máy chủ báo Port 5000 already in use | Cổng 5000 đang bị một phiên chạy trước của Node.js hoặc ứng dụng khác chiếm dụng | Mở terminal gõ lệnh tìm tiến trình: netstat -ano \| findstr :5000; sau đó hủy tiến trình bằng lệnh: taskkill /PID <PID_NUMBER> /F rồi khởi động lại backend |
+| Máy chủ Vite báo Port 5173 in use | Cổng 5173 đang được mở bởi một tiến trình dev khác | Vite sẽ tự động chuyển sang cổng 5174; hoặc bạn có thể dùng taskkill để tắt tiến trình cũ và khởi động lại |
+| Lỗi ERESOLVE khi chạy npm install | Xung đột phiên bản phụ thuộc giữa các package mới | Chạy lệnh cài đặt kèm tham số legacy: npm install --legacy-peer-deps |
+| Trang admin.html hiển thị trang trắng hoặc báo lỗi API | Máy chủ backend chưa được biên dịch hoặc chưa chạy lệnh npm run build trong backend | Vào thư mục backend, chạy npm run build để biên dịch TypeScript sang dist/, sau đó khởi động bằng node dist/index.js |
+| Không mở được bản đồ Google Maps trên một số trình duyệt | Trình duyệt chặn cửa sổ popup mới (pop-up blocker) | Cho phép pop-up cho địa chỉ localhost:5173 trong cài đặt quyền riêng tư của trình duyệt |
